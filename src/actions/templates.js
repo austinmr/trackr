@@ -1,4 +1,4 @@
-import { v4 } from 'node-uuid'
+import { v4 } from 'uuid'
 
 const createDate = () => {
   let now = new Date(); 
@@ -9,7 +9,6 @@ export const createTemplate = (username) => {
   return {
     type: 'CREATE_TEMPLATE',
     id: v4(),
-    active: true, 
     date: createDate(),
     username,
   }
