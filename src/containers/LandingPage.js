@@ -21,15 +21,13 @@ export class LandingPage extends React.Component {
   }
 
   loginUser = (e) => {
-    e.preventDefault() 
-    // const { dispatchLoginUser} = this.props; 
+    e.preventDefault();  
     let username = this.state.username; 
     if (!username) {
-      return
+      return; 
     }
-    // console.log(username); 
-    this.props.dispatchLoginUser(username, '1');
-    // browserHistory.push(`/User/${username}`);
+    this.props.dispatchLoginUser(username);
+    browserHistory.push(`/User/${username}`);
   }
 
   render() {
@@ -56,8 +54,8 @@ export class LandingPage extends React.Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchLoginUser: (username, date) => {
-    dispatch(loginUser(username, date))
+  dispatchLoginUser: (username) => {
+    dispatch(loginUser(username))
   },
 }) 
 
