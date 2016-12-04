@@ -1,0 +1,82 @@
+{
+  "name": "create-react-redux",
+  "version": "1.0.0",
+  "description": "Boilerplate template for React and Redux application based on create-react-app",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack -d",
+    "lint": "eslint src",
+    "start": "node scripts/start.js",
+    "test": "jest",
+    "test:watch": "npm test -- --watch"
+  },
+  "devDependencies": {
+    "babel-core": "6.17.0",
+    "babel-eslint": "7.0.0",
+    "babel-jest": "^16.0.0",
+    "babel-loader": "6.2.5",
+    "babel-polyfill": "^6.16.0",
+    "babel-preset-es2015": "^6.18.0",
+    "babel-preset-jest": "^17.0.2",
+    "babel-preset-latest": "^6.16.0",
+    "babel-preset-react": "^6.16.0",
+    "babel-preset-react-app": "^1.0.0",
+    "detect-port": "^1.0.6",
+    "enzyme": "^2.6.0",
+    "eslint": "3.8.1",
+    "eslint-config-react-app": "^0.3.0",
+    "eslint-loader": "1.6.0",
+    "eslint-plugin-flowtype": "2.21.0",
+    "eslint-plugin-import": "2.0.1",
+    "eslint-plugin-jsx-a11y": "2.2.3",
+    "eslint-plugin-react": "6.4.1",
+    "html-webpack-plugin": "^2.24.1",
+    "jest": "^17.0.3",
+    "object-assign": "^4.1.0",
+    "react-addons-test-utils": "^15.4.1",
+    "react-dev-utils": "^0.3.0",
+    "react-test-renderer": "^15.4.1",
+    "webpack": "^1.13.3",
+    "webpack-dev-server": "1.16.2",
+    "webpack-manifest-plugin": "1.1.0"
+  },
+  "dependencies": {
+    "lodash": "^4.17.2",
+    "react": "^15.4.1",
+    "react-bootstrap": "^0.30.7",
+    "react-dom": "^15.4.1",
+    "react-redux": "^4.4.5",
+    "react-router": "^3.0.0",
+    "react-router-redux": "^4.0.7",
+    "redux": "^3.5.2"
+  },
+  "jest": {
+    "moduleFileExtensions": [
+      "jsx",
+      "js",
+      "json"
+    ],
+    "moduleNameMapper": {
+      "^.+\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/config/jest/FileStub.js",
+      "^.+\\.css$": "<rootDir>/config/jest/CSSStub.js"
+    },
+    "setupFiles": [
+      "<rootDir>/config/polyfills.js"
+    ],
+    "testPathIgnorePatterns": [
+      "<rootDir>/(build|docs|node_modules)/"
+    ],
+    "testEnvironment": "node"
+  },
+  "babel": {
+    "presets": [
+      "es2015",
+      "react-app"
+    ]
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "author": "austinmr",
+  "license": "ISC"
+}
