@@ -1,16 +1,18 @@
 process.env.NODE_ENV = 'development';
 var webpack = require('webpack');
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var paths = require('./config/paths'); 
 
 var path = require('path');
 var APP_DIR = path.resolve(__dirname, 'src');
 var BUILD_DIR = path.resolve(__dirname, 'public');
 var INDEX = path.resolve(__dirname, 'public/index.html');
 
+
 var config = {
   entry: [
   require.resolve('react-dev-utils/webpackHotDevClient'),
-  APP_DIR + '/index.js'
+  paths.appIndexJs
   ],
 
   output: {
