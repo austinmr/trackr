@@ -2,23 +2,19 @@ import React from 'react'
 import { mount } from 'enzyme'
 
 // Component for testing 
-import { LandingPage } from '../containers/LandingPage'
+import { LandingPage } from '../../containers/LandingPage'
 
 // Testing unconnected COMPONENT 
 function setupComponent() {
-  const props = {
-    dispatchLoginUser: jest.fn()
-  }
   const testFn = jest.fn(); 
   const enzymeWrapper = mount(<LandingPage dispatchLoginUser={testFn}/>)
   return {
-    props,
     enzymeWrapper,
     testFn
   }
 }
 
-describe('LandingPage Component', () => {
+describe('UserProfile Component', () => {
   it('should render self', () => {
     const { enzymeWrapper, } = setupComponent(); 
     expect(enzymeWrapper).toHaveLength(1); 

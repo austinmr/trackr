@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
-import { loginUser } from '../actions/users' 
+import { loginUser } from '../actions/user' 
 
 import { Row, Col, Form, FormGroup, FormControl, ControlLabel, Button, Jumbotron} from 'react-bootstrap'
 
@@ -21,15 +21,17 @@ export class LandingPage extends React.Component {
   }
 
   loginUser = (e) => {
-    e.preventDefault() 
-    // const { dispatchLoginUser} = this.props; 
+    e.preventDefault();  
     let username = this.state.username; 
     if (!username) {
-      return
+      return; 
     }
-    // console.log(username); 
-    this.props.dispatchLoginUser(username, '1');
-    // browserHistory.push(`/User/${username}`);
+    this.props.dispatchLoginUser(username);
+    
+    // Prevent 'SecurityError' message from Jest 
+    if (process.env.NODE_ENV !== 'test') {
+      browserHistory.push(`/Template/${username}`);
+    }
   }
 
   render() {
@@ -56,8 +58,8 @@ export class LandingPage extends React.Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchLoginUser: (username, date) => {
-    dispatch(loginUser(username, date))
+  dispatchLoginUser: (username) => {
+    dispatch(loginUser(username))
   },
 }) 
 
