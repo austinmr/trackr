@@ -1,4 +1,5 @@
 var profile = {
+  loggedIn: false,
   workouts: [],
   templates: [], 
 }
@@ -8,9 +9,9 @@ const user = (state = profile, action) => {
     case 'LOGIN_USER':
       return {
         ...state,
-        loggedIn: true,
         id: action.id,
         username: action.username,
+        loggedIn: true,
         workouts: [], 
         templates: []
       }

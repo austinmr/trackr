@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
-import { loginUser } from '../actions/users' 
+import { loginUser } from '../actions/user' 
 
 import { Row, Col, Form, FormGroup, FormControl, ControlLabel, Button, Jumbotron} from 'react-bootstrap'
 
@@ -27,7 +27,11 @@ export class LandingPage extends React.Component {
       return; 
     }
     this.props.dispatchLoginUser(username);
-    browserHistory.push(`/User/${username}`);
+    
+    // Prevent 'SecurityError' message from Jest 
+    if (process.env.NODE_ENV !== 'test') {
+      browserHistory.push(`/Template/${username}`);
+    }
   }
 
   render() {

@@ -12,15 +12,17 @@ import { Grid, Row, Col, Button, Nav, NavItem, Badge } from 'react-bootstrap';
 
 export class UserProfile extends React.Component {
   static propTypes = {
+    username: PropTypes.string.isRequired, 
     dispatchCreateTemplate: PropTypes.func.isRequired, 
   }
 
   handleCreateTemplate = (username) => {
-    if (!username) {
-      return
-    }
     this.props.dispatchCreateTemplate(username);
-    browserHistory.push(`/Template/${username}`);
+
+    // Prevent 'SecurityError' message from Jest 
+    if (process.env.NODE_ENV !== 'test') {
+      browserHistory.push(`/Template/${username}`);
+    }
   }
 
   // handleTabSelect(eventKey) {
@@ -65,8 +67,8 @@ export class UserProfile extends React.Component {
             <h3 style={{color: 'gray'}}> {username} </h3>
             <img src={'https://image.freepik.com/free-vector/crossfit-logo_23-2147494935.jpg'} alt="user profile" width={250} height={250} style={{borderRadius: 10, marginTop: 15}} />
             <h2> Click Here to Start A New Workout! </h2> 
-            <Button bsSize="large" onClick={(e)=>{console.log(e)}}> New Workout </Button> 
-            <Button bsSize="large" onClick={(e)=>{this.handleCreateTemplate(username)}}> New Workout Template </Button> 
+            <Button className="workout-button" bsSize="large" onClick={(e)=>{this.handleCreateTemplate(username)}}> New Workout </Button> 
+            <Button className="template-button" bsSize="large" onClick={(e)=>{this.handleCreateTemplate(username)}}> New Workout Template </Button> 
           </Col> 
           <Col xs={8} md={8}>
           </Col>
