@@ -6,13 +6,9 @@ import thunk from 'redux-thunk'
 ////////////// DYNAMO 
 
 import 'aws-sdk/dist/aws-sdk';
+import dynamoConfig from '../../dynamoConfig'
 const AWS = window.AWS;
-AWS.config.update({
-  region: "us-west-1",
-  endpoint: "dynamodb.us-west-1.amazonaws.com",
-  accessKeyId: "AKIAJXC6MZ3RKYR7JSYA",
-  secretAccessKey: "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"
-});
+AWS.config.update(dynamoConfig);
 AWS.config.setPromisesDependency(require('bluebird'));
 
 // const dynamodb = new AWS.DynamoDB();

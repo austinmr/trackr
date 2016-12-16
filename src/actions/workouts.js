@@ -1,6 +1,6 @@
 import { CREATE_WORKOUT_FROM_TEMPLATE, ADD_SET_REPS } from '../constants/ActionTypes'
 import { v4 } from 'uuid'
-import { calculateWeight, calculate1RM, calculateAverage1RM, everySetComplete } from '../utils/calculators'
+import { calculateWeight, calculate1RM, calculateAverage1RM, setCompletion, totalExerciseWeight } from '../utils/calculators'
 import { getUserExercisesInWorkoutMiddleware } from '../reducers/root'
 import { updateUserExercises, invalidateUserExercises } from './userExercises'
 import { setWorkoutResults } from './results'
@@ -11,13 +11,9 @@ import { setWorkoutResults } from './results'
 ////////////// DYNAMO 
 
 import 'aws-sdk/dist/aws-sdk';
+import dynamoConfig from '../../dynamoConfig'
 const AWS = window.AWS;
-AWS.config.update({
-  region: "us-west-1",
-  endpoint: "dynamodb.us-west-1.amazonaws.com",
-  accessKeyId: "AKIAJXC6MZ3RKYR7JSYA",
-  secretAccessKey: "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"
-});
+AWS.config.update(dynamoConfig);
 AWS.config.setPromisesDependency(require('bluebird'));
 
 // const dynamodb = new AWS.DynamoDB();
@@ -90,12 +86,16 @@ const individualSetTracker = (exercises) => {
         if (set.completedReps >= set.targetReps) {
           completed = true; 
         } 
-        let completedOneRepMax = calculate1RM(set.weight, set.completedReps); 
-
+        let completedOneRepMax = 0; 
+        if (set.completedReps != 0) {
+          let completedOneRepMax = calculate1RM(set.weight, set.completedReps); 
+        }
+        let totalWeight = set.weight * set.completedReps; 
         return {
           ...set, 
           completed: completed,
-          completedOneRepMax: completedOneRepMax
+          completedOneRepMax: completedOneRepMax,
+          totalWeight: totalWeight
         }
       })
     }
@@ -105,11 +105,15 @@ const individualSetTracker = (exercises) => {
 const individualExerciseTracker = (exercises) => {
   return exercises.map((exercise) => {
     let averageOneRepMax = calculateAverage1RM(exercise.sets)
-    let completed = everySetComplete(exercise.sets) 
+    let {completed, percentageCompleted } = setCompletion(exercise.sets); 
+    let totalWeight = totalExerciseWeight(exercise.sets); 
     return {
       ...exercise, 
       averageOneRepMax: averageOneRepMax,
-      completed: completed
+      completed: completed,
+      percentageCompleted: percentageCompleted,
+      totalWeight: totalWeight,
+      setCount: exercise.sets.length
     }
   })
 }
@@ -122,7 +126,9 @@ const individualUserExercise = (workout, userExercises) => {
     // If current average is 3% greater than current max and completed all sets for most recent workout
     const currentMax = userExercise.OneRepMax; 
     if ( (exercise.averageOneRepMax / currentMax) >= 1.03 && userExercise.MRW.complete ) {
-      userExercise.OneRepMax = currentMax + 5;  
+      userExercise.OneRepMax = currentMax + 5;
+      userExercises.newRecords = userExercises.newRecords || []; 
+      userExercises.newRecords.concat(exercise.id); 
     }
 
     let MRW = {}

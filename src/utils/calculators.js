@@ -43,3 +43,46 @@ export const calculateAverage1RM = (sets) => {
 export const everySetComplete = (sets) => {
   return _.every(sets, (set) => set.completed === true)
 }
+
+export const setCompletion = sets => {
+  const results = {}
+  const completed = sets.filter((set) => set.completed); 
+  results.completed = false; 
+  if (completed.length === sets.length) {
+    results.completed = true; 
+  }
+  results.percentageCompleted = completed.length / sets.length; 
+  return results; 
+}
+
+export const calculatePerformancePercentage = (exercises) => {
+  return (exercises.reduce((a,b) => a.percentageCompleted + b.percentageCompleted) / exercises.length) * 100; 
+}
+
+export const totalExerciseWeight = (sets) => {
+  return sets
+    .map(set => set.totalWeight)
+    .reduce((a,b) => a + b); 
+}
+
+export const totalWorkoutSets = (exercises) => {
+  return exercises
+    .map((e) => e.setCount)
+    .reduce((a,b) => a + b); 
+}
+
+export const totalWorkoutWeight = (exercises) => {
+  return exercises
+    .map((e) => e.totalWeight)
+    .reduce((a,b) => a + b); 
+}
+
+export const topExercise = (exercises) => {
+  return exercises.reduce((a,b) => {
+    if (a.TotalWeight > b.totalWeight) {
+      return a; 
+    } else {
+      return b; 
+    }
+  }); 
+}
