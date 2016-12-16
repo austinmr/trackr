@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { addExercise } from '../actions/templates'
 import ExerciseSearchList from '../components/ExerciseSearchList'
+import AddExerciseToDB from './AddExerciseToDB'
 // import ExerciseEntry from '../components/ExerciseSearchEntry'
 
 import { Well, Row, Form, FormControl, ControlLabel } from 'react-bootstrap'
@@ -9,16 +10,10 @@ import { Well, Row, Form, FormControl, ControlLabel } from 'react-bootstrap'
 // Dynamo
 // const AWS = require('aws-sdk');
 import 'aws-sdk/dist/aws-sdk';
+import dynamoConfig from '../../dynamoConfig'
 const AWS = window.AWS;
-AWS.config.update({
-  region: "us-west-1",
-  endpoint: "dynamodb.us-west-1.amazonaws.com",
-  accessKeyId: "AKIAJXC6MZ3RKYR7JSYA",
-  secretAccessKey: "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"
-});
-
-// const uuid = require('node-uuid');
-const dynamodb = new AWS.DynamoDB();
+AWS.config.update(dynamoConfig);
+AWS.config.setPromisesDependency(require('bluebird'));
 const docClient = new AWS.DynamoDB.DocumentClient();
 
 export class AddExercise extends React.Component {
@@ -52,9 +47,13 @@ export class AddExercise extends React.Component {
       if (err) {
         console.log(JSON.stringify(err, null, 2));
       } else {
-        // console.log(JSON.stringify(data.Items))
+        console.log(data.Items)
+        let exerciseSearchList = 'not found'; 
+        if (data.Items.length > 0) {
+          exerciseSearchList = data.Items
+        }
         this.setState({
-          exerciseSearchList: data.Items
+          exerciseSearchList: exerciseSearchList
         })
       }
     });
@@ -73,9 +72,12 @@ export class AddExercise extends React.Component {
 
   _renderExerciseSearchList() {
     const { exerciseSearchList } = this.state; 
-    if (exerciseSearchList !== undefined && exerciseSearchList !== null) {
-      // console.log(this.state.exerciseSearchList); 
-      console.log(typeof exerciseSearchList); 
+    if (exerciseSearchList === 'not found') {
+      return (
+        <AddExerciseToDB /> 
+      )
+    } 
+    else if (exerciseSearchList !== undefined && exerciseSearchList !== null) {
       return (
         <ExerciseSearchList exerciseSearchList={exerciseSearchList} onClick={this.handleAddExercise}/>
       )
