@@ -1,31 +1,31 @@
 import * as types from '../../constants/ActionTypes'
-import reducer from '../../reducers/user'
+import reducer from '../../reducers/entities'
 
 describe('user reducer', () => {
   it('should return the initial state', () => {
     expect(
       reducer(undefined, {})
-    ).toEqual(
-      {
-        loggedIn: false,
-        workouts: [],
-        templates: []
-      }
-    )
+    ).toEqual({ 
+      users: {}, 
+      exercises: {}, 
+      workouts: {}, 
+      templates: {} 
+    })
   })
 
   it('should handle LOGIN_USER', () => {
-    const nextState = reducer([], {
+    const nextState = reducer(undefined, {
       type: types.LOGIN_USER,
       id: 1,
       username: 'Riti'
     })
     const expectedState = {
-      id: 1,
-      username: 'Riti',
-      loggedIn: true,
-      workouts: [],
-      templates: []
+      users: {
+        1: {id: 1, username: 'Riti'}
+      }, 
+      exercises: {}, 
+      workouts: {}, 
+      templates: {} 
     }
     expect(nextState).toEqual(expectedState);
   })
@@ -48,24 +48,20 @@ describe('user reducer', () => {
         }
       ]
     }
-    const initialState = {
-      id: 1,
-      username: 'Riti',
-      loggedIn: true,
-      workouts: [],
-      templates: []
-    }
-    const nextState = reducer(initialState, {
+    const nextState = reducer(undefined, {
       type: types.SAVE_TEMPLATE,
       id: template.id,
       template,
     })
     const expectedState = {
-      id: 1,
-      username: 'Riti',
-      loggedIn: true,
-      workouts: [],
-      templates: ["dd7df893-d27d-44b4-ac14-b2b5606e35a8"]
+      users: {}, 
+      exercises: {}, 
+      workouts: {}, 
+      templates: {
+        'dd7df893-d27d-44b4-ac14-b2b5606e35a8': {
+          ...template
+        }
+      } 
     }
     expect(nextState).toEqual(expectedState);
   })

@@ -14,7 +14,7 @@ function setupComponent() {
   }
 }
 
-describe('LandingPage Component', () => {
+describe('UserProfile Component', () => {
   it('should render self', () => {
     const { enzymeWrapper, } = setupComponent(); 
     expect(enzymeWrapper).toHaveLength(1); 
