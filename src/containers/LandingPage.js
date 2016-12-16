@@ -30,7 +30,7 @@ export class LandingPage extends React.Component {
     
     // Prevent 'SecurityError' message from Jest 
     if (process.env.NODE_ENV !== 'test') {
-      browserHistory.push(`/Template/${username}`);
+      browserHistory.push(`/User/${username}`);
     }
   }
 
