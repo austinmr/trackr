@@ -19,9 +19,9 @@ export class Workout extends React.Component {
     e.preventDefault();
     const { workout, userExercises, dispatchTrackWorkout } = this.props; 
     dispatchTrackWorkout(workout, userExercises); 
-    // if (process.env.NODE_ENV !== 'test') {
-    //   browserHistory.push(`/User/${username}`);
-    // }
+    if (process.env.NODE_ENV !== 'test') {
+      browserHistory.push(`/Results/${workout.id}`);
+    }
   }
 
   render() {
