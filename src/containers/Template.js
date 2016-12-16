@@ -2,8 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux'
 import { saveTemplate } from '../actions/templates' 
 import { browserHistory } from 'react-router';
-// import AddExercise from './AddExercise'
-// import ExerciseList from './ExerciseList'
+import AddExercise from './AddExercise'
+import ExerciseList from '../components/ExerciseList'
 
 import { Grid, Row, Col, Button } from 'react-bootstrap';
 
@@ -17,24 +17,26 @@ export class Template extends React.Component {
 
   handleSaveTemplate(e) {
     e.preventDefault();
-    const { workout, username, dispatchSaveTemplate } = this.props; 
+    const { template, username, dispatchSaveTemplate } = this.props; 
 
-    dispatchSaveTemplate(workout)
-    browserHistory.push(`/User/${username}`);
+    dispatchSaveTemplate(template)
+    if (process.env.NODE_ENV !== 'test') {
+      browserHistory.push(`/User/${username}`);
+    }
   }
 
   render() {
     return (
       <Grid>
         <Row>   
-          <h2> New Trackr Workout </h2>
+          <h2>New Trackr Workout</h2>
         </Row> 
         <Col xs={4} md={4}> 
           <AddExercise style={{marginTop: 10}}/>
-          <Button onClick={(e) => this.handleSaveTemplate(e)} style={{margin: 10}}> Save Template </Button> 
+          <Button className="saveTemplate" onClick={(e) => this.handleSaveTemplate(e)} style={{margin: 10}}> Save Template </Button> 
         </Col>
         <Col xs={8} md={8}>
-          <ExerciseList exercises={this.props.exercises} active={false}/>
+          <ExerciseList exercises={this.props.exercises}/>
         </Col>
       </Grid>
     );
@@ -54,3 +56,5 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Template)
+
+
