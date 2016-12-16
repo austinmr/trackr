@@ -5,6 +5,8 @@ import LandingPage from './containers/LandingPage'
 import UserProfile from './containers/UserProfile'
 import Template from './containers/Template'
 import Workout from './containers/Workout'
+import Results from './containers/Results'
+
 
 export default <Route path="/" component={App}>
   <IndexRoute component={LandingPage} />
@@ -14,4 +16,6 @@ export default <Route path="/" component={App}>
          component={Template} />
   <Route path="/Workout(/:username)"
          component={Workout} />
+  <Route path="/Results(/:workoutID)"
+         component={Results} />
 </Route>
