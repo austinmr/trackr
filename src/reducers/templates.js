@@ -1,44 +1,39 @@
-const templateSet = (state, action) => {
+import { CREATE_TEMPLATE, SAVE_TEMPLATE, ADD_EXERCISE, ADD_SET } from '../constants/ActionTypes'
+
+const set = (state, action) => {
   switch (action.type) {
-    case 'ADD_TEMPLATE_SET': 
+    case ADD_SET: 
       return [
         ...state,
-        action.id,
-
+        {
+          id: action.id,
+          reps: action.reps,
+        }
       ]
     default: 
       return state 
   }
 }
 
-const templateExercise = (state = {}, action) => {
+const exercise = (state = {}, action) => {
   switch (action.type) {
-    case 'ADD_TEMPLATE_SET': 
+    case ADD_SET: 
       if (state.id !== action.exerciseId) {
         return state
       }
 
       return {
         ...state,
-        sets: templateSet(state.sets, action)
-      }
-    case 'DUPLICATE_TEMPLATE_SET': 
-      if (state.id !== (action.exerciseId) ) {
-        return state
-      }
-
-      return {
-        ...state,
-        sets: templateSet(state.sets, action)
+        sets: set(state.sets, action)
       }
     default: 
       return state 
   }
 }
 
-const templateExercises = (state = [], action) => {
+const exercises = (state = [], action) => {
   switch (action.type) {
-    case 'ADD_TEMPLATE_EXERCISE':
+    case ADD_EXERCISE:
       return [
         ...state, 
         {
@@ -47,8 +42,8 @@ const templateExercises = (state = [], action) => {
         sets: []
         }
       ]
-    case 'ADD_TEMPLATE_SET':
-      return state.map(e => templateExercise(e, action))
+    case ADD_SET:
+      return state.map(e => exercise(e, action))
     default: 
       return state
   }
@@ -56,12 +51,22 @@ const templateExercises = (state = [], action) => {
 
 const templates = (state = {}, action ) => {
   switch (action.type) {
-    case 'CREATE_TEMPLATE':
+    case CREATE_TEMPLATE:
       return {
         id: action.id,
         username: action.username,
         date: action.date,
         exercises: [],
+      }
+    case ADD_EXERCISE: 
+      return {
+        ...state,
+        exercises: exercises(state.exercises, action)
+      }
+    case ADD_SET: 
+      return {
+        ...state,
+        exercises: exercises(state.exercises, action)
       }
     default: 
       return state
