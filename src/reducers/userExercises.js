@@ -1,9 +1,20 @@
-import { REQUEST_USER_EXERCISES, RECEIVE_USER_EXERCISES, INVALIDATE_USER_EXERCISES } from '../constants/ActionTypes'
+import { REQUEST_USER_EXERCISES, RECEIVE_USER_EXERCISES, INVALIDATE_USER_EXERCISES, ADD_USER_EXERCISE } from '../constants/ActionTypes'
 
 function exercises(state,action) {
   switch(action.type) {
     case RECEIVE_USER_EXERCISES:
-      return Object.assign({}, state, action.exercises)      
+      return Object.assign({}, state, action.exercises)
+    case ADD_USER_EXERCISE: 
+      return {
+        ...state,
+        [`${action.ExerciseID}`]: {
+          ExerciseID: action.ExerciseID,
+          MRW: action.MRW,
+          OneRepMax: action.OneRepMax,
+          UserID: action.UserID,
+          ExerciseName: action.ExerciseName
+        } 
+      }      
     default:
       return state
   }
@@ -33,6 +44,11 @@ function userExercises(state = {
         didInvalidate: false,
         exercises: exercises(state.exercises, action)
       }
+    case ADD_USER_EXERCISE: 
+      return {
+        ...state,
+        exercises: exercises(state.exercises, action)
+      }
     default:
       return state
   }
@@ -41,7 +57,7 @@ function userExercises(state = {
 export default userExercises 
 
 export const getUserExercisesInWorkout = (state, exercises) => {
-  if (typeof exercises[0] != 'string') {
+  if (typeof exercises[0] !== 'string') {
     exercises = exercises.map((exercise) => exercise.id); 
   }
   const UserExercisesInWorkout = {};
@@ -49,4 +65,13 @@ export const getUserExercisesInWorkout = (state, exercises) => {
     UserExercisesInWorkout[`${exerciseID}`] = state.exercises[`${exerciseID}`]; 
   }); 
   return UserExercisesInWorkout; 
+}
+
+export const getUserExercise = (state, id) => {
+  const userExercise = state.exercises[`${id}`]
+  let result = null; 
+  if (userExercise) {
+    result = userExercise; 
+  }
+  return result; 
 }

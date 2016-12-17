@@ -31,6 +31,11 @@ export const calculate1RM = (weight, reps) => {
   return weight / (1.0278 - (0.0278 * reps)); 
 }
 
+export const calculateRounded1RM = (weight, reps) => {
+  let max = weight / (1.0278 - (0.0278 * reps)); 
+  return max - ( max % 5); 
+}
+
 export const calculateAverage1RM = (sets) => {
   let total = sets
     .map((set) => (set["completedOneRepMax"]))

@@ -1,7 +1,8 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { addSet } from '../actions/templates' 
-import presets from '../constants/RepPresets'
+import { addSet } from '../../actions/templates' 
+import presets from '../../constants/RepPresets'
+
 import { Row, Col, Form, FormGroup, FormControl, ControlLabel, Button, DropdownButton, MenuItem } from 'react-bootstrap';
 
 export class AddSet extends React.Component {

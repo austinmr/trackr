@@ -1,4 +1,4 @@
-import { REQUEST_USER_EXERCISES, RECEIVE_USER_EXERCISES, INVALIDATE_USER_EXERCISES } from '../constants/ActionTypes'
+import { REQUEST_USER_EXERCISES, RECEIVE_USER_EXERCISES, INVALIDATE_USER_EXERCISES, ADD_USER_EXERCISE } from '../constants/ActionTypes'
 import thunk from 'redux-thunk'
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -10,8 +10,6 @@ import dynamoConfig from '../../dynamoConfig'
 const AWS = window.AWS;
 AWS.config.update(dynamoConfig);
 AWS.config.setPromisesDependency(require('bluebird'));
-
-// const dynamodb = new AWS.DynamoDB();
 const docClient = new AWS.DynamoDB.DocumentClient();
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -56,12 +54,10 @@ export function fetchUserExercises(id) {
 
     const getObjectPromise = docClient.query(params).promise(); 
     return getObjectPromise.then((data) => {
-      console.log(data); 
-      console.log(typeof dispatch)
+      // console.log(data); 
       const exercises = {}; 
-      data.Items.map((item) => {
+      data.Items.forEach((item) => {
         exercises[`${item.ExerciseID}`] = item
-        return; 
       }); 
       dispatch(receiveUserExercises(id, exercises))
     }).catch((err) => {
@@ -118,3 +114,44 @@ export function updateUserExercises(updatedUserExercisesObject) {
     });    
   }); 
 }
+
+export function addUserExerciseToState(UserID, ExerciseID, ExerciseName, MRW, OneRepMax) {
+  return {
+    type: ADD_USER_EXERCISE,
+    UserID,
+    ExerciseID,
+    ExerciseName, 
+    MRW,
+    OneRepMax
+  }
+}
+
+export function addUserExerciseToDB(userID, exerciseID, exerciseName, oneRepMax) {
+  return dispatch => {
+    console.log(userID, exerciseID, exerciseName, oneRepMax); 
+    const params = {
+      TableName: "Users_Exercises", 
+      Key: {
+        "UserID": userID,
+        "ExerciseID": exerciseID
+      }, 
+      UpdateExpression: "set OneRepMax = :orm, MRW = :mrw, ExerciseName = :exer",
+      ConditionExpression: "attribute_not_exists(OneRepMax) OR attribute_not_exists(MRW) OR attribute_not_exists(ExerciseName)",
+      ExpressionAttributeValues: {
+        ":orm": oneRepMax, 
+        ":mrw": {},
+        ":exer": exerciseName
+      },
+      ReturnValues: "ALL_NEW"
+    }
+    const putPromiseObject = docClient.update(params).promise(); 
+    return putPromiseObject.then((data) => {
+        console.log("Added item:", JSON.stringify(data, null, 2));
+        const { UserID, ExerciseID, ExerciseName, MRW, OneRepMax } = data.Attributes; 
+        dispatch(addUserExerciseToState(UserID, ExerciseID, ExerciseName, MRW, OneRepMax))
+      }).catch((err) => {
+        console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+      });
+    }
+  }
+

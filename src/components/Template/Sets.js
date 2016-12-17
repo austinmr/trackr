@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import { Table } from 'react-bootstrap';
-import { displayPercentage } from '../utils/calculators'
+import { displayPercentage } from '../../utils/calculators'
 
 const Sets = ({ sets, exerciseId }) => (
   <Table bordered> 

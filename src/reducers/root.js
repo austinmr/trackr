@@ -2,6 +2,7 @@ import { combineReducers } from 'redux'
 import { routerReducer as routing } from 'react-router-redux'
 import user from './user'
 import userExercises, * as fromUserExercises from './userExercises'
+import dbExercises, * as fromdbExercises from './dbExercises'
 import template from './templates'
 import workout from './workouts'
 import results from './results'
@@ -14,6 +15,7 @@ const app = combineReducers({
   workout,
   entities,
   userExercises,
+  dbExercises,
   results
 })
 
@@ -30,3 +32,9 @@ export const getUserExercisesInWorkout = (state) =>
 
 export const getUserExercisesInWorkoutMiddleware = (state, exercises) => 
   fromUserExercises.getUserExercisesInWorkout(state.userExercises, exercises)
+
+export const getExerciseSearchList = (state) => 
+  fromdbExercises.getExerciseSearchList(state.dbExercises)
+
+export const getUserExercise = (state, id) => 
+  fromUserExercises.getUserExercise(state.userExercises, id)

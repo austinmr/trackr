@@ -29,7 +29,7 @@ const createDate = () => {
 
 const formatExerciseObject = (exercise, userExercises) => {
   const userExerciseObject = userExercises[`${exercise.id}`]; 
-  const currentOneRepMax = userExerciseObject.OneRepMax; 
+  const currentOneRepMax = parseInt(userExerciseObject.OneRepMax); 
 
   return {
     ...exercise, 
@@ -182,8 +182,8 @@ export const trackWorkout = (workout, userExercises) => {
     userExercises = individualUserExercise(workout, userExercises); 
 
     // Store workout results in respective DynamoDB tables
-    // updateUserExercises(userExercises); 
-    // putWorkout(workout); 
+    updateUserExercises(userExercises); 
+    putWorkout(workout); 
 
     console.log(workout, userExercises); 
     //TODO: Dispatch results 

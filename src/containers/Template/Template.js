@@ -1,9 +1,10 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux'
-import { saveTemplate } from '../actions/templates' 
 import { browserHistory } from 'react-router';
+import { saveTemplate } from '../../actions/templates' 
+
 import AddExercise from './AddExercise'
-import ExerciseList from '../components/ExerciseList'
+import ExerciseList from '../../components/Template/ExerciseList'
 
 import { Grid, Row, Col, Button } from 'react-bootstrap';
 

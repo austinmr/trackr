@@ -1,10 +1,11 @@
 import React, { PropTypes } from 'react';
-import { connect } from 'react-redux'
-import { saveTemplate } from '../actions/templates' 
-import { trackWorkout } from '../actions/workouts'
 import { browserHistory } from 'react-router';
-import ExerciseList from '../components/Workout/ExerciseList'
-import { getUserExercisesInWorkout } from '../reducers/root'
+import { connect } from 'react-redux'
+import { saveTemplate } from '../../actions/templates' 
+import { trackWorkout } from '../../actions/workouts'
+import { getUserExercisesInWorkout } from '../../reducers/root'
+
+import ExerciseList from '../../components/Workout/ExerciseList'
 
 import { Grid, Row, Col, Button } from 'react-bootstrap';
 
