@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { browserHistory } from 'react-router';
 import { createTemplate } from '../actions/templates'
 import { fetchUserExercisesIfNeeded } from '../actions/userExercises'
-import { createWorkoutFromTemplateMiddleware } from '../actions/workouts'
+import { createWorkoutFromTemplateMiddleware, fetchAllUserWorkouts } from '../actions/workouts'
 import { getTemplatesObjectArray } from '../reducers/root'
 
 // App Components 
@@ -25,8 +25,9 @@ export class UserProfile extends React.Component {
 
   constructor(props) {
     super(props);
-    const { userID, dispatchFetchUserExercises } = this.props; 
+    const { userID, dispatchFetchUserExercises, dispatchFetchAllUserWorkouts } = this.props; 
     dispatchFetchUserExercises(userID); 
+    dispatchFetchAllUserWorkouts(userID); 
   }
 
   handleCreateTemplate = (username) => {
@@ -122,6 +123,9 @@ const mapDispatchToProps = (dispatch) => ({
   dispatchFetchUserExercises: (id) => {
     dispatch(fetchUserExercisesIfNeeded(id))
   },
+  dispatchFetchAllUserWorkouts: (id) => {
+    dispatch(fetchAllUserWorkouts(id))
+  }
 }) 
 
 const UserProfileContainer = connect(mapStateToProps, mapDispatchToProps)(UserProfile)

@@ -42,7 +42,10 @@ export class UserExerciseData extends React.Component {
       )
     } else {
       return (
-        <h1> {`${userExercise.OneRepMax} lbs`} </h1>
+        <div>
+          <h1> {`${exerciseName}`} </h1>
+          <h3> {`${userExercise.OneRepMax} lbs`} </h3>
+        </div>
       )
     }
   }
@@ -68,3 +71,4 @@ const mapDispatchToProps = (dispatch) => ({
 }) 
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserExerciseData)
+

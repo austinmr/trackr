@@ -3,7 +3,7 @@ import { calculateRounded1RM } from '../../utils/calculators'
 
 import { Row, Col, Modal, Form, FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
 
-export class OneRepMaxModal extends React.Component {
+export default class OneRepMaxModal extends React.Component {
   static propTypes = {
     showModal: PropTypes.bool.isRequired,
     exerciseName: PropTypes.string.isRequired,
@@ -39,7 +39,7 @@ export class OneRepMaxModal extends React.Component {
     const { weight, reps, oneRepMax } = this.state; 
 
     return (
-      <div className="modal-container" style={{"position":"relative", height: 400}} >
+      <div className="modal-container" style={{"position":"relative", height: 450}} >
         <Modal show={showModal} container={this} style={{"position":"absolute"}}> 
           <Modal.Header>
             <Modal.Title>New Exercise: {`${exerciseName}`}</Modal.Title>
@@ -83,3 +83,4 @@ export class OneRepMaxModal extends React.Component {
     )
   }
 }
+
