@@ -40,15 +40,11 @@ export function receiveUserExercises(id, exercises) {
 export function fetchUserExercises(id) {
   return dispatch => {
     dispatch(requestUserExercises(id))
-
-    const table = "Users_Exercises";
-    const UserID = "a9f697fe-893e-468e-9fba-fd500ef198a8"
-
     const params = {
-      TableName: table,
+      TableName: "Users_Exercises",
       KeyConditionExpression: "UserID = :user",
       ExpressionAttributeValues: {
-          ":user":UserID
+          ":user":id
       }
     }
 

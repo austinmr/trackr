@@ -8,4 +8,3 @@ export const loginUser = (username) => {
     username
   }
 }
-

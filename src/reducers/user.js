@@ -1,14 +1,12 @@
-import userMaxes from '../dynamo/users1RM'
 import { LOGIN_USER, REQUEST_USER_EXERCISES, RECEIVE_USER_EXERCISES } from '../constants/ActionTypes'
 
 var profile = {
-  loggedIn: false,
+  id: '7b0b8b9d-8cd3-4ab4-8830-88604bc8aad4',
+  username: 'Riti',
+  loggedIn: true,
   workouts: [],
   templates: [], 
-  userMaxes: userMaxes, 
 }
-
-
 
 const user = (state = profile, action) => {
   switch (action.type) {
@@ -20,13 +18,20 @@ const user = (state = profile, action) => {
         loggedIn: true,
         workouts: [], 
         templates: [],
-        exercises: []
       }
     case 'SAVE_TEMPLATE': 
       return {
         ...state,
         templates: [
         ...state.templates, 
+        action.id
+        ]
+      }
+    case 'SAVE_WORKOUT': 
+      return {
+        ...state,
+        workouts: [
+        ...state.workouts, 
         action.id
         ]
       }

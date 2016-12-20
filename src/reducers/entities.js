@@ -1,5 +1,4 @@
-import { LOGIN_USER, SAVE_TEMPLATE,  } from '../constants/ActionTypes'
-import placeholderExercises from '../dynamo/exercises'
+import { LOGIN_USER, SAVE_TEMPLATE, RECEIVE_ALL_USER_WORKOUTS } from '../constants/ActionTypes'
 
 const templates = (state, action) => {
   switch (action.type) {
@@ -30,14 +29,23 @@ const users = (state, action) => {
   }
 }
 
-const exercises = (state = placeholderExercises, action) => {
+const exercises = (state, action) => {
   switch (action.type) {
     default: 
       return state; 
   }
 }
 
-const entities = (state = { users: {}, exercises: placeholderExercises, workouts: {}, templates: {} }, action) => {
+function workouts(state, action) {
+  switch(action.type) {
+    case RECEIVE_ALL_USER_WORKOUTS:
+      return Object.assign({}, state, action.workouts)      
+    default:
+      return state
+  }
+}
+
+const entities = (state = { users: {}, exercises: {}, workouts: {}, templates: {} }, action) => {
   switch (action.type) {
     case LOGIN_USER:
       return {
@@ -47,7 +55,12 @@ const entities = (state = { users: {}, exercises: placeholderExercises, workouts
     case SAVE_TEMPLATE: 
       return {
         ...state,
-        templates: templates(state, action)
+        templates: templates(state.templates, action)
+      }
+    case RECEIVE_ALL_USER_WORKOUTS: 
+      return {
+        ...state, 
+        workouts: workouts(state.workouts, action)
       }
     default:
       return state

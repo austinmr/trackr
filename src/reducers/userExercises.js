@@ -3,7 +3,7 @@ import { REQUEST_USER_EXERCISES, RECEIVE_USER_EXERCISES, INVALIDATE_USER_EXERCIS
 function exercises(state,action) {
   switch(action.type) {
     case RECEIVE_USER_EXERCISES:
-      return Object.assign({}, state, action.exercises)
+      return Object.assign({}, action.exercises)
     case ADD_USER_EXERCISE: 
       return {
         ...state,
@@ -69,6 +69,7 @@ export const getUserExercisesInWorkout = (state, exercises) => {
 
 export const getUserExercise = (state, id) => {
   const userExercise = state.exercises[`${id}`]
+  console.log(id); 
   let result = null; 
   if (userExercise) {
     result = userExercise; 

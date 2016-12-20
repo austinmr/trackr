@@ -1,4 +1,4 @@
-import { CREATE_WORKOUT_FROM_TEMPLATE, ADD_SET_REPS } from '../constants/ActionTypes'
+import { CREATE_WORKOUT_FROM_TEMPLATE, ADD_SET_REPS, REQUEST_ALL_USER_WORKOUTS, RECEIVE_ALL_USER_WORKOUTS, SAVE_WORKOUT } from '../constants/ActionTypes'
 import { v4 } from 'uuid'
 import { calculateWeight, calculate1RM, calculateAverage1RM, setCompletion, totalExerciseWeight } from '../utils/calculators'
 import { getUserExercisesInWorkoutMiddleware } from '../reducers/root'
@@ -26,6 +26,28 @@ const createDate = () => {
   let now = new Date(); 
   return now; 
 }
+
+export function requestAllUserWorkouts(id) {
+  return {
+    type: REQUEST_ALL_USER_WORKOUTS,
+    id
+  }
+}
+
+export function receiveAllUserWorkouts(id, workouts) {
+  return {
+    type: RECEIVE_ALL_USER_WORKOUTS,
+    id,
+    workouts
+  }
+}
+
+export function saveWorkout(id) {
+  return {
+    type: SAVE_WORKOUT,
+    id
+  }
+} 
 
 const formatExerciseObject = (exercise, userExercises) => {
   const userExerciseObject = userExercises[`${exercise.id}`]; 
@@ -87,8 +109,8 @@ const individualSetTracker = (exercises) => {
           completed = true; 
         } 
         let completedOneRepMax = 0; 
-        if (set.completedReps != 0) {
-          let completedOneRepMax = calculate1RM(set.weight, set.completedReps); 
+        if (set.completedReps > 0) {
+          completedOneRepMax = Math.round(calculate1RM(set.weight, set.completedReps)); 
         }
         let totalWeight = set.weight * set.completedReps; 
         return {
@@ -104,7 +126,7 @@ const individualSetTracker = (exercises) => {
 
 const individualExerciseTracker = (exercises) => {
   return exercises.map((exercise) => {
-    let averageOneRepMax = calculateAverage1RM(exercise.sets)
+    let averageOneRepMax = Math.round(calculateAverage1RM(exercise.sets));
     let {completed, percentageCompleted } = setCompletion(exercise.sets); 
     let totalWeight = totalExerciseWeight(exercise.sets); 
     return {
@@ -125,10 +147,10 @@ const individualUserExercise = (workout, userExercises) => {
 
     // If current average is 3% greater than current max and completed all sets for most recent workout
     const currentMax = userExercise.OneRepMax; 
-    if ( (exercise.averageOneRepMax / currentMax) >= 1.03 && userExercise.MRW.complete ) {
+    if ( (exercise.averageOneRepMax / currentMax) >= 1.03 && userExercise.MRW.Complete ) {
       userExercise.OneRepMax = currentMax + 5;
       userExercises.newRecords = userExercises.newRecords || []; 
-      userExercises.newRecords.concat(exercise.id); 
+      userExercises.newRecords.push(exercise.id); 
     }
 
     let MRW = {}
@@ -139,7 +161,7 @@ const individualUserExercise = (workout, userExercises) => {
     MRW.WorkoutLog = userExercise.MRW.WorkoutLog || [];
     let previousWorkoutID = userExercise.MRW.WorkoutID || false; 
     if (previousWorkoutID) {
-      MRW.WorkoutLog.concat(previousWorkoutID); 
+      MRW.WorkoutLog.push(previousWorkoutID); 
     }
     userExercise.MRW = MRW; 
   })
@@ -147,13 +169,12 @@ const individualUserExercise = (workout, userExercises) => {
 }
 
 export function putWorkout(workout) {
-  const table = "Workouts";
-  // console.log(workout)
+  const table = "Users_Workouts";
   const params = {
     TableName: table, 
     Item: {
-      "WorkoutID": workout.id,
       "UserID": workout.userID, 
+      "WorkoutID": workout.id,
       "Username": workout.username,
       "TemplateID": workout.templateID, 
       "Date": workout.date, 
@@ -191,5 +212,32 @@ export const trackWorkout = (workout, userExercises) => {
     //TODO: Dispatch invalid userExercises
     dispatch(invalidateUserExercises(workout.userID)); 
   }
+}
 
+
+export function fetchAllUserWorkouts(id) {
+  return dispatch => {
+    dispatch(requestAllUserWorkouts(id))
+    const params = {
+      TableName: "Users_Workouts",
+      KeyConditionExpression: "UserID = :user",
+      ExpressionAttributeValues: {
+          ":user":id
+      }
+    }
+
+    const queryObjectPromise = docClient.query(params).promise(); 
+    return queryObjectPromise.then((data) => {
+      console.log(data.Items); 
+      const workouts = {}; 
+      data.Items.forEach((item) => {
+        workouts[`${item.WorkoutID}`] = item
+      }); 
+
+      dispatch(receiveAllUserWorkouts(id, workouts))
+
+    }).catch((err) => {
+      console.log(err); 
+    }); 
+  }
 }
