@@ -4,6 +4,11 @@ import { connect } from 'react-redux'
 import { browserHistory } from 'react-router';
 import { calculatePerformancePercentage, totalWorkoutSets, totalWorkoutWeight, topExercise } from '../utils/calculators'
 
+import ExerciseListExpand from './Performance/ExerciseListExpand'
+import SingleExerciseGraph from '../components/BarGraph/GraphComponent'
+// import SingleExerciseGraph from '../components/Graph/LineChart'
+
+
 // Bootstrap Imports 
 import { Grid, Row, Col, Well, Button, Nav, NavItem, Badge, ProgressBar } from 'react-bootstrap';
 
@@ -14,53 +19,67 @@ export class Results extends React.Component {
   }
 
   state = {
-    activeKey: 2
+    selectedExercise: null, 
   }
 
-  handleTabSelect(eventKey) {
-    this.setState({activeKey: eventKey}); 
+  // handleTabSelect(eventKey) {
+  //   this.setState({activeKey: eventKey}); 
+  // }
+
+  // _renderNavigationBar(){
+  //   return (
+  //     <Nav bsStyle="tabs" justified onSelect={this.handleTabSelect.bind(this)} style={{marginTop: 20}}>
+  //       <NavItem eventKey={1} title="Workouts" disabled>Workouts</NavItem>
+  //       <NavItem eventKey={2} title="Templates">Templates</NavItem>
+  //       <NavItem eventKey={3} title="Following" disabled>Friends</NavItem>
+  //       <NavItem eventKey={4} title="Achievements" disabled>Achievements <Badge>{Math.floor(Math.random() * 100)}</Badge></NavItem>
+  //     </Nav>
+  //   )
+  // }
+
+  // _renderActiveComponent(){
+  //   const { templates } = this.props; 
+  //   if (this.state.activeKey === 1) {
+  //     // return (
+  //     //   // workouts.map((workout, i) => (
+  //     //   //   <WorkoutEntry key={workout.id} workout={workout} onClick={() => {viewWorkout(workout)}} />
+  //     //   // ))
+  //     // )
+  //   } else if (this.state.activeKey === 2) {
+  //     return (
+  //       templates.map((template, i) => (
+  //         <TemplateEntry key={template.id} onClick={()=>{this.handleCreateWorkout(template)}} {...template}/>
+  //       ))
+  //     )
+  //   }
+  // }
+
+  handleSelectExercise = (exercise) => {
+    this.setState({selectedExercise: exercise}); 
   }
 
-  _renderNavigationBar(){
-    return (
-      <Nav bsStyle="tabs" justified onSelect={this.handleTabSelect.bind(this)} style={{marginTop: 20}}>
-        <NavItem eventKey={1} title="Workouts" disabled>Workouts</NavItem>
-        <NavItem eventKey={2} title="Templates">Templates</NavItem>
-        <NavItem eventKey={3} title="Following" disabled>Friends</NavItem>
-        <NavItem eventKey={4} title="Achievements" disabled>Achievements <Badge>{Math.floor(Math.random() * 100)}</Badge></NavItem>
-      </Nav>
-    )
-  }
-
-  _renderActiveComponent(){
-    const { templates } = this.props; 
-    if (this.state.activeKey === 1) {
-      // return (
-      //   // workouts.map((workout, i) => (
-      //   //   <WorkoutEntry key={workout.id} workout={workout} onClick={() => {viewWorkout(workout)}} />
-      //   // ))
-      // )
-    } else if (this.state.activeKey === 2) {
+  _renderSingleExerciseGraph = () => {
+    const { selectedExercise } = this.state; 
+    if (selectedExercise !== null) {
       return (
-        templates.map((template, i) => (
-          <TemplateEntry key={template.id} onClick={()=>{this.handleCreateWorkout(template)}} {...template}/>
-        ))
+        <SingleExerciseGraph {...selectedExercise} />
       )
     }
   }
 
   render() {
     const { workout, userExercises } = this.props; 
+    const { selectedExercise } = this.state; 
 
     return (
-      <Grid style={{'color': 'white'}}> 
+      <Grid>
         <Row> 
           <Col xs={4} md={4}>
             <h3 style={{color: 'gray'}}> {workout.username} </h3>
             <img src={'https://image.freepik.com/free-vector/crossfit-logo_23-2147494935.jpg'} alt="user profile" width={250} height={250} style={{borderRadius: 10, marginTop: 15}} />
           </Col> 
           <Col xs={8} md={8}>
-            <Well style={{'background':'black'}}> 
+            <Well style={{'background':'black', color: 'white'}}> 
               <h1> {`Workout Performance:`} </h1> 
               <h3> {`EXERCISES: ${workout.exercises.length}`} </h3> 
               <h3> {`TOTAL SETS: ${totalWorkoutSets(workout.exercises)}`} </h3> 
@@ -70,7 +89,15 @@ export class Results extends React.Component {
               <h3> {`PERSONAL RECORDS: ${totalWorkoutSets(workout.exercises)}`} </h3> 
             </Well> 
           </Col>
-        </Row> 
+        </Row>
+        <Row>
+        <Col xs={4} md={4}>
+          <ExerciseListExpand exercises={workout.exercises} selectExercise={this.handleSelectExercise}/>
+        </Col>
+        <Col xs={8} md={8}>
+          {this._renderSingleExerciseGraph()}
+        </Col> 
+        </Row>
       </Grid> 
     )
   }
@@ -82,10 +109,11 @@ const mapStateToProps = (state, { params }) => ({
 })
 
 
-const ResultsContainer = connect(mapStateToProps, null)(Results)
+export default connect(mapStateToProps, null)(Results)
 
-export default ResultsContainer 
+  
 
             // <h2> Click Here to Start A New Workout! </h2> 
             // <Button className="workout-button" bsSize="large" onClick={(e)=>{this.handleCreateTemplate(username)}}> New Workout </Button> 
             // <Button className="template-button" bsSize="large" onClick={(e)=>{this.handleCreateTemplate(username)}}> New Workout Template </Button> 
+          // <p>{JSON.stringify(selectedExercise)} </p>
