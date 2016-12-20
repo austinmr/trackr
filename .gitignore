@@ -11,6 +11,7 @@ public/bundle.js
 
 # placeholders
 dynamo
+dynamoConfig.js
 
 # misc
 .DS_Store

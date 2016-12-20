@@ -91,3 +91,43 @@ export const topExercise = (exercises) => {
     }
   }); 
 }
+
+export const gridLineIncrement = (currentOneRepMax) => {
+  if (currentOneRepMax > 375) {
+    return 100; 
+  } else if (currentOneRepMax > 250) {
+    return 75; 
+  } else if (currentOneRepMax > 100) {
+    return 50; 
+  } else if (currentOneRepMax > 50) {
+    return 20; 
+  } else {
+    return 10; 
+  }
+}
+
+export const gridLineArray = (currentOneRepMax) => {
+  const increment = gridLineIncrement(currentOneRepMax); 
+
+  return [5,4,3,2,1,0].map((num, i) => {
+    let weight = num * increment; 
+    return {
+      weight: weight,
+      yValue: i
+    }
+  }); 
+}
+
+export const graphMaxValue = (currentOneRepMax) => {
+  if (currentOneRepMax > 375) {
+    return 500; 
+  } else if (currentOneRepMax > 250) {
+    return 375; 
+  } else if (currentOneRepMax > 100) {
+    return 250; 
+  } else if (currentOneRepMax > 50) {
+    return 100; 
+  } else {
+    return 50; 
+  }
+}

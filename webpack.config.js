@@ -38,6 +38,9 @@ var config = {
         test: /\.json$/,
         loader: 'json'
       }
+    ],
+    noParse: [
+      /aws\-sdk/,
     ]
   },
 
