@@ -10,6 +10,7 @@ import { Grid, Row, Col, Button } from 'react-bootstrap';
 
 export class Template extends React.Component {
   static propTypes = {
+    userID: PropTypes.string.isRequired, 
     username: PropTypes.string.isRequired, 
     template: PropTypes.object.isRequired,
     exercises: PropTypes.array.isRequired, 
@@ -18,7 +19,7 @@ export class Template extends React.Component {
 
   handleSaveTemplate(e) {
     e.preventDefault();
-    const { template, username, dispatchSaveTemplate } = this.props; 
+    const { template, userID, username, dispatchSaveTemplate } = this.props; 
 
     dispatchSaveTemplate(template)
     if (process.env.NODE_ENV !== 'test') {
@@ -45,14 +46,15 @@ export class Template extends React.Component {
 }
 
 const mapStateToProps = (state, ownProps) => ({
+  userID: state.user.id,
+  username: state.user.username,
   template: state.template,
   exercises: state.template.exercises,
-  username: state.user.username,
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchSaveTemplate: (workout) => {
-    dispatch(saveTemplate(workout))
+  dispatchSaveTemplate: (id, template) => {
+    dispatch(saveTemplate(id, template))
   },
 })
 
