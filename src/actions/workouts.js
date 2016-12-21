@@ -168,7 +168,7 @@ const individualUserExercise = (workout, userExercises) => {
   return userExercises; 
 }
 
-export function putWorkout(workout) {
+export function saveWorkoutToDB(workout) {
   const table = "Users_Workouts";
   const params = {
     TableName: table, 
@@ -204,7 +204,7 @@ export const trackWorkout = (workout, userExercises) => {
 
     // Store workout results in respective DynamoDB tables
     updateUserExercises(userExercises); 
-    putWorkout(workout); 
+    saveWorkoutToDB(workout); 
 
     console.log(workout, userExercises); 
     //TODO: Dispatch results 

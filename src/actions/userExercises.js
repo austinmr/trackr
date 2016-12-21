@@ -62,10 +62,13 @@ export function fetchUserExercises(id) {
   }
 }
 
+const isObjectEmpty = (object) => {
+  return !Object.keys(object).length 
+}
 
 function shouldFetchUserExercises(state) {
   const userExercises = state.userExercises
-  if (!userExercises) {
+  if (isObjectEmpty(userExercises.exercises)) {
     return true
   } else if (userExercises.isFetching) {
     return false
