@@ -1,12 +1,16 @@
 import { combineReducers } from 'redux'
 import { routerReducer as routing } from 'react-router-redux'
 import user from './user'
-import userExercises, * as fromUserExercises from './userExercises'
-import dbExercises, * as fromdbExercises from './dbExercises'
+import allExercises, * as fromAllExercises from './allExercises'
+import entities, * as fromEntities from './entities'
 import template from './templates'
 import workout from './workouts'
 import results from './results'
-import entities, * as fromEntities from './entities'
+
+// Refactoring out 
+// import dbExercises, * as fromdbExercises from './dbExercises'
+// import userExercises, * as fromUserExercises from './userExercises'
+
 
 const app = combineReducers({
   routing,
@@ -14,8 +18,7 @@ const app = combineReducers({
   template,
   workout,
   entities,
-  userExercises,
-  dbExercises,
+  allExercises,
   results
 })
 
@@ -27,14 +30,23 @@ export const getExercisesFromTemplate = (state) =>
 export const getTemplatesObjectArray = (state) => 
   fromEntities.getTemplatesObjectArray(state.entities)
 
-export const getUserExercisesInWorkout = (state) => 
-  fromUserExercises.getUserExercisesInWorkout(state.userExercises, state.workout.exercises)
+export const getWorkoutsObjectsArray = (state) => 
+  fromEntities.getWorkoutsObjectsArray(state.entities, state.user.workouts.items)
 
-export const getUserExercisesInWorkoutMiddleware = (state, exercises) => 
-  fromUserExercises.getUserExercisesInWorkout(state.userExercises, exercises)
+export const getExercisesObjectsArray = (state) => 
+  fromEntities.getExercisesObjectsArray(state.entities, state.user.exercises.items)
 
-export const getExerciseSearchList = (state) => 
-  fromdbExercises.getExerciseSearchList(state.dbExercises)
+export const getTemplatesObjectsArray = (state) => 
+  fromEntities.getTemplatesObjectsArray(state.entities, state.user.templates.items)
 
-export const getUserExercise = (state, id) => 
-  fromUserExercises.getUserExercise(state.userExercises, id)
+// export const getUserExercisesInWorkout = (state) => 
+//   fromUserExercises.getUserExercisesInWorkout(state.userExercises, state.workout.exercises)
+
+// export const getUserExercisesInWorkoutMiddleware = (state, exercises) => 
+//   fromUserExercises.getUserExercisesInWorkout(state.userExercises, exercises)
+
+// export const getExerciseSearchList = (state) => 
+//   fromdbExercises.getExerciseSearchList(state.dbExercises)
+
+// export const getUserExercise = (state, id) => 
+//   fromUserExercises.getUserExercise(state.userExercises, id)
