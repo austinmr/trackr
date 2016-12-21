@@ -5,7 +5,13 @@ import { browserHistory } from 'react-router';
 import { createTemplate } from '../actions/templates'
 import { fetchUserExercisesIfNeeded } from '../actions/userExercises'
 import { createWorkoutFromTemplateMiddleware, fetchAllUserWorkouts } from '../actions/workouts'
-import { getTemplatesObjectArray } from '../reducers/root'
+import { getWorkoutsObjectsArray, getTemplatesObjectsArray, getExercisesObjectsArray } from '../reducers/root'
+import { getAllUserWorkouts } from '../actions/userWorkouts'
+import { getAllUserTemplates } from '../actions/userTemplates'
+import { getAllUserExercises } from '../actions/userExercises2'
+import { searchAllExercises } from '../actions/allExercises'
+
+
 
 // App Components 
 import TemplateEntry from '../components/TemplateEntry'
@@ -25,9 +31,13 @@ export class UserProfile extends React.Component {
 
   constructor(props) {
     super(props);
-    const { userID, dispatchFetchUserExercises, dispatchFetchAllUserWorkouts } = this.props; 
-    dispatchFetchUserExercises(userID); 
-    dispatchFetchAllUserWorkouts(userID); 
+    const { userID, dispatchFetchUserExercises, dispatchFetchAllUserWorkouts, getAllUserWorkouts, getAllUserTemplates, getAllUserExercises, searchAllExercises } = this.props; 
+    // dispatchFetchUserExercises(userID); 
+    // dispatchFetchAllUserWorkouts(userID); 
+    // getAllUserWorkouts(userID); 
+    // getAllUserTemplates(userID);
+    // getAllUserExercises(userID);  
+    // searchAllExercises('bench'); 
   }
 
   handleCreateTemplate = (username) => {
@@ -83,7 +93,7 @@ export class UserProfile extends React.Component {
   }
 
   render() {
-    const { username } = this.props; 
+    const { username, workouts, templates, exercises } = this.props; 
 
     return (
       <Grid> 
@@ -96,8 +106,12 @@ export class UserProfile extends React.Component {
             <Button className="template-button" bsSize="large" onClick={(e)=>{this.handleCreateTemplate(username)}}> New Workout Template </Button> 
           </Col> 
           <Col xs={8} md={8}>
-            {this._renderNavigationBar()}
-            {this._renderActiveComponent()}
+            <h1>WORKOUTS</h1>
+            <p>{JSON.stringify(workouts)}</p>
+            <h1>TEMPLATES</h1>
+            <p>{JSON.stringify(templates)}</p>
+            <h1>EXERCISES</h1>
+            <p>{JSON.stringify(exercises)}</p>
           </Col>
         </Row> 
       </Grid> 
@@ -108,9 +122,9 @@ export class UserProfile extends React.Component {
 const mapStateToProps = (state, { params }) => ({
   userID: state.user.id, 
   username: state.user.username,
-  workouts: state.user.workouts,
-  templates: getTemplatesObjectArray(state, params.username),
-  userExercises: state.userExercises.exercises
+  workouts: getWorkoutsObjectsArray(state),
+  templates: getTemplatesObjectsArray(state),
+  exercises: getExercisesObjectsArray(state)
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -125,9 +139,25 @@ const mapDispatchToProps = (dispatch) => ({
   },
   dispatchFetchAllUserWorkouts: (id) => {
     dispatch(fetchAllUserWorkouts(id))
+  },
+  getAllUserWorkouts: (id) => {
+    dispatch(getAllUserWorkouts(id))
+  },
+  getAllUserTemplates: (id) => {
+    dispatch(getAllUserTemplates(id))
+  },
+  getAllUserExercises: (id) => {
+    dispatch(getAllUserExercises(id))
+  },
+  searchAllExercises: (exerciseName) => {
+    dispatch(searchAllExercises(exerciseName))
   }
 }) 
 
 const UserProfileContainer = connect(mapStateToProps, mapDispatchToProps)(UserProfile)
 
 export default UserProfileContainer 
+
+
+            // {this._renderNavigationBar()}
+            // {this._renderActiveComponent()}
