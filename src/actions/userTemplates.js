@@ -85,9 +85,10 @@ export const putNewTemplateFailure = (error) => {
   }
 }
 
-export const putNewUserTemplate = (userID, templateID, templateName, template) => (dispatch) => {
+export const putNewUserTemplate = (userID, templateID, templateName, template, templateType, templatePlanName, templatePlanID) => (dispatch) => {
   dispatch(putNewUserTemplateRequest())
-  return templatesAPI.putNewUserTemplate(userID, templateID, templateName, template).then((response) => {
+  console.log('templatePlanName in actions: ', templatePlanName); 
+  return templatesAPI.putNewUserTemplate(userID, templateID, templateName, template, templateType, templatePlanName, templatePlanID).then((response) => {
     const normalizedResponse = normalize(response.Attributes, templatesAPI.template)
     console.log('RESPONSE\n')
     console.log(response); 

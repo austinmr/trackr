@@ -10,7 +10,8 @@ import { LOGIN_USER,
   PUT_NEW_USER_WORKOUT_SUCCESS,
   PUT_NEW_USER_TEMPLATE_SUCCESS, 
   GET_ALL_USER_PLANS_SUCCESS,
-  PUT_NEW_USER_PLAN_SUCCESS
+  PUT_NEW_USER_PLAN_SUCCESS, 
+  UPDATE_USER_PLAN_SUCCESS
 } from '../constants/ActionTypes'
 
 const emptyStateObject = {
@@ -25,7 +26,8 @@ const profile = {
   loggedIn: true,
   workouts: emptyStateObject, 
   templates: emptyStateObject,
-  exercises: emptyStateObject
+  exercises: emptyStateObject,
+  plans: emptyStateObject
 }
 
 function workouts (state = {
@@ -129,6 +131,11 @@ function plans (state = {
           ...state.items, 
           action.response.result
         ]
+      }
+    case UPDATE_USER_PLAN_SUCCESS:
+      return {
+        ...state,
+        isValid: false
       }
     default:
       return state

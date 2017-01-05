@@ -10,7 +10,8 @@ import {
   PUT_NEW_USER_TEMPLATE_SUCCESS,
   PUT_NEW_EXERCISE_SUCCESS,
   GET_ALL_USER_PLANS_SUCCESS, 
-  PUT_NEW_USER_PLAN_SUCCESS, } from '../constants/ActionTypes'
+  PUT_NEW_USER_PLAN_SUCCESS,
+} from '../constants/ActionTypes'
 
 import _ from 'underscore'
 
@@ -192,6 +193,10 @@ export const getExercisesObjectsArray = (state, exercises) => {
   return exercises.map(exerciseID => state.exercises[`${exerciseID}`])
 }
 
+export const getPlansObjectsArray = (state, plans) => {
+  return plans.map(weeklyPlanID => state.plans[`${weeklyPlanID}`])
+}
+
 export const getExerciseSearchResults = (state, searchResults) => {
   return searchResults.map(result => state.allExercises[`${result}`])
 }
@@ -205,6 +210,9 @@ export const getUserExercise = (state, exerciseID) => {
   return result; 
 }
 
+export const getUserExercisesMiddleware = (state) => {
+  return state.exercises
+}
 // export const getUserExercisesInWorkout = (state, exercises) => {
 //   console.log('EXERCISES:', exercises)
 //   const UserExercisesInWorkout = {}; 
@@ -240,4 +248,45 @@ export const getWorkoutDataForExercise = (state, exerciseID, workoutsArray) => {
   })
   // console.log(workoutData); 
   return workoutData; 
+}
+
+// export const getTemplatesInPlanMiddleware = (state, weekObject) => {
+//   console.log(weekObject); 
+//   Object.keys(weekObject).forEach((day) => {
+//     // console.log(day)
+//     let templateID = weekObject[day]
+//     // console.log(templateID); 
+//     if (templateID !== null) {
+//       weekObject[day] = {
+//         templateID: templateID,
+//         exercises: state.templates[templateID].exercises
+//       }
+//     }
+//   })
+//   console.log(weekObject)
+//   return weekObject; 
+// }
+
+export const getTemplatesInPlanMiddleware = (state, weekObject) => {
+  console.log(weekObject); 
+  let exercisesArray = []; 
+  let result = {}
+  Object.keys(weekObject).forEach((day) => {
+    // console.log(day)
+    let templateID = weekObject[day]
+    // console.log(templateID); 
+    if (templateID !== null) {
+      let exercises = state.templates[templateID].exercises
+      exercises.forEach((exercise) => {
+        exercisesArray.push(exercise.id)
+      })
+      result[day] = {
+        templateID: templateID,
+        exercises: exercises
+      }
+    }
+  })
+  // result.exercisesArray = exercisesArray; 
+  console.log('RESULT:', result); 
+  return result; 
 }

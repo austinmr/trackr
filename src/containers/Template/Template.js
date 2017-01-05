@@ -2,6 +2,8 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router';
 import { putNewUserTemplate } from '../../actions/userTemplates' 
+import { putBlankUserPlan } from '../../actions/userWeeklyPlans' 
+import { getPlansObjectsArray } from '../../reducers/root'
 
 import AddExercise from './AddExercise'
 import ExerciseList from '../../components/Template/ExerciseList'
@@ -28,16 +30,24 @@ export class Template extends React.Component {
     this.setState({showTemplateNameModal: true}); 
   }
 
-  dispatchSaveTemplate = (templateName) => {
+  dispatchSaveTemplate = (templateName, templateType, templatePlanName, templatePlanID) => {
     const { userID, username, template, templateID, putNewUserTemplate } = this.props; 
     if (!templateID || !userID) {
       return; 
     }
-    putNewUserTemplate(userID, templateID, templateName, template)
+    putNewUserTemplate(userID, templateID, templateName, template, templateType, templatePlanName, templatePlanID)
     this.setState({showTemplateNameModal: false}); 
     if (process.env.NODE_ENV !== 'test') {
       browserHistory.push(`/User/${username}`);
     }
+  }
+
+  dispatchBlankUserPlan = (weeklyPlanName) => {
+    const { userID, putBlankUserPlan } = this.props; 
+    if (!userID || !weeklyPlanName) {
+      return; 
+    } 
+    putBlankUserPlan(userID, weeklyPlanName); 
   }
 
   _renderTemplateNameModal() {
@@ -46,7 +56,9 @@ export class Template extends React.Component {
       return (
           <TemplateNameModal 
             dispatchSaveTemplate={this.dispatchSaveTemplate}
+            dispatchBlankUserPlan={this.dispatchBlankUserPlan}
             showTemplateNameModal={showTemplateNameModal}
+            userPlans={this.props.userPlans}
           />
         )
     }
@@ -79,12 +91,16 @@ const mapStateToProps = (state, ownProps) => ({
   template: state.template,
   templateID: state.template.id, 
   exercises: state.template.exercises,
+  userPlans: getPlansObjectsArray(state)
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  putNewUserTemplate: (userID, templateID, templateName, template) => {
-    dispatch(putNewUserTemplate(userID, templateID, templateName, template))
+  putNewUserTemplate: (userID, templateID, templateName, template, templateType, templatePlanName, templatePlanID) => {
+    dispatch(putNewUserTemplate(userID, templateID, templateName, template, templateType, templatePlanName, templatePlanID))
   },
+  putBlankUserPlan: (userID, weeklyPlanName) => {
+    dispatch(putBlankUserPlan(userID, weeklyPlanName))
+  }
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Template)

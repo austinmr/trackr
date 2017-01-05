@@ -31,7 +31,7 @@ export const getAllUserTemplates = (id) => {
   return getAllUserTemplatesPromise; 
 }
 
-export const putNewUserTemplate = (userID, templateID, templateName, template) => {
+export const putNewUserTemplate = (userID, templateID, templateName, template, templateType, templatePlanName, templatePlanID) => {
   console.log('templateAPI check: \n', userID, templateID, templateName, template); 
   let { date, username, exercises } = template; 
   date = JSON.stringify(date); 
@@ -46,12 +46,15 @@ export const putNewUserTemplate = (userID, templateID, templateName, template) =
       "templateID": templateID
     }, 
     ConditionExpression: "attribute_not_exists(TemplateID)",
-    UpdateExpression: "set templateDate = :tdate, templateName = :tname, username = :uname, exercises = :exer",
+    UpdateExpression: "set templateDate = :tdate, templateName = :tname, username = :uname, exercises = :exer, templateType = :tt, templatePlanName = :tpn, templatePlanID = :tpid",
     ExpressionAttributeValues: {
       ":tname": templateName, 
       ":tdate": date, 
       ":uname": username,
-      ":exer": exercises
+      ":exer": exercises,
+      ":tt": templateType, 
+      ":tpn": templatePlanName,
+      ":tpid": templatePlanID
     },
     ReturnValues: "ALL_NEW"
   }

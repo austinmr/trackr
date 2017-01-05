@@ -2,9 +2,9 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router';
-import { getTemplatesObjectsArray } from '../../reducers/root'
-import { createWeeklyPlan, addTemplateToWeeklyPlan } from '../../actions/weeklyPlan'
-import { putNewUserPlan } from '../../actions/userWeeklyPlans'
+import { getTemplatesObjectsArray, getPlansObjectsArray } from '../../reducers/root'
+import { addTemplateToWeeklyPlan } from '../../actions/weeklyPlan'
+import { putNewUserPlan, updateUserPlan } from '../../actions/userWeeklyPlans'
 // import { createWorkoutFromTemplateMiddleware } from '../actions/workouts'
 // import { getAllUserWorkoutsConditional } from '../actions/userWorkouts'
 // import { getAllUserTemplatesConditional } from '../actions/userTemplates'
@@ -16,7 +16,7 @@ import TemplateEntry from '../../components/TemplateEntry'
 // import WorkoutEntry from '../components/UserProfile/WorkoutEntry'
 
 // Bootstrap Imports 
-import { Grid, Row, Col, Button } from 'react-bootstrap';
+import { Grid, Row, Col, Button, Panel, Well, Form, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 
 export class WeeklyPlanner extends React.Component {
   static propTypes = {
@@ -28,12 +28,9 @@ export class WeeklyPlanner extends React.Component {
   state = {
     activeDay: 'Day1', 
     availableDays: ['Day1','Day2','Day3','Day4','Day5','Day6','Day7'], 
-    weeklyPlanName: 'Phase1'
-  }
-
-  handleCreateWeeklyPlan = () => {
-    const { userID, createWeeklyPlan } = this.props; 
-    createWeeklyPlan(userID);
+    weeklyPlanName: 'TestTest',
+    filterType: '',
+    filterPlan: ''
   }
 
   handleAddTemplateToWeeklyPlan = (templateID) => {
@@ -52,39 +49,103 @@ export class WeeklyPlanner extends React.Component {
   }
 
   handleSaveWeeklyPlan = () => {
-    const { userID, username, weeklyPlan, putNewUserPlan } = this.props; 
-    const { weeklyPlanName } = this.state; 
+    const { userID, username, weeklyPlan, update, putNewUserPlan, updateUserPlan } = this.props;  
     if (!userID || !weeklyPlan) {
       return; 
     }
-    console.log('Saving a plan!')
-    console.log(userID); 
-    const { weeklyPlanID, templates } = weeklyPlan; 
-    putNewUserPlan(userID, weeklyPlanID, weeklyPlanName, templates)
+
+    if (update) {
+      const { userID, weeklyPlanID, weeklyPlanName, templates } = weeklyPlan; 
+      console.log('Updating a plan!')
+      updateUserPlan(userID, weeklyPlanID, weeklyPlanName, templates)
+    } else {
+      const { userID, weeklyPlanID, templates } = weeklyPlan; 
+      const { weeklyPlanName } = this.state;
+      console.log('Saving a new plan!')
+      putNewUserPlan(userID, weeklyPlanID, weeklyPlanName, templates)
+    }
 
     if (process.env.NODE_ENV !== 'test') {
       browserHistory.push(`/User/${username}`);
     }
   }
 
-  // handleCreateWorkout = (template) => {
-  //   const { userID, username, createWorkoutFromTemplate } = this.props; 
-  //   const exercises = template.exercises.map((exercise) => exercise.id);
-  //   console.log(exercises); 
-  //   createWorkoutFromTemplate(userID, username, template, exercises);
+  handleFilterType = (e) => {
+    e.preventDefault();
+    console.log(e.target.value)
 
-  //   // Prevent 'SecurityError' message from Jest 
-  //   if (process.env.NODE_ENV !== 'test') {
-  //     browserHistory.push(`/Workout/${username}`);
-  //   }
-  // }return
+    this.setState({
+      filterType: e.target.value
+    }); 
+  }
 
-  // handleTabSelect = (eventKey) => {
-  //   this.setState({activeKey: eventKey}); 
-  // }
+  handleFilterPlan = (e) => {
+    e.preventDefault(); 
+    console.log(e.target.value)
+
+    this.setState({
+      filterPlan: e.target.value
+    }); 
+  }
+
+  _renderFilteredTemplates = () => {
+    let { filterType, filterPlan } = this.state; 
+    const { templates } = this.props; 
+    console.log(filterPlan); 
+    if (!filterType && !filterPlan) {
+      return (
+        <div>
+          {templates.map((template, i) => (
+            <TemplateEntry 
+              key={template.templateID} 
+              onClick={()=>{this.handleAddTemplateToWeeklyPlan(template.templateID)}} 
+              buttonText={'Add Template to Plan'}
+              {...template}
+            />
+          ))}
+        </div>
+      )
+    } else if (filterType) {
+      let filteredTemplates = templates.filter((template) => {
+        if (template.templateType === filterType) {
+          return template; 
+        }
+      })
+      return (
+        <div>
+          {filteredTemplates.map((template, i) => (
+            <TemplateEntry 
+              key={template.templateID} 
+              onClick={()=>{this.handleAddTemplateToWeeklyPlan(template.templateID)}} 
+              buttonText={'Add Template to Plan'}
+              {...template}
+            />
+          ))}
+        </div>
+      )
+    } else if (filterPlan) {
+      let filteredTemplates = templates.filter((template) => {
+        if (template.templatePlanID === filterPlan) {
+          return template; 
+        }
+      })
+      return (
+        <div>
+          {filteredTemplates.map((template, i) => (
+            <TemplateEntry 
+              key={template.templateID} 
+              onClick={()=>{this.handleAddTemplateToWeeklyPlan(template.templateID)}} 
+              buttonText={'Add Template to Plan'}
+              {...template}
+            />
+          ))}
+        </div>
+      )
+    }
+  }
 
   render() {
-    const { username, templates, weeklyPlan } = this.props; 
+    const { username, templates, userPlans, weeklyPlan } = this.props; 
     let planArray = Object.keys(weeklyPlan.templates)
     console.log(planArray); 
     planArray = planArray.map((key) => { 
@@ -96,7 +157,7 @@ export class WeeklyPlanner extends React.Component {
     return (
       <Grid> 
         <h2> Plan New Week! </h2> 
-        <Button className="template-button" bsSize="large" onClick={(e)=>{this.handleCreateWeeklyPlan()}}> New Week Plan </Button> 
+        <h4> Update: {JSON.stringify(this.props.update)} </h4> 
         <Button className="template-button" bsSize="large" onClick={this.handleSaveWeeklyPlan}> Save Current Plan </Button> 
         <Row> 
           <Col xs={4} md={4}> 
@@ -121,14 +182,35 @@ export class WeeklyPlanner extends React.Component {
             <h2> Click Here to Start A New Workout! </h2> 
           </Col> 
           <Col xs={8} md={8}>
-          {templates.map((template, i) => (
-            <TemplateEntry 
-              key={template.templateID} 
-              onClick={()=>{this.handleAddTemplateToWeeklyPlan(template.templateID)}} 
-              buttonText={'Add Template to Plan'}
-              {...template}
-            />
-          ))}
+            <Well>
+              <Row> 
+                <Col xs={6} md={6}>
+                  <FormGroup>
+                    <ControlLabel style={{marginBottom: '10px', fontSize: '16px'}}>Template Type</ControlLabel>
+                    <FormControl componentClass="select" placeholder="select" id="filterType" onChange={(e) => this.handleFilterType(e)}>
+                      <option value="">Select</option>
+                      <option value="Chest">Chest</option>
+                      <option value="Back">Back</option>
+                      <option value="Legs">Legs</option>
+                      <option value="Shoulders">Shoulders</option>
+                      <option value="Arms">Arms</option>
+                    </FormControl>
+                  </FormGroup>
+                </Col>
+                <Col xs={6} md={6}>
+                  <FormGroup>
+                  <ControlLabel style={{marginBottom: '10px', fontSize: '16px'}}>Template Plan</ControlLabel>
+                  <FormControl componentClass="select" placeholder="select" id="filterPlan" onChange={(e) => this.handleFilterPlan(e)}>
+                    <option value="">Select</option>
+                    {userPlans.map((plan, i) => (
+                      <option key={i} value={plan.weeklyPlanID}>{plan.weeklyPlanName}</option>
+                    ))}
+                  </FormControl>
+                  </FormGroup>
+                </Col>
+              </Row>
+            {this._renderFilteredTemplates()}
+            </Well>
           </Col>
         </Row> 
       </Grid> 
@@ -140,29 +222,21 @@ const mapStateToProps = (state, { params }) => ({
   userID: state.user.id, 
   username: state.user.username,
   templates: getTemplatesObjectsArray(state),
-  weeklyPlan: state.weeklyPlan
+  userPlans: getPlansObjectsArray(state), 
+  weeklyPlan: state.weeklyPlan, 
+  update: params.planID !== undefined
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  createWeeklyPlan: (userID) => {
-    dispatch(createWeeklyPlan(userID))
-  },
   addTemplateToWeeklyPlan: (templateID, day) => {
     dispatch(addTemplateToWeeklyPlan(templateID, day))
   },
   putNewUserPlan: (userID, weeklyPlanID, weeklyPlanName, planTemplates) => {
     dispatch(putNewUserPlan(userID, weeklyPlanID, weeklyPlanName, planTemplates))
+  }, 
+  updateUserPlan: (userID, weeklyPlanID, weeklyPlanName, planTemplates) => {
+    dispatch(updateUserPlan(userID, weeklyPlanID, weeklyPlanName, planTemplates))
   }
 }) 
 
 export default connect(mapStateToProps, mapDispatchToProps)(WeeklyPlanner)
- 
-
-// <h1>WORKOUTS</h1>
-// <p>{JSON.stringify(workouts)}</p>
-// <h1>TEMPLATES</h1>
-// <p>{JSON.stringify(templates)}</p>
-// <h1>EXERCISES</h1>
-// <p>{JSON.stringify(exercises)}</p>
-// <Button className="workout-button" bsSize="large" onClick={(e)=>{this.handleCreateWorkout()}}> New Workout </Button> 
-

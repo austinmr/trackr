@@ -2,7 +2,7 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router';
-import { getWorkoutsObjectsArray, getTemplatesObjectsArray, getExercisesObjectsArray } from '../reducers/root'
+import { getWorkoutsObjectsArray, getTemplatesObjectsArray, getExercisesObjectsArray, getPlansObjectsArray } from '../reducers/root'
 import { createTemplate } from '../actions/templates'
 import { createWorkoutFromTemplateMiddleware } from '../actions/workouts'
 import { getAllUserWorkoutsConditional } from '../actions/userWorkouts'
@@ -10,10 +10,12 @@ import { getAllUserTemplatesConditional } from '../actions/userTemplates'
 import { getAllUserExercisesConditional } from '../actions/userExercises2'
 import { getAllUserPlansConditional } from '../actions/userWeeklyPlans'
 import { searchAllExercises } from '../actions/allExercises'
+import { createWeeklyPlan, editWeeklyPlan, useWeeklyPlan, createExportFromPlanMiddleware } from '../actions/weeklyPlan'
 
 // App Components 
 import TemplateEntry from '../components/TemplateEntry'
 import WorkoutEntry from '../components/UserProfile/WorkoutEntry'
+import PlanEntry from '../components/UserProfile/PlanEntry'
 
 // Bootstrap Imports 
 import { Grid, Row, Col, Button, Nav, NavItem, Badge } from 'react-bootstrap';
@@ -68,6 +70,50 @@ export class UserProfile extends React.Component {
     }
   }
 
+  handleCreateWeeklyPlan = () => {
+    const { userID, username, createWeeklyPlan } = this.props; 
+    createWeeklyPlan(userID);
+
+    // Prevent 'SecurityError' message from Jest 
+    if (process.env.NODE_ENV !== 'test') {
+      browserHistory.push(`/Planner`);
+    }
+  }
+
+  handleEditWeeklyPlan = (plan) => {
+    const { userID, username, editWeeklyPlan } = this.props; 
+    const { weeklyPlanID, weeklyPlanName } = plan; 
+    let planTemplates = {
+      Day1: null,
+      Day2: null,
+      Day3: null,
+      Day4: null,
+      Day5: null,
+      Day6: null,
+      Day7: null
+    }
+    if (plan.planTemplates) {
+      planTemplates = plan.planTemplates
+    } 
+    editWeeklyPlan(userID, weeklyPlanID, weeklyPlanName, planTemplates);
+
+    // Prevent 'SecurityError' message from Jest 
+    if (process.env.NODE_ENV !== 'test') {
+      browserHistory.push(`/Planner/${weeklyPlanID}`);
+    }
+  }
+
+  handleGenerateWorkouts = (plan) => {
+    console.log('Generating workouts')
+    const { createExportFromPlanMiddleware } = this.props; 
+    const { userID, weeklyPlanID, weeklyPlanName, planTemplates } = plan; 
+    createExportFromPlanMiddleware(userID, weeklyPlanID, weeklyPlanName, planTemplates);
+
+    if (process.env.NODE_ENV !== 'test') {
+      browserHistory.push(`/Export/${weeklyPlanID}`);
+    }
+  }
+
   handleTabSelect = (eventKey) => {
     this.setState({activeKey: eventKey}); 
   }
@@ -77,14 +123,14 @@ export class UserProfile extends React.Component {
       <Nav bsStyle="tabs" justified onSelect={this.handleTabSelect} style={{marginTop: 20}}>
         <NavItem eventKey={1} title="Workouts">Workouts</NavItem>
         <NavItem eventKey={2} title="Templates">Templates</NavItem>
-        <NavItem eventKey={3} title="Following" disabled>Friends</NavItem>
+        <NavItem eventKey={3} title="Plans">Weekly Plans</NavItem>
         <NavItem eventKey={4} title="Achievements" disabled>Achievements <Badge>{Math.floor(Math.random() * 100)}</Badge></NavItem>
       </Nav>
     )
   }
 
   _renderActiveComponent(){
-    const { templates, workouts } = this.props; 
+    const { templates, workouts, plans } = this.props; 
     if (this.state.activeKey === 1) {
       return (
         workouts.map((workout, i) => (
@@ -102,6 +148,18 @@ export class UserProfile extends React.Component {
         ))
       )
     }
+    else if (this.state.activeKey === 3) {
+      return (
+        plans.map((plan, i) => (
+          <PlanEntry 
+            key={i} 
+            onClick={()=>{this.handleEditWeeklyPlan(plan)}}
+            generateWorkouts={()=>{this.handleGenerateWorkouts(plan)}} 
+            {...plan}
+          />
+        ))
+      )
+    }
   }
 
   render() {
@@ -113,8 +171,10 @@ export class UserProfile extends React.Component {
           <Col xs={4} md={4}>
             <h3 style={{color: 'gray'}}> {username} </h3>
             <img src={'https://image.freepik.com/free-vector/crossfit-logo_23-2147494935.jpg'} alt="user profile" width={250} height={250} style={{borderRadius: 10, marginTop: 15}} />
-            <h2> Click Here to Start A New Workout! </h2> 
+            <h4> New Workout </h4> 
             <Button className="template-button" bsSize="large" onClick={(e)=>{this.handleCreateTemplate()}}> New Workout Template </Button> 
+            <h4> New Weekly Plan </h4> 
+            <Button className="template-button" bsSize="large" onClick={(e)=>{this.handleCreateWeeklyPlan()}}> New Workout Plan </Button> 
           </Col> 
           <Col xs={8} md={8}>
             {this._renderNavigationBar()}
@@ -131,7 +191,8 @@ const mapStateToProps = (state, { params }) => ({
   username: state.user.username,
   workouts: getWorkoutsObjectsArray(state),
   templates: getTemplatesObjectsArray(state),
-  exercises: getExercisesObjectsArray(state)
+  exercises: getExercisesObjectsArray(state),
+  plans: getPlansObjectsArray(state)
 })
 
 const mapDispatchToProps = (dispatch) => ({
@@ -155,7 +216,19 @@ const mapDispatchToProps = (dispatch) => ({
   }, 
   searchAllExercises: (exerciseName) => {
     dispatch(searchAllExercises(exerciseName))
-  }
+  }, 
+  createWeeklyPlan: (userID) => {
+    dispatch(createWeeklyPlan(userID))
+  }, 
+  editWeeklyPlan: (userID, planID, planName, templates) => {
+    dispatch(editWeeklyPlan(userID, planID, planName, templates))
+  }, 
+  useWeeklyPlan: (userID, planID, planName, templates) => {
+    dispatch(useWeeklyPlan(userID, planID, planName, templates))
+  }, 
+  createExportFromPlanMiddleware: (userID, planID, planName, templates) => {
+    dispatch(createExportFromPlanMiddleware(userID, planID, planName, templates))
+  }, 
 }) 
 
 const UserProfileContainer = connect(mapStateToProps, mapDispatchToProps)(UserProfile)

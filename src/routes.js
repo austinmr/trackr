@@ -8,6 +8,7 @@ import Workout from './containers/Workout/Workout'
 import Results from './containers/Results'
 import Performance from './containers/Performance/Performance'
 import Planner from './containers/Planner/WeeklyPlanner'
+import Export from './containers/Planner/Export'
 
 export default <Route path="/" component={App}>
   <IndexRoute component={UserProfile}/>
@@ -21,6 +22,8 @@ export default <Route path="/" component={App}>
          component={Results} />
   <Route path="/Performance(/:userID)"
          component={Performance} />
-  <Route path="/Planner(/:userID)"
+  <Route path="/Planner(/:planID)"
          component={Planner} />
+  <Route path="/Export(/:planID)"
+         component={Export} />
 </Route>

@@ -39,11 +39,55 @@ export const putNewUserPlan = (userID, weeklyPlanID, weeklyPlanName, planTemplat
       "userID": userID,
       "weeklyPlanID": weeklyPlanID
     }, 
-    ConditionExpression: "attribute_not_exists(TemplateID)",
-    UpdateExpression: "set weeklyPlanName = :pname, planTemplates = :ptemps",
+    ConditionExpression: "attribute_not_exists(weeklyPlanID)",
+    UpdateExpression: "set weeklyPlanName = :pname, planTemplates = :ptemps, complete = :cp",
     ExpressionAttributeValues: {
       ":pname": weeklyPlanName, 
       ":ptemps": planTemplates, 
+      ":cp": true
+    },
+    ReturnValues: "ALL_NEW"
+  }
+  console.log(params); 
+  const putNewUserWeeklyPlanPromise = docClient.update(params).promise(); 
+  return putNewUserWeeklyPlanPromise; 
+}
+
+export const updateUserPlan = (userID, weeklyPlanID, weeklyPlanName, planTemplates) => {
+  console.log('weeklyPlanAPI check: \n', userID, weeklyPlanID, weeklyPlanName, planTemplates); 
+  const params = {
+    TableName: "Users_WeeklyPlans", 
+    Key: {
+      "userID": userID,
+      "weeklyPlanID": weeklyPlanID
+    }, 
+    ConditionExpression: "attribute_not_exists(planTemplates) and attribute_exists(weeklyPlanID)",
+    UpdateExpression: "set weeklyPlanName = :pname, planTemplates = :ptemps, complete = :cp",
+    ExpressionAttributeValues: {
+      ":pname": weeklyPlanName, 
+      ":ptemps": planTemplates, 
+      ":cp": true
+    },
+    ReturnValues: "ALL_NEW"
+  }
+  console.log(params); 
+  const putNewUserWeeklyPlanPromise = docClient.update(params).promise(); 
+  return putNewUserWeeklyPlanPromise; 
+}
+
+export const putBlankUserPlan = (userID, weeklyPlanID, weeklyPlanName) => {
+  console.log('weeklyPlanAPI check: \n', userID, weeklyPlanID, weeklyPlanName); 
+  const params = {
+    TableName: "Users_WeeklyPlans", 
+    Key: {
+      "userID": userID,
+      "weeklyPlanID": weeklyPlanID
+    }, 
+    ConditionExpression: "attribute_not_exists(weeklyPlanID)",
+    UpdateExpression: "set weeklyPlanName = :pname, complete = :cp",
+    ExpressionAttributeValues: {
+      ":pname": weeklyPlanName,
+      ":cp": false
     },
     ReturnValues: "ALL_NEW"
   }

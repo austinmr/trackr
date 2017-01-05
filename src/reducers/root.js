@@ -42,6 +42,9 @@ export const getExercisesObjectsArray = (state) =>
 export const getTemplatesObjectsArray = (state) => 
   fromEntities.getTemplatesObjectsArray(state.entities, state.user.templates.items)
 
+export const getPlansObjectsArray = (state) => 
+  fromEntities.getPlansObjectsArray(state.entities, state.user.plans.items)
+
 export const getExerciseSearchResults = (state) => 
   fromEntities.getExerciseSearchResults(state.entities, state.allExercises.searchResults)
 
@@ -63,6 +66,16 @@ export const getUserExercisesInWorkout = (state) => {
   return fromEntities.getUserExercisesInWorkout(state.entities, exercises)
 }
 
+export const getExercisesInPlanMiddleware = (state, templates) => {
+  fromEntities.getExercisesInPlanMiddleware(state.entities, templates)
+}
+
+export const getTemplatesInPlanMiddleware = (state, templates) => {
+  return fromEntities.getTemplatesInPlanMiddleware(state.entities, templates)
+}
+
+export const getUserExercisesMiddleware = (state) => 
+  fromEntities.getUserExercisesMiddleware(state.entities)
 // export const getUserExercise = (state, exerciseID) => 
 //   fromUserExercises.getUserExercise(state.user.exercises, exerciseID)
 

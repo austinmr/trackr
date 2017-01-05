@@ -57,7 +57,6 @@ const formatExerciseObject = (exercise, userExercises) => {
   }
 }
 
-
 export const createWorkoutFromTemplate = (userID, username, template, userExercises) => {
   const templateID = template.templateID
   const exercises = template.exercises.map(exercise => formatExerciseObject(exercise, userExercises))
@@ -187,6 +186,37 @@ export const trackWorkout = (workout, userExercises) => {
     dispatch(setWorkoutResults(workout, userExercises)); 
     //TODO: Dispatch invalid userExercises
     dispatch(invalidateUserExercises(workout.userID)); 
+  }
+}
+
+
+//////////////
+/// WEEKLY WORKOUT GENERATOR 
+//
+/////////////
+
+export const createWorkoutFromPlan = (userID, username, template, userExercises) => {
+  const templateID = template.templateID
+  const exercises = template.exercises.map(exercise => formatExerciseObject(exercise, userExercises))
+  return {
+    type: CREATE_WORKOUT_FROM_TEMPLATE,
+    id: v4(),
+    date: createDate(),
+    exercises: exercises, 
+    userID,
+    username,
+    template,
+    templateID: templateID
+  }
+}
+
+export const createWorkoutFromPlanMiddleware = (userID, username, plan, exercises) => {
+  return (dispatch, getState) => {
+    // console.log('firing middleware call')
+    const state = getState(); 
+    const userExercisesWorkout = getUserExercisesInPlanMiddleware(state, exercises); 
+    // console.log(userExercisesWorkout);
+    dispatch(createWorkoutFromTemplate(userID, username, plan, userExercisesWorkout)); 
   }
 }
 
