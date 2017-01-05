@@ -1,8 +1,15 @@
 import * as templatesAPI from '../api/userTemplates'
 import { normalize } from 'normalizr'
 
+import { 
+  GET_ALL_USER_TEMPLATES_REQUEST, 
+  GET_ALL_USER_TEMPLATES_SUCCESS, 
+  GET_ALL_USER_TEMPLATES_FAILURE,
+  PUT_NEW_USER_TEMPLATE_REQUEST,
+  PUT_NEW_USER_TEMPLATE_SUCCESS,
+  PUT_NEW_USER_TEMPLATE_FAILURE,
+} from '../constants/ActionTypes'
 
-export const GET_ALL_USER_TEMPLATES_REQUEST = 'GET_ALL_USER_TEMPLATES_REQUEST'
 export const getAllUserTemplatesRequest = (id) => {
   return {
     type: GET_ALL_USER_TEMPLATES_REQUEST,
@@ -10,7 +17,6 @@ export const getAllUserTemplatesRequest = (id) => {
   }
 }
 
-export const GET_ALL_USER_TEMPLATES_SUCCESS = 'GET_ALL_USER_TEMPLATES_SUCCESS'
 export const getAllUserTemplatesSuccess = (id, response) => {
   return {
     type: GET_ALL_USER_TEMPLATES_SUCCESS,
@@ -19,7 +25,6 @@ export const getAllUserTemplatesSuccess = (id, response) => {
   }
 }
 
-export const GET_ALL_USER_TEMPLATES_FAILURE = 'GET_ALL_USER_TEMPLATES_SUCCESS'
 export const getAllUserTemplatesFailure = (id) => {
   return {
     type: GET_ALL_USER_TEMPLATES_FAILURE,
@@ -43,18 +48,14 @@ export const getAllUserTemplates = (id) => (dispatch) => {
   }); 
 }
 
-const isObjectEmpty = (object) => {
-  return !Object.keys(object).length 
-}
-
 function shouldGetUserTemplates(state) {
   const userTemplates = state.user.templates
-  if (isObjectEmpty(userTemplates.items)) {
+  if (!userTemplates.items) {
     return true
   } else if (userTemplates.isFetching) {
     return false
   } else {
-    return userTemplates.isValid
+    return !userTemplates.isValid
   }
 }
 
@@ -62,4 +63,40 @@ export const getAllUserTemplatesConditional = (id) => (dispatch, getState) => {
   if (shouldGetUserTemplates(getState(), id)) {
     return dispatch(getAllUserTemplates(id))
   }
+}
+
+export const putNewUserTemplateRequest = () => {
+  return {
+    type: PUT_NEW_USER_TEMPLATE_REQUEST,
+  }
+}
+
+export const putNewUserTemplateSuccess = (response) => {
+  return {
+    type: PUT_NEW_USER_TEMPLATE_SUCCESS,
+    response
+  }
+}
+
+export const putNewTemplateFailure = (error) => {
+  return {
+    type: PUT_NEW_USER_TEMPLATE_FAILURE,
+    error
+  }
+}
+
+export const putNewUserTemplate = (userID, templateID, templateName, template) => (dispatch) => {
+  dispatch(putNewUserTemplateRequest())
+  return templatesAPI.putNewUserTemplate(userID, templateID, templateName, template).then((response) => {
+    const normalizedResponse = normalize(response.Attributes, templatesAPI.template)
+    console.log('RESPONSE\n')
+    console.log(response); 
+    console.log(
+      'normalized response', 
+      normalizedResponse
+    ); 
+    dispatch(putNewUserTemplateSuccess(normalizedResponse))
+  }).catch((err) => {
+    console.log(err); 
+  }); 
 }

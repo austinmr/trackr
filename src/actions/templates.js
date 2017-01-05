@@ -20,11 +20,12 @@ const createDate = () => {
   return now; 
 }
 
-export const createTemplate = (username) => {
+export const createTemplate = (userID, username) => {
   return {
     type: CREATE_TEMPLATE,
     id: v4(),
     date: createDate(),
+    userID, 
     username,
   }
 }

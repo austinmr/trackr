@@ -2,27 +2,35 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router';
-import { createTemplate } from '../actions/templates'
-import { fetchUserExercisesIfNeeded } from '../actions/userExercises'
-import { createWorkoutFromTemplateMiddleware, fetchAllUserWorkouts } from '../actions/workouts'
 import { getWorkoutsObjectsArray, getTemplatesObjectsArray, getExercisesObjectsArray } from '../reducers/root'
-import { getAllUserWorkouts } from '../actions/userWorkouts'
-import { getAllUserTemplates } from '../actions/userTemplates'
-import { getAllUserExercises } from '../actions/userExercises2'
+import { createTemplate } from '../actions/templates'
+import { createWorkoutFromTemplateMiddleware } from '../actions/workouts'
+import { getAllUserWorkoutsConditional } from '../actions/userWorkouts'
+import { getAllUserTemplatesConditional } from '../actions/userTemplates'
+import { getAllUserExercisesConditional } from '../actions/userExercises2'
+import { getAllUserPlansConditional } from '../actions/userWeeklyPlans'
 import { searchAllExercises } from '../actions/allExercises'
-
-
 
 // App Components 
 import TemplateEntry from '../components/TemplateEntry'
+import WorkoutEntry from '../components/UserProfile/WorkoutEntry'
 
 // Bootstrap Imports 
 import { Grid, Row, Col, Button, Nav, NavItem, Badge } from 'react-bootstrap';
 
 export class UserProfile extends React.Component {
   static propTypes = {
+    userID: PropTypes.string.isRequired, 
     username: PropTypes.string.isRequired, 
-    dispatchCreateTemplate: PropTypes.func.isRequired, 
+    workouts: PropTypes.array.isRequired,
+    templates: PropTypes.array.isRequired,
+    exercises: PropTypes.array.isRequired,
+    createTemplate: PropTypes.func.isRequired, 
+    createWorkoutFromTemplate: PropTypes.func.isRequired, 
+    getAllUserWorkouts: PropTypes.func.isRequired,
+    getAllUserTemplates: PropTypes.func.isRequired,
+    getAllUserExercises: PropTypes.func.isRequired,
+    getAllUserPlans: PropTypes.func.isRequired,
   }
 
   state = {
@@ -31,17 +39,16 @@ export class UserProfile extends React.Component {
 
   constructor(props) {
     super(props);
-    const { userID, dispatchFetchUserExercises, dispatchFetchAllUserWorkouts, getAllUserWorkouts, getAllUserTemplates, getAllUserExercises, searchAllExercises } = this.props; 
-    // dispatchFetchUserExercises(userID); 
-    // dispatchFetchAllUserWorkouts(userID); 
-    // getAllUserWorkouts(userID); 
-    // getAllUserTemplates(userID);
-    // getAllUserExercises(userID);  
-    // searchAllExercises('bench'); 
+    const { userID, getAllUserWorkouts, getAllUserTemplates, getAllUserExercises, getAllUserPlans } = this.props; 
+    getAllUserWorkouts(userID); 
+    getAllUserTemplates(userID);
+    getAllUserExercises(userID);  
+    getAllUserPlans(userID); 
   }
 
-  handleCreateTemplate = (username) => {
-    this.props.dispatchCreateTemplate(username);
+  handleCreateTemplate = () => {
+    const { userID, username, createTemplate } = this.props; 
+    createTemplate(userID, username);
 
     // Prevent 'SecurityError' message from Jest 
     if (process.env.NODE_ENV !== 'test') {
@@ -50,9 +57,10 @@ export class UserProfile extends React.Component {
   }
 
   handleCreateWorkout = (template) => {
-    const { userID, username, dispatchCreateWorkout } = this.props; 
+    const { userID, username, createWorkoutFromTemplate } = this.props; 
     const exercises = template.exercises.map((exercise) => exercise.id);
-    dispatchCreateWorkout(userID, username, template, exercises);
+    console.log(exercises); 
+    createWorkoutFromTemplate(userID, username, template, exercises);
 
     // Prevent 'SecurityError' message from Jest 
     if (process.env.NODE_ENV !== 'test') {
@@ -60,14 +68,14 @@ export class UserProfile extends React.Component {
     }
   }
 
-  handleTabSelect(eventKey) {
+  handleTabSelect = (eventKey) => {
     this.setState({activeKey: eventKey}); 
   }
 
   _renderNavigationBar(){
     return (
-      <Nav bsStyle="tabs" justified onSelect={this.handleTabSelect.bind(this)} style={{marginTop: 20}}>
-        <NavItem eventKey={1} title="Workouts" disabled>Workouts</NavItem>
+      <Nav bsStyle="tabs" justified onSelect={this.handleTabSelect} style={{marginTop: 20}}>
+        <NavItem eventKey={1} title="Workouts">Workouts</NavItem>
         <NavItem eventKey={2} title="Templates">Templates</NavItem>
         <NavItem eventKey={3} title="Following" disabled>Friends</NavItem>
         <NavItem eventKey={4} title="Achievements" disabled>Achievements <Badge>{Math.floor(Math.random() * 100)}</Badge></NavItem>
@@ -76,24 +84,28 @@ export class UserProfile extends React.Component {
   }
 
   _renderActiveComponent(){
-    const { templates } = this.props; 
+    const { templates, workouts } = this.props; 
     if (this.state.activeKey === 1) {
-      // return (
-      //   // workouts.map((workout, i) => (
-      //   //   <WorkoutEntry key={workout.id} workout={workout} onClick={() => {viewWorkout(workout)}} />
-      //   // ))
-      // )
+      return (
+        workouts.map((workout, i) => (
+          <WorkoutEntry key={workout.workoutID} id={workout.workoutID} exercises={workout.exercises}/>
+        ))
+      )
     } else if (this.state.activeKey === 2) {
       return (
         templates.map((template, i) => (
-          <TemplateEntry key={template.id} onClick={()=>{this.handleCreateWorkout(template)}} {...template}/>
+          <TemplateEntry 
+            key={template.templateID} 
+            onClick={()=>{this.handleCreateWorkout(template)}} 
+            {...template}
+          />
         ))
       )
     }
   }
 
   render() {
-    const { username, workouts, templates, exercises } = this.props; 
+    const { username } = this.props; 
 
     return (
       <Grid> 
@@ -102,16 +114,11 @@ export class UserProfile extends React.Component {
             <h3 style={{color: 'gray'}}> {username} </h3>
             <img src={'https://image.freepik.com/free-vector/crossfit-logo_23-2147494935.jpg'} alt="user profile" width={250} height={250} style={{borderRadius: 10, marginTop: 15}} />
             <h2> Click Here to Start A New Workout! </h2> 
-            <Button className="workout-button" bsSize="large" onClick={(e)=>{this.handleCreateTemplate(username)}}> New Workout </Button> 
-            <Button className="template-button" bsSize="large" onClick={(e)=>{this.handleCreateTemplate(username)}}> New Workout Template </Button> 
+            <Button className="template-button" bsSize="large" onClick={(e)=>{this.handleCreateTemplate()}}> New Workout Template </Button> 
           </Col> 
           <Col xs={8} md={8}>
-            <h1>WORKOUTS</h1>
-            <p>{JSON.stringify(workouts)}</p>
-            <h1>TEMPLATES</h1>
-            <p>{JSON.stringify(templates)}</p>
-            <h1>EXERCISES</h1>
-            <p>{JSON.stringify(exercises)}</p>
+            {this._renderNavigationBar()}
+            {this._renderActiveComponent()}
           </Col>
         </Row> 
       </Grid> 
@@ -128,27 +135,24 @@ const mapStateToProps = (state, { params }) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchCreateTemplate: (username) => {
-    dispatch(createTemplate(username))
+  createTemplate: (userID, username) => {
+    dispatch(createTemplate(userID, username))
   },
-  dispatchCreateWorkout: (userID, username, template, userExercises) => {
+  createWorkoutFromTemplate: (userID, username, template, userExercises) => {
     dispatch(createWorkoutFromTemplateMiddleware(userID, username, template, userExercises))
   },
-  dispatchFetchUserExercises: (id) => {
-    dispatch(fetchUserExercisesIfNeeded(id))
-  },
-  dispatchFetchAllUserWorkouts: (id) => {
-    dispatch(fetchAllUserWorkouts(id))
-  },
   getAllUserWorkouts: (id) => {
-    dispatch(getAllUserWorkouts(id))
+    dispatch(getAllUserWorkoutsConditional(id))
   },
   getAllUserTemplates: (id) => {
-    dispatch(getAllUserTemplates(id))
+    dispatch(getAllUserTemplatesConditional(id))
   },
   getAllUserExercises: (id) => {
-    dispatch(getAllUserExercises(id))
+    dispatch(getAllUserExercisesConditional(id))
   },
+  getAllUserPlans: (id) => {
+    dispatch(getAllUserPlansConditional(id))
+  }, 
   searchAllExercises: (exerciseName) => {
     dispatch(searchAllExercises(exerciseName))
   }
@@ -158,6 +162,11 @@ const UserProfileContainer = connect(mapStateToProps, mapDispatchToProps)(UserPr
 
 export default UserProfileContainer 
 
+// <h1>WORKOUTS</h1>
+// <p>{JSON.stringify(workouts)}</p>
+// <h1>TEMPLATES</h1>
+// <p>{JSON.stringify(templates)}</p>
+// <h1>EXERCISES</h1>
+// <p>{JSON.stringify(exercises)}</p>
+// <Button className="workout-button" bsSize="large" onClick={(e)=>{this.handleCreateWorkout()}}> New Workout </Button> 
 
-            // {this._renderNavigationBar()}
-            // {this._renderActiveComponent()}

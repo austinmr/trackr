@@ -30,7 +30,8 @@ export default class OneRepMaxModal extends React.Component {
     if (!oneRepMax && !calculatedMax) {
       return; 
     } 
-    const max = calculatedMax || oneRepMax; 
+    const max = parseInt(calculatedMax) || parseInt(oneRepMax); 
+
     handleAddUserExercise(max); 
   }
 

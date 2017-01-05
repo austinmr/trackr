@@ -3,24 +3,9 @@ import { v4 } from 'uuid'
 import { calculateWeight, calculate1RM, calculateAverage1RM, setCompletion, totalExerciseWeight } from '../utils/calculators'
 import { getUserExercisesInWorkoutMiddleware } from '../reducers/root'
 import { updateUserExercises, invalidateUserExercises } from './userExercises'
+import { updateUserExercisesFromWorkout } from '../api/userExercises'
 import { setWorkoutResults } from './results'
-
-
-////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////// 
-////////////// DYNAMO 
-
-import 'aws-sdk/dist/aws-sdk';
-import dynamoConfig from '../../dynamoConfig'
-const AWS = window.AWS;
-AWS.config.update(dynamoConfig);
-AWS.config.setPromisesDependency(require('bluebird'));
-
-// const dynamodb = new AWS.DynamoDB();
-const docClient = new AWS.DynamoDB.DocumentClient();
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
+import { putNewUserWorkout } from './userWorkouts'
 
 const createDate = () => {
   let now = new Date(); 
@@ -50,8 +35,11 @@ export function saveWorkout(id) {
 } 
 
 const formatExerciseObject = (exercise, userExercises) => {
+  // console.log(exercise); 
+  // console.log(userExercises); 
   const userExerciseObject = userExercises[`${exercise.id}`]; 
-  const currentOneRepMax = parseInt(userExerciseObject.OneRepMax); 
+  // console.log(userExerciseObject)
+  const currentOneRepMax = parseInt(userExerciseObject.oneRepMax); 
 
   return {
     ...exercise, 
@@ -71,21 +59,26 @@ const formatExerciseObject = (exercise, userExercises) => {
 
 
 export const createWorkoutFromTemplate = (userID, username, template, userExercises) => {
+  const templateID = template.templateID
+  const exercises = template.exercises.map(exercise => formatExerciseObject(exercise, userExercises))
   return {
     type: CREATE_WORKOUT_FROM_TEMPLATE,
     id: v4(),
     date: createDate(),
-    exercises: template.exercises.map(exercise => formatExerciseObject(exercise, userExercises)), 
+    exercises: exercises, 
     userID,
     username,
     template,
+    templateID: templateID
   }
 }
 
 export const createWorkoutFromTemplateMiddleware = (userID, username, template, exercises) => {
   return (dispatch, getState) => {
+    // console.log('firing middleware call')
     const state = getState(); 
     const userExercisesWorkout = getUserExercisesInWorkoutMiddleware(state, exercises); 
+    // console.log(userExercisesWorkout);
     dispatch(createWorkoutFromTemplate(userID, username, template, userExercisesWorkout)); 
   }
 }
@@ -141,55 +134,36 @@ const individualExerciseTracker = (exercises) => {
 }
 
 const individualUserExercise = (workout, userExercises) => {
+  // console.log('ALL USER EXERCISES: ', userExercises); 
   workout.exercises.forEach((exercise) => {
     // Update individual exercise record 
+    // console.log('EXERCISE ID: ', exercise.id); 
     const userExercise = userExercises[`${exercise.id}`]; 
-
+    // console.log(userExercise); 
     // If current average is 3% greater than current max and completed all sets for most recent workout
-    const currentMax = userExercise.OneRepMax; 
-    if ( (exercise.averageOneRepMax / currentMax) >= 1.03 && userExercise.MRW.Complete ) {
-      userExercise.OneRepMax = currentMax + 5;
+    const currentMax = userExercise.oneRepMax; 
+    if ( (exercise.averageOneRepMax / currentMax) >= 1.03 && userExercise.MRW.complete ) {
+      userExercise.oneRepMax = currentMax + 5;
       userExercises.newRecords = userExercises.newRecords || []; 
       userExercises.newRecords.push(exercise.id); 
     }
 
     let MRW = {}
-    MRW.AvgMax = exercise.averageOneRepMax; 
-    MRW.Complete = exercise.completed;
-    MRW.WorkoutDate = new Date(); 
-    MRW.WorkoutID = workout.id; 
-    MRW.WorkoutLog = userExercise.MRW.WorkoutLog || [];
-    let previousWorkoutID = userExercise.MRW.WorkoutID || false; 
+    MRW.avgMax = exercise.averageOneRepMax; 
+    MRW.complete = exercise.completed;
+    MRW.workoutDate = new Date(); 
+    MRW.workoutID = workout.id; 
+    MRW.workoutLog = userExercise.MRW.workoutLog || [];
+    let previousWorkoutID = userExercise.MRW.workoutID || false; 
     if (previousWorkoutID) {
-      MRW.WorkoutLog.push(previousWorkoutID); 
+      MRW.workoutLog.push(previousWorkoutID); 
     }
     userExercise.MRW = MRW; 
   })
   return userExercises; 
 }
 
-export function saveWorkoutToDB(workout) {
-  const table = "Users_Workouts";
-  const params = {
-    TableName: table, 
-    Item: {
-      "UserID": workout.userID, 
-      "WorkoutID": workout.id,
-      "Username": workout.username,
-      "TemplateID": workout.templateID, 
-      "Date": workout.date, 
-      "Exercises": workout.exercises
-    }
-  }
 
-  docClient.put(params, function(err, data) {
-      if (err) {
-          console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
-      } else {
-          console.log("Put workout succeeded:", JSON.stringify(data, null, 2));
-      }
-  });    
-}
 
 export const trackWorkout = (workout, userExercises) => {
   return (dispatch) => {
@@ -203,10 +177,12 @@ export const trackWorkout = (workout, userExercises) => {
     userExercises = individualUserExercise(workout, userExercises); 
 
     // Store workout results in respective DynamoDB tables
-    updateUserExercises(userExercises); 
-    saveWorkoutToDB(workout); 
+    console.log('\n\n USER EXERCISES OBJECT \n\n'); 
+    console.log(userExercises); 
+    console.log('\n\n\n\n')
+    updateUserExercisesFromWorkout(userExercises);
+    dispatch(putNewUserWorkout(workout)); 
 
-    console.log(workout, userExercises); 
     //TODO: Dispatch results 
     dispatch(setWorkoutResults(workout, userExercises)); 
     //TODO: Dispatch invalid userExercises
@@ -215,29 +191,29 @@ export const trackWorkout = (workout, userExercises) => {
 }
 
 
-export function fetchAllUserWorkouts(id) {
-  return dispatch => {
-    dispatch(requestAllUserWorkouts(id))
-    const params = {
-      TableName: "Users_Workouts",
-      KeyConditionExpression: "UserID = :user",
-      ExpressionAttributeValues: {
-          ":user":id
-      }
-    }
+// export function fetchAllUserWorkouts(id) {
+//   return dispatch => {
+//     dispatch(requestAllUserWorkouts(id))
+//     const params = {
+//       TableName: "Users_Workouts",
+//       KeyConditionExpression: "UserID = :user",
+//       ExpressionAttributeValues: {
+//           ":user":id
+//       }
+//     }
 
-    const queryObjectPromise = docClient.query(params).promise(); 
-    return queryObjectPromise.then((data) => {
-      console.log(data.Items); 
-      const workouts = {}; 
-      data.Items.forEach((item) => {
-        workouts[`${item.WorkoutID}`] = item
-      }); 
+//     const queryObjectPromise = docClient.query(params).promise(); 
+//     return queryObjectPromise.then((data) => {
+//       console.log(data.Items); 
+//       const workouts = {}; 
+//       data.Items.forEach((item) => {
+//         workouts[`${item.WorkoutID}`] = item
+//       }); 
 
-      dispatch(receiveAllUserWorkouts(id, workouts))
+//       dispatch(receiveAllUserWorkouts(id, workouts))
 
-    }).catch((err) => {
-      console.log(err); 
-    }); 
-  }
-}
+//     }).catch((err) => {
+//       console.log(err); 
+//     }); 
+//   }
+// }

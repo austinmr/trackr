@@ -22,8 +22,8 @@ class NavigationBar extends React.Component {
             <Nav>
               <NavItem className="navHeader" onClick={(e) => {this.handleNavigation(e)}} title={'/Nav1'}> Nav1 </NavItem>
               <NavItem className="navHeader" onClick={(e) => {this.handleNavigation(e)}} title={'/Nav2'}> Nav2 </NavItem>
-              <NavItem className="navHeader" onClick={(e) => {this.handleNavigation(e)}} title={'/Nav3'}> Nav3 </NavItem>
-              <NavItem className="navHeader" onClick={(e) => {this.handleNavigation(e)}} title={'/Nav4'}> Nav4 </NavItem>
+              <NavItem className="navHeader" onClick={(e) => {this.handleNavigation(e)}} title={'/Planner'}> Planner </NavItem>
+              <NavItem className="navHeader" onClick={(e) => {this.handleNavigation(e)}} title={'/Performance'}> Performance </NavItem>
             </Nav>
         </Navbar>
     ); 

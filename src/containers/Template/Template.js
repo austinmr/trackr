@@ -1,10 +1,11 @@
 import React, { PropTypes } from 'react';
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router';
-import { saveTemplate } from '../../actions/templates' 
+import { putNewUserTemplate } from '../../actions/userTemplates' 
 
 import AddExercise from './AddExercise'
 import ExerciseList from '../../components/Template/ExerciseList'
+import TemplateNameModal from '../../components/Template/TemplateNameModal'
 
 import { Grid, Row, Col, Button } from 'react-bootstrap';
 
@@ -13,17 +14,41 @@ export class Template extends React.Component {
     userID: PropTypes.string.isRequired, 
     username: PropTypes.string.isRequired, 
     template: PropTypes.object.isRequired,
+    templateID: PropTypes.string.isRequired, 
     exercises: PropTypes.array.isRequired, 
-    dispatchSaveTemplate: PropTypes.func.isRequired,
+    putNewUserTemplate: PropTypes.func.isRequired,
   }
 
-  handleSaveTemplate(e) {
-    e.preventDefault();
-    const { template, userID, username, dispatchSaveTemplate } = this.props; 
+  state = {
+    showTemplateNameModal: false,
+  }
 
-    dispatchSaveTemplate(template)
+  handleSaveTemplate = () => {
+    console.log('Saving template!'); 
+    this.setState({showTemplateNameModal: true}); 
+  }
+
+  dispatchSaveTemplate = (templateName) => {
+    const { userID, username, template, templateID, putNewUserTemplate } = this.props; 
+    if (!templateID || !userID) {
+      return; 
+    }
+    putNewUserTemplate(userID, templateID, templateName, template)
+    this.setState({showTemplateNameModal: false}); 
     if (process.env.NODE_ENV !== 'test') {
       browserHistory.push(`/User/${username}`);
+    }
+  }
+
+  _renderTemplateNameModal() {
+    const { showTemplateNameModal } = this.state; 
+    if (showTemplateNameModal) {
+      return (
+          <TemplateNameModal 
+            dispatchSaveTemplate={this.dispatchSaveTemplate}
+            showTemplateNameModal={showTemplateNameModal}
+          />
+        )
     }
   }
 
@@ -32,14 +57,17 @@ export class Template extends React.Component {
       <Grid>
         <Row>   
           <h2>New Trackr Workout</h2>
+          {this._renderTemplateNameModal()}
         </Row> 
+        <Row>
         <Col xs={4} md={4}> 
           <AddExercise style={{marginTop: 10}}/>
-          <Button className="saveTemplate" onClick={(e) => this.handleSaveTemplate(e)} style={{margin: 10}}> Save Template </Button> 
+          <Button className="saveTemplate" onClick={this.handleSaveTemplate} style={{margin: 10}}> Save Template </Button> 
         </Col>
         <Col xs={8} md={8}>
           <ExerciseList exercises={this.props.exercises}/>
         </Col>
+        </Row>
       </Grid>
     );
   }
@@ -49,12 +77,13 @@ const mapStateToProps = (state, ownProps) => ({
   userID: state.user.id,
   username: state.user.username,
   template: state.template,
+  templateID: state.template.id, 
   exercises: state.template.exercises,
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchSaveTemplate: (id, template) => {
-    dispatch(saveTemplate(id, template))
+  putNewUserTemplate: (userID, templateID, templateName, template) => {
+    dispatch(putNewUserTemplate(userID, templateID, templateName, template))
   },
 })
 

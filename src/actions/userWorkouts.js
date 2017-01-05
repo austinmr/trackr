@@ -1,7 +1,15 @@
 import * as workoutsAPI from '../api/userWorkouts'
 import { normalize } from 'normalizr'
 
-export const GET_ALL_USER_WORKOUTS_REQUEST = 'GET_ALL_USER_WORKOUTS_REQUEST'
+import { 
+  GET_ALL_USER_WORKOUTS_REQUEST, 
+  GET_ALL_USER_WORKOUTS_SUCCESS, 
+  GET_ALL_USER_WORKOUTS_FAILURE,
+  PUT_NEW_USER_WORKOUT_REQUEST,
+  PUT_NEW_USER_WORKOUT_SUCCESS,
+  PUT_NEW_USER_WORKOUT_FAILURE,
+} from '../constants/ActionTypes'
+
 export const getAllUserWorkoutsRequest = (id) => {
   return {
     type: GET_ALL_USER_WORKOUTS_REQUEST,
@@ -9,7 +17,6 @@ export const getAllUserWorkoutsRequest = (id) => {
   }
 }
 
-export const GET_ALL_USER_WORKOUTS_SUCCESS = 'GET_ALL_USER_WORKOUTS_SUCCESS'
 export const getAllUserWorkoutsSuccess = (id, response) => {
   return {
     type: GET_ALL_USER_WORKOUTS_SUCCESS,
@@ -18,7 +25,6 @@ export const getAllUserWorkoutsSuccess = (id, response) => {
   }
 }
 
-export const GET_ALL_USER_WORKOUTS_FAILURE = 'GET_ALL_USER_WORKOUTS_SUCCESS'
 export const getAllUserWorkoutsFailure = (id) => {
   return {
     type: GET_ALL_USER_WORKOUTS_FAILURE,
@@ -43,23 +49,57 @@ export const getAllUserWorkouts = (id) => (dispatch) => {
     }); 
 }
 
-const isObjectEmpty = (object) => {
-  return !Object.keys(object).length 
-}
-
 function shouldGetUserWorkouts(state) {
-  const userWorkouts = state.user.templates
-  if (isObjectEmpty(userWorkouts.items)) {
+  const userWorkouts = state.user.workouts
+  if (!userWorkouts.items.length) {
     return true
   } else if (userWorkouts.isFetching) {
     return false
   } else {
-    return userWorkouts.isValid
+    return !userWorkouts.isValid
   }
 }
 
-export const getAllUserTemplatesConditional = (id) => (dispatch, getState) => {
+export const getAllUserWorkoutsConditional = (id) => (dispatch, getState) => {
   if (shouldGetUserWorkouts(getState(), id)) {
     return dispatch(getAllUserWorkouts(id))
   }
 }
+
+export const putNewUserWorkoutRequest = (userID, exerciseID, exerciseName, oneRepMax) => {
+  return {
+    type: PUT_NEW_USER_WORKOUT_REQUEST,
+    userID, 
+    exerciseID,
+    exerciseName,
+    oneRepMax,
+  }
+}
+
+export const putNewUserWorkoutSuccess = (response) => {
+  return {
+    type: PUT_NEW_USER_WORKOUT_SUCCESS,
+    response
+  }
+}
+
+export const putNewUserWorkoutFailure = (userID, exerciseID, exerciseName, oneRepMax) => {
+  return {
+    type: PUT_NEW_USER_WORKOUT_FAILURE,
+    userID, 
+    exerciseID,
+    exerciseName,
+    oneRepMax,
+  }
+}
+
+export const putNewUserWorkout = (workout) => (dispatch) => {
+  dispatch(putNewUserWorkoutRequest(workout))
+  return workoutsAPI.putNewUserWorkout(workout).then((response) => {
+    dispatch(putNewUserWorkoutSuccess(response))
+  }).catch((err) => {
+    console.log(err); 
+  }); 
+}
+
+

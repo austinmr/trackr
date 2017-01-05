@@ -30,3 +30,18 @@ export const searchAllExercises = (exercise) => {
   const searchAllExercisesPromise = docClient.scan(searchParams).promise();
   return searchAllExercisesPromise; 
 }
+
+export const putNewExercise = (id, exerciseName) => {
+  const params = {
+    TableName: "Exercises", 
+    Key: {
+      "exerciseID": id,
+      "exerciseName": exerciseName
+    }, 
+    ReturnValues: "ALL_NEW"
+  }
+  const putNewExercisePromise = docClient.update(params).promise(); 
+  return putNewExercisePromise; 
+}
+
+

@@ -1,16 +1,18 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { addUserExerciseToDB } from '../../actions/userExercises' 
+import { putNewUserExercise } from '../../actions/userExercises2' 
 import { getUserExercise } from '../../reducers/root'
 
 import OneRepMaxModal from '../../components/Template/OneRepMaxModal'
 
-import { Row } from 'react-bootstrap';
+import { Row, Col } from 'react-bootstrap';
 
 export class UserExerciseData extends React.Component {
   static propTypes = {
     userID: PropTypes.string.isRequired,
-    dispatchAddUserExercise: PropTypes.func.isRequired,
+    exerciseID: PropTypes.string.isRequired,
+    exerciseName: PropTypes.string.isRequired,
+    putNewUserExercise: PropTypes.func.isRequired,
   }
 
   state = {
@@ -24,8 +26,8 @@ export class UserExerciseData extends React.Component {
   }
 
   handleAddUserExercise = (max) => {
-    const { userID, exerciseID, exerciseName, dispatchAddUserExercise } = this.props; 
-    dispatchAddUserExercise(userID, exerciseID, exerciseName, max); 
+    const { userID, exerciseID, exerciseName, putNewUserExercise } = this.props; 
+    putNewUserExercise(userID, exerciseID, exerciseName, max); 
     this.setState({showModal: false})
   }
 
@@ -44,7 +46,7 @@ export class UserExerciseData extends React.Component {
       return (
         <div>
           <h1> {`${exerciseName}`} </h1>
-          <h3> {`${userExercise.OneRepMax} lbs`} </h3>
+          <h3> {`${userExercise.oneRepMax} lbs`} </h3>
         </div>
       )
     }
@@ -53,20 +55,24 @@ export class UserExerciseData extends React.Component {
   render() {
     return (
       <Row>
-        {this._renderOneRepMaxCalculator()}
+        <Col xsOffset={2} xs={10} md={10} mdOffset={2}>
+          {this._renderOneRepMaxCalculator()}
+        </Col>
       </Row>
     )
   }
 }
 
-const mapStateToProps = (state, { exerciseID }) => ({
+const mapStateToProps = (state, { exerciseID, exerciseName }) => ({
   userID: state.user.id,
+  exerciseID: exerciseID, 
+  exerciseName: exerciseName,
   userExercise: getUserExercise(state, exerciseID)
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchAddUserExercise: (userID, exerciseID, exerciseName, max) => {
-    dispatch(addUserExerciseToDB(userID, exerciseID, exerciseName, max))
+  putNewUserExercise: (userID, exerciseID, exerciseName, max) => {
+    dispatch(putNewUserExercise(userID, exerciseID, exerciseName, max))
   },
 }) 
 

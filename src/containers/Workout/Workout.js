@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 import { saveTemplate } from '../../actions/templates' 
 import { trackWorkout } from '../../actions/workouts'
 import { getUserExercisesInWorkout } from '../../reducers/root'
+import { convertExercisesArrayToCSV } from '../../utils/export'
 
 import ExerciseList from '../../components/Workout/ExerciseList'
 
@@ -16,9 +17,16 @@ export class Workout extends React.Component {
     dispatchSaveTemplate: PropTypes.func.isRequired,
   }
 
+  constructor(props) {
+    super(props);
+    const val = "Hello, world!"; 
+
+  }
+
   handleSaveWorkout(e) {
     e.preventDefault();
     const { workout, userExercises, dispatchTrackWorkout } = this.props; 
+    console.log('USER EXERCISES FROM PROPS: ', userExercises); 
     dispatchTrackWorkout(workout, userExercises); 
     if (process.env.NODE_ENV !== 'test') {
       browserHistory.push(`/Results/${workout.id}`);
@@ -26,17 +34,22 @@ export class Workout extends React.Component {
   }
 
   render() {
+    const { workout } = this.props; 
+    const csvContent = convertExercisesArrayToCSV(workout.exercises); 
     return (
       <Grid>
         <Row>   
           <h2>New Trackr Workout</h2>
         </Row> 
         <Col xs={4} md={4}> 
-          <Button className="saveWorkout" onClick={(e) => this.handleSaveWorkout(e)} style={{margin: 10}}> Save Workout </Button> 
+          <Button className="saveWorkout" onClick={(e) => this.handleSaveWorkout(e)} style={{margin: 10}}> Save Workout </Button>
+          <Button className="exportWorkout" onClick={this.handleExport} style={{margin: 10}}> Export Workout </Button> 
         </Col>
         <Col xs={8} md={8}>
-          <ExerciseList exercises={this.props.exercises} userMaxes={this.props.userMaxes} />
+          <ExerciseList exercises={this.props.exercises}/>
         </Col>
+        <p>{JSON.stringify(this.props.userExercises)}</p>
+        <a href={encodeURI(csvContent)} download> DOWNLOAD </a>
       </Grid>
     );
   }
@@ -45,7 +58,6 @@ export class Workout extends React.Component {
 const mapStateToProps = (state, { params }) => ({
   username: state.user.username,
   exercises: state.workout.exercises,
-  userMaxes: state.user.userMaxes,
   userExercises: getUserExercisesInWorkout(state), 
   workout: state.workout
 })

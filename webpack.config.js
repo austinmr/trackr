@@ -14,7 +14,6 @@ var config = {
   require.resolve('react-dev-utils/webpackHotDevClient'),
   paths.appIndexJs
   ],
-
   output: {
     path: BUILD_DIR,
     pathinfo: true, 
@@ -40,7 +39,7 @@ var config = {
       }
     ],
     noParse: [
-      /aws\-sdk/,
+      /aws\-sdk/
     ]
   },
 

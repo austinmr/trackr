@@ -54,6 +54,7 @@ const templates = (state = {}, action ) => {
     case CREATE_TEMPLATE:
       return {
         id: action.id,
+        userID: action.userID,
         username: action.username,
         date: action.date,
         exercises: [],

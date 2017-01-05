@@ -61,7 +61,12 @@ export const setCompletion = sets => {
 }
 
 export const calculatePerformancePercentage = (exercises) => {
-  return (exercises.reduce((a,b) => a.percentageCompleted + b.percentageCompleted) / exercises.length) * 100; 
+  let percentage = exercises
+    .map(exercise => exercise.percentageCompleted)
+    .reduce((a,b) => a.percentageCompleted + b.percentageCompleted)
+  console.log(percentage); 
+  percentage = Math.round(percentage/exercises.length) * 100; 
+  return percentage; 
 }
 
 export const totalExerciseWeight = (sets) => {
@@ -129,5 +134,37 @@ export const graphMaxValue = (currentOneRepMax) => {
     return 100; 
   } else {
     return 50; 
+  }
+}
+
+export const formatDomain = (min, max) => {
+  max = max - ( max % 5 ) + 5; 
+  min = min - ( min % 5 ) - 5; 
+  if (max - min >= 25) {
+    max = max + 10; 
+    min = max - 50; 
+    return [min, max]
+  } else {
+    max = max + 5; 
+    min = max - 25; 
+    return [min, max]
+  }
+  // return [min, max]
+} 
+
+export const formatDynamoDate = (date) => {
+  console.log(date); 
+  if (typeof date !== 'string') {
+    return; 
+  } else {
+    let dateArr = date.split(''); 
+    if (dateArr[0] === '"') {
+      dateArr = dateArr.slice(1, dateArr.length - 1).join(''); 
+      console.log(dateArr); 
+      date = Date.parse(dateArr); 
+      return date; 
+    } else {
+      return date; 
+    }
   }
 }

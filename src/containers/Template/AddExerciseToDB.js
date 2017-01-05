@@ -1,12 +1,13 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { addDBExercise } from '../../actions/dbExercises'
+import { putNewExercise } from '../../actions/allExercises'
 
 import { Row, Panel, Button, Form, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 
 export class AddExerciseToDB extends React.Component {
   static propTypes = {
-    dispatchAddDBExercise: PropTypes.func.isRequired,
+    exercise: PropTypes.string.isRequired,
+    putNewExercise: PropTypes.func.isRequired,
   }
 
   state = {
@@ -14,19 +15,17 @@ export class AddExerciseToDB extends React.Component {
     exerciseType: ''
   }
 
-  handleAddExerciseToDB = (e) => {
+  handlePutNewExercise = (e) => {
     e.preventDefault() 
+    const { putNewExercise } = this.props; 
     let { exercise, exerciseType } = this.state;
-    const { dispatchAddDBExercise } = this.props; 
     if (!exercise) {
-      return
+      return;
     }
     if (exerciseType) {
-      exercise = `${exercise} [${exerciseType}]`
+      exercise = `${exercise} [${exerciseType}]`;
     }
-    console.log('exercise: ', exercise)
-    console.log(exerciseType)
-    dispatchAddDBExercise(exercise);
+    putNewExercise(exercise);
   }
 
   handleChange = (e) => {
@@ -42,7 +41,7 @@ export class AddExerciseToDB extends React.Component {
           <h2> Exercise Not Found </h2> 
           <h4> Please enter exercise name below to add this the TRACKR database </h4> 
         </Panel> 
-        <Form onSubmit={e => this.handleAddExerciseToDB(e)}>
+        <Form onSubmit={e => this.handlePutNewExercise(e)}>
           <FormGroup>
             <ControlLabel>Exercise Name</ControlLabel>
             <FormControl id="exercise" type="text" onChange={(e) => {this.handleChange(e)}} value={this.state.exercise}/>
@@ -62,8 +61,8 @@ export class AddExerciseToDB extends React.Component {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchAddDBExercise: (exercise) => {
-    dispatch(addDBExercise(exercise))
+  putNewExercise: (exercise) => {
+    dispatch(putNewExercise(exercise))
   },
 }) 
 

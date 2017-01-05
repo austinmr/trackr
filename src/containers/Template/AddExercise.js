@@ -1,23 +1,24 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { addExercise } from '../../actions/templates'
-import { searchForExercise } from '../../actions/dbExercises'
-import { getExerciseSearchList } from '../../reducers/root'
+import { searchAllExercisesConditional } from '../../actions/allExercises'
+import { getExerciseSearchResults } from '../../reducers/root'
 
-import ExerciseSearchList from '../../components/Template/ExerciseSearchList'
+import ExerciseSearchResults from '../../components/Template/ExerciseSearchList'
 import AddExerciseToDB from './AddExerciseToDB'
 
 import { Row, Form, FormControl, ControlLabel } from 'react-bootstrap'
 
 export class AddExercise extends React.Component {
   static propTypes = {
-    dispatchAddExercise: PropTypes.func.isRequired, 
-    dispatchSearchForExercise: PropTypes.func.isRequired, 
+    exerciseSearchResults: PropTypes.array.isRequired,
+    displaySearchResults: PropTypes.bool.isRequired,
+    addExerciseToTemplate: PropTypes.func.isRequired, 
+    searchForExercises: PropTypes.func.isRequired, 
   }
 
   state = {
     exercise: '',
-    search: false, 
   }
 
   handleChange = (e) => {
@@ -29,32 +30,31 @@ export class AddExercise extends React.Component {
   handleSearch = (e) => {
     e.preventDefault(); 
     const { exercise } = this.state; 
-    const { dispatchSearchForExercise } = this.props; 
-    dispatchSearchForExercise(exercise); 
-    this.setState({search: true})
+    const { searchForExercises } = this.props; 
+    searchForExercises(exercise); 
   }
 
   handleAddExercise = (id, exercise) => {
-    const { dispatchAddExercise } = this.props; 
+    const { addExerciseToTemplate } = this.props; 
     if (!exercise) {
       return; 
     }
     console.log(`id: ${id}, exercise: ${exercise}`); 
-    dispatchAddExercise(id, exercise);
+    addExerciseToTemplate(id, exercise);
     this.setState({exercise: ''}); 
   }
 
   _renderExerciseSearchList() {
     const { exercise } = this.state;  
-    const { exerciseSearchList, renderSearchList } = this.props;
-    if (renderSearchList && exerciseSearchList.length === 0) {
+    const { exerciseSearchResults, displaySearchResults } = this.props;
+    if (displaySearchResults && exerciseSearchResults.length === 0) {
       return (
         <AddExerciseToDB exercise={exercise}/> 
       )
     } 
-    else if (renderSearchList) {
+    else if (displaySearchResults) {
       return (
-        <ExerciseSearchList exerciseSearchList={exerciseSearchList} onClick={this.handleAddExercise}/>
+        <ExerciseSearchResults exerciseSearchResults={exerciseSearchResults} onClick={this.handleAddExercise}/>
       )
     }
   }
@@ -67,22 +67,23 @@ export class AddExercise extends React.Component {
           <FormControl type="text" id="exercise" placeholder='Exercise' onChange={e => this.handleChange(e)} value={this.state.exercise} style={{margin: '0 auto', width: '210px', textAlign: 'center', marginBottom: '5px'}}/>
         </Form>
         {this._renderExerciseSearchList()}
+        <p>{JSON.stringify(this.props.exerciseSearchResults)}</p>
       </Row> 
     )
   }
 }
 
 const mapStateToProps = (state) => ({
-  exerciseSearchList: getExerciseSearchList(state),
-  renderSearchList: state.dbExercises.render
+  exerciseSearchResults: getExerciseSearchResults(state),
+  displaySearchResults: state.allExercises.displaySearch
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  dispatchAddExercise: (id, exercise) => {
+  addExerciseToTemplate: (id, exercise) => {
     dispatch(addExercise(id, exercise))
   },
-  dispatchSearchForExercise: (exercise) => {
-    dispatch(searchForExercise(exercise)); 
+  searchForExercises: (exercise) => {
+    dispatch(searchAllExercisesConditional(exercise)); 
   },
 }) 
 

@@ -1,7 +1,18 @@
-import * as allExercisesAPI from '../api/allExercises'
+import { v4 } from 'uuid'
 import { normalize } from 'normalizr'
+import * as allExercisesAPI from '../api/allExercises'
+import { addExercise } from './templates'
 
-export const SEARCH_ALL_EXERCISES_REQUEST = 'SEARCH_ALL_EXERCISES_REQUEST'
+import { 
+  SEARCH_ALL_EXERCISES_REQUEST, 
+  SEARCH_ALL_EXERCISES_SUCCESS, 
+  SEARCH_ALL_EXERCISES_FAILURE,
+  PUT_NEW_EXERCISE_REQUEST,
+  PUT_NEW_EXERCISE_SUCCESS,
+  PUT_NEW_EXERCISE_FAILURE,
+} from '../constants/ActionTypes'
+
+
 export const searchAllExercisesRequest = (id) => {
   return {
     type: SEARCH_ALL_EXERCISES_REQUEST,
@@ -9,7 +20,6 @@ export const searchAllExercisesRequest = (id) => {
   }
 }
 
-export const SEARCH_ALL_EXERCISES_SUCCESS = 'SEARCH_ALL_EXERCISES_SUCCESS'
 export const searchAllExercisesSuccess = (id, response) => {
   return {
     type: SEARCH_ALL_EXERCISES_SUCCESS,
@@ -18,8 +28,7 @@ export const searchAllExercisesSuccess = (id, response) => {
   }
 }
 
-export const SEARCH_ALL_EXERCISES_FAILURE = 'SEARCH_ALL_EXERCISES_FAILURE'
-export const getAllUserExercisesFailure = (id) => {
+export const searchAllUserExercisesFailure = (id) => {
   return {
     type: SEARCH_ALL_EXERCISES_FAILURE,
     id,
@@ -42,23 +51,60 @@ export const searchAllExercises = (id) => (dispatch) => {
   }); 
 }
 
-const isObjectEmpty = (object) => {
-  return !Object.keys(object).length 
-}
-
 function shouldSearchAllExercises(state) {
-  const allExercises = state.user.exercises
-  if (isObjectEmpty(allExercises.items)) {
-    return true
-  } else if (allExercises.isFetching) {
-    return false
+  const allExercises = state.allExercises;
+ if (allExercises.isFetching) {
+    return false;
   } else {
-    return allExercises.isValid
+    return true;
   }
 }
 
 export const searchAllExercisesConditional = (id) => (dispatch, getState) => {
   if (shouldSearchAllExercises(getState(), id)) {
-    return dispatch(searchAllUserExercises(id))
+    return dispatch(searchAllExercises(id))
   }
 }
+
+export const putNewExerciseRequest = (id, exerciseName) => {
+  return {
+    type: PUT_NEW_EXERCISE_REQUEST,
+    id, 
+    exerciseName
+  }
+}
+
+export const putNewExerciseSuccess = (response) => {
+  return {
+    type: PUT_NEW_EXERCISE_SUCCESS,
+    response
+  }
+}
+
+export const putNewExerciseFailure = (exerciseName) => {
+  return {
+    type: PUT_NEW_EXERCISE_FAILURE,
+    exerciseName
+  }
+}
+
+export const putNewExercise = (exerciseName) => (dispatch) => {
+  const id = v4(); 
+  dispatch(putNewExerciseRequest(id, exerciseName))
+  return allExercisesAPI.putNewExercise(id, exerciseName).then((response) => {
+    // console.log(response); 
+    // console.log(response.Attributes); 
+    const exercise = response.Attributes; 
+    const { exerciseID, exerciseName } = exercise; 
+    const normalizedResponse = normalize(exercise, allExercisesAPI.exercise)
+    console.log(
+      'normalized response', 
+      normalizedResponse
+    ); 
+    dispatch(putNewExerciseSuccess(normalizedResponse))
+    dispatch(addExercise(exerciseID, exerciseName)); 
+  }).catch((err) => {
+    console.log(err); 
+  }); 
+}
+

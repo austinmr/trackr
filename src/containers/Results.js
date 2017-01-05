@@ -83,10 +83,10 @@ export class Results extends React.Component {
               <h1> {`Workout Performance:`} </h1> 
               <h3> {`EXERCISES: ${workout.exercises.length}`} </h3> 
               <h3> {`TOTAL SETS: ${totalWorkoutSets(workout.exercises)}`} </h3> 
-              <ProgressBar now={calculatePerformancePercentage(workout.exercises)} label={calculatePerformancePercentage(workout.exercises)} />
+              <ProgressBar now={calculatePerformancePercentage(workout.exercises)} label={`${calculatePerformancePercentage(workout.exercises)} %`}/>
               <h3> {`${totalWorkoutWeight(workout.exercises)} LBS MOVED`} </h3> 
               <h3> {`BEST LIFT: ${topExercise(workout.exercises).exercise}`} </h3> 
-              <h3> {`PERSONAL RECORDS: ${totalWorkoutSets(workout.exercises)}`} </h3> 
+              <h3> {`PERSONAL RECORDS: ${userExercises.newRecords.length}`} </h3> 
             </Well> 
           </Col>
         </Row>

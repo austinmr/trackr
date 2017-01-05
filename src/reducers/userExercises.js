@@ -67,9 +67,9 @@ export const getUserExercisesInWorkout = (state, exercises) => {
   return UserExercisesInWorkout; 
 }
 
-export const getUserExercise = (state, id) => {
-  const userExercise = state.exercises[`${id}`]
-  console.log(id); 
+export const getUserExercise = (state, exerciseID) => {
+  const userExercise = state.userExercises[`${exerciseID}`]
+  console.log(exerciseID); 
   let result = null; 
   if (userExercise) {
     result = userExercise; 

@@ -4,7 +4,7 @@ import Exercise from './ExerciseEntry'
 //Bootstrap 
 import { Well } from 'react-bootstrap';
 
-const ExerciseList = ({ exercises, onExerciseClick }) => (
+const ExerciseList = ({ exercises }) => (
   <Well>
     {exercises.map(exercise =>
       <Exercise

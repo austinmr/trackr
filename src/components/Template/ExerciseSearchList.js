@@ -3,12 +3,11 @@ import ExerciseEntry from './ExerciseSearchEntry'
 import { Well } from 'react-bootstrap';
 
 export default class ExerciseSearchList extends React.Component {
-
   render() {
-    const { exerciseSearchList, onClick } = this.props; 
+    const { exerciseSearchResults, onClick } = this.props; 
     return (
       <Well>
-        {exerciseSearchList.map(exercise =>
+        {exerciseSearchResults.map(exercise =>
           <ExerciseEntry
             key={exercise.exerciseID}
             onClick={onClick}
