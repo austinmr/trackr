@@ -1,7 +1,7 @@
 import React from 'react'
 import { Row, Col, Panel, Button } from 'react-bootstrap';
 
-export default ({weeklyPlanID, weeklyPlanName, complete, planTemplates, onClick, generateWorkouts }) => {
+export default ({weeklyPlanID, weeklyPlanName, complete, planTemplates, onClick, genWorkouts, genVolumeDeload, genWeightDeload }) => {
   const _renderButton = (planTemplates, onClick) => {
     if (!complete) {
       return (
@@ -9,7 +9,11 @@ export default ({weeklyPlanID, weeklyPlanName, complete, planTemplates, onClick,
       )
     } else {
       return (
-        <Button onClick={generateWorkouts}> Generate Workouts </Button>
+        <div>
+          <Button onClick={genWorkouts}> Generate Workouts </Button>
+          <Button onClick={genVolumeDeload}> Volume Deload </Button>
+          <Button onClick={genWeightDeload}> Weight Deload </Button>
+        </div> 
       )
     }
   }
@@ -21,9 +25,11 @@ export default ({weeklyPlanID, weeklyPlanName, complete, planTemplates, onClick,
             <h3> {`Plan: ${weeklyPlanName}`} </h3> 
           </Col> 
           <Col xs={6} md={6} style={{marginTop: 25}}> 
-            {_renderButton(planTemplates, onClick)}
-            <p>{JSON.stringify(planTemplates)} </p>
+            <p>{JSON.stringify(planTemplates)}</p>
           </Col>
+        </Row>
+        <Row>
+          {_renderButton(planTemplates, onClick)}
         </Row>
       </Panel>
     )

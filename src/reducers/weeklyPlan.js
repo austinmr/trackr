@@ -29,12 +29,18 @@ const weeklyPlan = (state = {}, action ) => {
         },
       }
     case EDIT_WEEKLY_PLAN: 
-    case USE_WEEKLY_PLAN:
       return {
         userID: action.userID,
         weeklyPlanID: action.planID,
         weeklyPlanName: action.planName, 
         templates: action.templates
+      }
+    case USE_WEEKLY_PLAN:
+      return {
+        userID: action.userID,
+        weeklyPlanID: action.planID,
+        weeklyPlanName: action.planName, 
+        exportObject: action.exportObject
       }
     case ADD_TEMPLATE: 
       return {

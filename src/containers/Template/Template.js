@@ -35,6 +35,17 @@ export class Template extends React.Component {
     if (!templateID || !userID) {
       return; 
     }
+    let blankSets = false; 
+    template.exercises.map((exercise) => {
+      if (exercise.sets.length === 0) {
+        blankSets = true; 
+      }
+    }); 
+    if (blankSets) {
+      return; 
+    }
+
+    
     putNewUserTemplate(userID, templateID, templateName, template, templateType, templatePlanName, templatePlanID)
     this.setState({showTemplateNameModal: false}); 
     if (process.env.NODE_ENV !== 'test') {

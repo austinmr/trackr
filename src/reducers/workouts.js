@@ -1,4 +1,4 @@
-import { CREATE_WORKOUT_FROM_TEMPLATE, ADD_SET_REPS, PUT_NEW_USER_WORKOUT_SUCCESS } from '../constants/ActionTypes'
+import { CREATE_WORKOUT_FROM_TEMPLATE, CREATE_DELOAD_FROM_TEMPLATE, ADD_SET_REPS, PUT_NEW_USER_WORKOUT_SUCCESS } from '../constants/ActionTypes'
 
 
 const set = (state, action) => {
@@ -52,6 +52,16 @@ const workouts = (state = {}, action ) => {
         date: action.date,
         templateID: action.templateID,
         exercises: action.exercises,
+      }
+    case CREATE_DELOAD_FROM_TEMPLATE:
+      return {
+        id: action.id,
+        userID: action.userID, 
+        username: action.username,
+        date: action.date,
+        templateID: action.templateID,
+        exercises: action.exercises,
+        deload: action.deload
       }
     case ADD_SET_REPS: 
       return {

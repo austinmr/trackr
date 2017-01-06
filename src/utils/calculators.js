@@ -12,7 +12,7 @@ export const displayPercentage = (reps) => {
   return roundPercentage(percentage(reps))
 }
 
-const roundByFives = (number) => {
+export const roundByFives = (number) => {
   let remainder = number % 5; 
   if (remainder === 0) {
     return number; 

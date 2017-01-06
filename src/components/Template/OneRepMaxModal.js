@@ -14,6 +14,7 @@ export default class OneRepMaxModal extends React.Component {
     weight: '',
     reps: '',
     oneRepMax: '',
+    targetOneRepMax: ''
   }
 
   handleChange = (e) => {
@@ -24,24 +25,29 @@ export default class OneRepMaxModal extends React.Component {
 
   handleAddOneRepMax = (e) => {
     e.preventDefault(); 
-    const { weight, reps, oneRepMax } = this.state; 
+    let { weight, reps, oneRepMax, targetOneRepMax } = this.state; 
     const { handleAddUserExercise } = this.props; 
+
     const calculatedMax = calculateRounded1RM(weight, reps); 
     if (!oneRepMax && !calculatedMax) {
       return; 
     } 
-    const max = parseInt(calculatedMax) || parseInt(oneRepMax); 
+    const max = parseInt(oneRepMax) || parseInt(calculatedMax); 
 
-    handleAddUserExercise(max); 
+    if (!targetOneRepMax) {
+      targetOneRepMax = 'none'
+    }
+
+    handleAddUserExercise(max, targetOneRepMax); 
   }
 
   render() {
     const { exerciseName, showModal } = this.props; 
-    const { weight, reps, oneRepMax } = this.state; 
+    const { weight, reps, oneRepMax, targetOneRepMax } = this.state; 
 
     return (
       <div className="modal-container" style={{"position":"relative", height: 450}} >
-        <Modal show={showModal} container={this} style={{"position":"absolute"}}> 
+        <Modal show={showModal} container={this} style={{"position":"absolute"}} aria-labelledby="contained-modal-title"> 
           <Modal.Header>
             <Modal.Title>New Exercise: {`${exerciseName}`}</Modal.Title>
           </Modal.Header>
@@ -52,9 +58,13 @@ export default class OneRepMaxModal extends React.Component {
             <Form >
               <Row>
                 <FormGroup>
-                  <Col xs={4} md={4}>
+                  <Col xs={6} md={6}>
                     <ControlLabel style={{marginBottom: '10px', fontSize: '16px'}}>One Rep Max</ControlLabel>
                     <FormControl id="oneRepMax" type="number" onChange={(e) => {this.handleChange(e)}} value={oneRepMax}/>
+                  </Col>
+                  <Col xs={6} md={6}>
+                    <ControlLabel style={{marginBottom: '10px', fontSize: '16px'}}>Target Max [Optional]</ControlLabel>
+                    <FormControl id="targetOneRepMax" type="number" onChange={(e) => {this.handleChange(e)}} value={targetOneRepMax}/>
                   </Col>
                 </FormGroup>
               </Row>

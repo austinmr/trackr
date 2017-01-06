@@ -35,10 +35,7 @@ export function saveWorkout(id) {
 } 
 
 const formatExerciseObject = (exercise, userExercises) => {
-  // console.log(exercise); 
-  // console.log(userExercises); 
   const userExerciseObject = userExercises[`${exercise.id}`]; 
-  // console.log(userExerciseObject)
   const currentOneRepMax = parseInt(userExerciseObject.oneRepMax); 
 
   return {
@@ -68,16 +65,14 @@ export const createWorkoutFromTemplate = (userID, username, template, userExerci
     userID,
     username,
     template,
-    templateID: templateID
+    templateID: templateID,
   }
 }
 
 export const createWorkoutFromTemplateMiddleware = (userID, username, template, exercises) => {
   return (dispatch, getState) => {
-    // console.log('firing middleware call')
     const state = getState(); 
     const userExercisesWorkout = getUserExercisesInWorkoutMiddleware(state, exercises); 
-    // console.log(userExercisesWorkout);
     dispatch(createWorkoutFromTemplate(userID, username, template, userExercisesWorkout)); 
   }
 }
@@ -91,19 +86,29 @@ export const addSetReps = (exerciseID, setID, reps) => {
   }
 }
 
-const individualSetTracker = (exercises) => {
+const individualSetTracker = (exercises, deload) => {
+
   return exercises.map((exercise) => {
+    let currentOneRepMax = exercise.currentOneRepMax; 
     return {
       ...exercise, 
       sets: exercise.sets.map((set) => {
+        // Determine if all target reps were completed for set 
         let completed = false; 
         if (set.completedReps >= set.targetReps) {
           completed = true; 
         } 
+
+        // Calculate completed OneRepMax for set
+        // NOTE: For tracking purposes, deloads will be entered as that exercises currentOneRepMax 
         let completedOneRepMax = 0; 
-        if (set.completedReps > 0) {
+        if (deload) {
+          completedOneRepMax = currentOneRepMax;
+        } else if (set.completedReps > 0) {
           completedOneRepMax = Math.round(calculate1RM(set.weight, set.completedReps)); 
         }
+
+        // NOTE: totalWeight will be accurate for deload weeks 
         let totalWeight = set.weight * set.completedReps; 
         return {
           ...set, 
@@ -136,28 +141,33 @@ const individualUserExercise = (workout, userExercises) => {
   // console.log('ALL USER EXERCISES: ', userExercises); 
   workout.exercises.forEach((exercise) => {
     // Update individual exercise record 
-    // console.log('EXERCISE ID: ', exercise.id); 
     const userExercise = userExercises[`${exercise.id}`]; 
     // console.log(userExercise); 
+
     // If current average is 3% greater than current max and completed all sets for most recent workout
     const currentMax = userExercise.oneRepMax; 
+    userExercises.newRecords = userExercises.newRecords || []; 
     if ( (exercise.averageOneRepMax / currentMax) >= 1.03 && userExercise.MRW.complete ) {
       userExercise.oneRepMax = currentMax + 5;
-      userExercises.newRecords = userExercises.newRecords || []; 
       userExercises.newRecords.push(exercise.id); 
     }
 
+    // Update Most Recent Workout object 
     let MRW = {}
     MRW.avgMax = exercise.averageOneRepMax; 
     MRW.complete = exercise.completed;
     MRW.workoutDate = new Date(); 
     MRW.workoutID = workout.id; 
-    MRW.workoutLog = userExercise.MRW.workoutLog || [];
+    userExercise.MRW = MRW; 
+
+    // Update workoutLog array to show all workout ids
+    let workoutLog = userExercise.workoutLog || [];
     let previousWorkoutID = userExercise.MRW.workoutID || false; 
     if (previousWorkoutID) {
-      MRW.workoutLog.push(previousWorkoutID); 
+      workoutLog.push(previousWorkoutID); 
     }
-    userExercise.MRW = MRW; 
+    userExercise.workoutLog = workoutLog; 
+
   })
   return userExercises; 
 }
@@ -166,8 +176,14 @@ const individualUserExercise = (workout, userExercises) => {
 
 export const trackWorkout = (workout, userExercises) => {
   return (dispatch) => {
+    // Determine if workout is a deload 
+    let deload = false; 
+    if (workout.deload !== undefined) {
+      deload = true; 
+    }
+
     // Map through individual sets and determine if all reps were completed and calculate sets 1RM. 
-    workout.exercises = individualSetTracker(workout.exercises); 
+    workout.exercises = individualSetTracker(workout.exercises, deload); 
 
     // Map through individual exercises and designate completed (Boolean) and averageOneRepMax properties
     workout.exercises = individualExerciseTracker(workout.exercises); 

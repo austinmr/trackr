@@ -12,7 +12,7 @@ import { putNewUserPlan, updateUserPlan } from '../../actions/userWeeklyPlans'
 // import { searchAllExercises } from '../actions/allExercises'
 
 // App Components 
-import TemplateEntry from '../../components/TemplateEntry'
+import TemplateEntry from '../../components/UserProfile/TemplateEntry'
 // import WorkoutEntry from '../components/UserProfile/WorkoutEntry'
 
 // Bootstrap Imports 
@@ -72,8 +72,6 @@ export class WeeklyPlanner extends React.Component {
 
   handleFilterType = (e) => {
     e.preventDefault();
-    console.log(e.target.value)
-
     this.setState({
       filterType: e.target.value
     }); 
@@ -81,8 +79,6 @@ export class WeeklyPlanner extends React.Component {
 
   handleFilterPlan = (e) => {
     e.preventDefault(); 
-    console.log(e.target.value)
-
     this.setState({
       filterPlan: e.target.value
     }); 
@@ -98,8 +94,8 @@ export class WeeklyPlanner extends React.Component {
           {templates.map((template, i) => (
             <TemplateEntry 
               key={template.templateID} 
-              onClick={()=>{this.handleAddTemplateToWeeklyPlan(template.templateID)}} 
-              buttonText={'Add Template to Plan'}
+              addTemplate={()=>{this.handleAddTemplateToWeeklyPlan(template.templateID)}} 
+              buttonText={'Add Template'}
               {...template}
             />
           ))}
@@ -116,8 +112,8 @@ export class WeeklyPlanner extends React.Component {
           {filteredTemplates.map((template, i) => (
             <TemplateEntry 
               key={template.templateID} 
-              onClick={()=>{this.handleAddTemplateToWeeklyPlan(template.templateID)}} 
-              buttonText={'Add Template to Plan'}
+              addTemplate={()=>{this.handleAddTemplateToWeeklyPlan(template.templateID)}} 
+              buttonText={'Add Template'}
               {...template}
             />
           ))}
@@ -134,8 +130,8 @@ export class WeeklyPlanner extends React.Component {
           {filteredTemplates.map((template, i) => (
             <TemplateEntry 
               key={template.templateID} 
-              onClick={()=>{this.handleAddTemplateToWeeklyPlan(template.templateID)}} 
-              buttonText={'Add Template to Plan'}
+              addTemplate={()=>{this.handleAddTemplateToWeeklyPlan(template.templateID)}} 
+              buttonText={'Add Template'}
               {...template}
             />
           ))}

@@ -43,7 +43,7 @@ const ExerciseRow = ({ exercise, id, currentOneRepMax, sets, onClick }) => (
             />
           </Col> 
           <Col xs={7} md={7}>
-            <h4> {`[ target reps: ${set.reps} ]`} </h4>
+            <h4> {`[ target reps: ${set.targetReps} ]`} </h4>
           </Col> 
         </Row>
       )}

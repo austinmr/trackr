@@ -22,38 +22,6 @@ export class Results extends React.Component {
     selectedExercise: null, 
   }
 
-  // handleTabSelect(eventKey) {
-  //   this.setState({activeKey: eventKey}); 
-  // }
-
-  // _renderNavigationBar(){
-  //   return (
-  //     <Nav bsStyle="tabs" justified onSelect={this.handleTabSelect.bind(this)} style={{marginTop: 20}}>
-  //       <NavItem eventKey={1} title="Workouts" disabled>Workouts</NavItem>
-  //       <NavItem eventKey={2} title="Templates">Templates</NavItem>
-  //       <NavItem eventKey={3} title="Following" disabled>Friends</NavItem>
-  //       <NavItem eventKey={4} title="Achievements" disabled>Achievements <Badge>{Math.floor(Math.random() * 100)}</Badge></NavItem>
-  //     </Nav>
-  //   )
-  // }
-
-  // _renderActiveComponent(){
-  //   const { templates } = this.props; 
-  //   if (this.state.activeKey === 1) {
-  //     // return (
-  //     //   // workouts.map((workout, i) => (
-  //     //   //   <WorkoutEntry key={workout.id} workout={workout} onClick={() => {viewWorkout(workout)}} />
-  //     //   // ))
-  //     // )
-  //   } else if (this.state.activeKey === 2) {
-  //     return (
-  //       templates.map((template, i) => (
-  //         <TemplateEntry key={template.id} onClick={()=>{this.handleCreateWorkout(template)}} {...template}/>
-  //       ))
-  //     )
-  //   }
-  // }
-
   handleSelectExercise = (exercise) => {
     this.setState({selectedExercise: exercise}); 
   }
@@ -110,10 +78,3 @@ const mapStateToProps = (state, { params }) => ({
 
 
 export default connect(mapStateToProps, null)(Results)
-
-  
-
-            // <h2> Click Here to Start A New Workout! </h2> 
-            // <Button className="workout-button" bsSize="large" onClick={(e)=>{this.handleCreateTemplate(username)}}> New Workout </Button> 
-            // <Button className="template-button" bsSize="large" onClick={(e)=>{this.handleCreateTemplate(username)}}> New Workout Template </Button> 
-          // <p>{JSON.stringify(selectedExercise)} </p>

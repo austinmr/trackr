@@ -33,9 +33,9 @@ export class AddSet extends React.Component {
   }
 
   handleAddSetRange = (e) => {
-    e.preventDefault() 
-    const repRange = presets[`${e.target.id}`]
     const { exerciseId, dispatchAddSet } = this.props;
+    let repRange = e.target.value
+    repRange = repRange.split(',')
 
     repRange.map((reps) => {
       return dispatchAddSet(exerciseId, reps)
@@ -68,13 +68,16 @@ export class AddSet extends React.Component {
               </Button>
             </Col>
           </FormGroup>
-          <Col xs={2} md={2}>
-            <DropdownButton title={'Presets'} id={'Presets-Dropdown'}>
-              <MenuItem eventKey="1" id="1" active onClick={e => this.handleAddSetRange(e)}>[ 14 - 10 - 6 - 10 - 14 ]</MenuItem>
-              <MenuItem eventKey="2">Another action</MenuItem>
-              <MenuItem eventKey="3">Active Item</MenuItem>
-              <MenuItem eventKey="4">Separated link</MenuItem>
-            </DropdownButton>
+          <Col xs={4} md={4}>
+            <FormGroup>
+              <ControlLabel style={{fontSize: '16px'}}>Rep Presets</ControlLabel>
+              <FormControl componentClass="select" placeholder="select" id="templateType" onChange={(e) => this.handleAddSetRange(e)}>
+                <option value="select">select</option>
+                {presets.map((preset, i) => (
+                  <option key={i} value={preset}>{`${preset}`}</option>
+                ))}
+              </FormControl>
+            </FormGroup>
           </Col>
         </Row>
       </Form>

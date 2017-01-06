@@ -22,7 +22,7 @@ export class AddExerciseToDB extends React.Component {
     if (!exercise) {
       return;
     }
-    if (exerciseType) {
+    if (exerciseType && exerciseType !== 'select') {
       exercise = `${exercise} [${exerciseType}]`;
     }
     putNewExercise(exercise);
@@ -51,6 +51,7 @@ export class AddExerciseToDB extends React.Component {
               <option value="barbell">barbell</option>
               <option value="dumbbell">dumbbell</option>
               <option value="machine">machine</option>
+              <option value="smith machine">smith machine</option>
             </FormControl>
             <Button type="submit"> Add Exercise </Button>
           </FormGroup> 

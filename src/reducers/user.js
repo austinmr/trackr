@@ -132,11 +132,6 @@ function plans (state = {
           action.response.result
         ]
       }
-    case UPDATE_USER_PLAN_SUCCESS:
-      return {
-        ...state,
-        isValid: false
-      }
     default:
       return state
   }

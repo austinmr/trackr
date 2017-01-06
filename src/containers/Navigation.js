@@ -15,7 +15,12 @@ class NavigationBar extends React.Component {
         <Navbar style={{ 'marginBottom': '2px', height: '80px', background: 'black'}}>
           <Navbar.Header>
             <Navbar.Brand>
-              <a style={{'marginTop': '20px', 'fontSize': '40px', 'fontFamily': 'ModernSans', 'color':'white'}}>TRACKR</a>
+              <a 
+              style={{'marginTop': '20px', 'fontSize': '40px', 'fontFamily': 'ModernSans', 'color':'white'}} 
+              onClick={(e) => {this.handleNavigation(e)}}
+              title={'/User'}>
+              TRACKR
+              </a>
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>

@@ -86,19 +86,20 @@ export const putNewUserExerciseSuccess = (response) => {
   }
 }
 
-export const putNewExerciseFailure = (userID, exerciseID, exerciseName, oneRepMax) => {
+export const putNewExerciseFailure = (userID, exerciseID, exerciseName, oneRepMax, targetOneRepMax) => {
   return {
     type: PUT_NEW_USER_EXERCISE_FAILURE,
     userID, 
     exerciseID,
     exerciseName,
     oneRepMax,
+    targetOneRepMax
   }
 }
 
-export const putNewUserExercise = (userID, exerciseID, exerciseName, oneRepMax) => (dispatch) => {
+export const putNewUserExercise = (userID, exerciseID, exerciseName, oneRepMax, targetOneRepMax) => (dispatch) => {
   dispatch(putNewUserExerciseRequest(userID, exerciseID, exerciseName, oneRepMax))
-  return exercisesAPI.putNewUserExercise(userID, exerciseID, exerciseName, oneRepMax).then((response) => {
+  return exercisesAPI.putNewUserExercise(userID, exerciseID, exerciseName, oneRepMax, targetOneRepMax).then((response) => {
     const normalizedResponse = normalize(response.Attributes, exercisesAPI.exercise)
     console.log('RESPONSE')
     console.log(response); 

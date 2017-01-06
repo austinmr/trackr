@@ -25,9 +25,9 @@ export class UserExerciseData extends React.Component {
     }); 
   }
 
-  handleAddUserExercise = (max) => {
+  handleAddUserExercise = (max, targetOneRepMax) => {
     const { userID, exerciseID, exerciseName, putNewUserExercise } = this.props; 
-    putNewUserExercise(userID, exerciseID, exerciseName, max); 
+    putNewUserExercise(userID, exerciseID, exerciseName, max, targetOneRepMax); 
     this.setState({showModal: false})
   }
 
@@ -55,7 +55,7 @@ export class UserExerciseData extends React.Component {
   render() {
     return (
       <Row>
-        <Col xsOffset={2} xs={10} md={10} mdOffset={2}>
+        <Col xs={12} md={12}>
           {this._renderOneRepMaxCalculator()}
         </Col>
       </Row>
@@ -71,8 +71,8 @@ const mapStateToProps = (state, { exerciseID, exerciseName }) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  putNewUserExercise: (userID, exerciseID, exerciseName, max) => {
-    dispatch(putNewUserExercise(userID, exerciseID, exerciseName, max))
+  putNewUserExercise: (userID, exerciseID, exerciseName, max, target) => {
+    dispatch(putNewUserExercise(userID, exerciseID, exerciseName, max, target))
   },
 }) 
 

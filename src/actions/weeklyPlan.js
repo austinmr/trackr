@@ -1,8 +1,14 @@
-import { CREATE_WEEKLY_PLAN, EDIT_WEEKLY_PLAN, USE_WEEKLY_PLAN, SAVE_WEEKLY_PLAN, ADD_TEMPLATE } from '../constants/ActionTypes'
-import { v4 } from 'uuid'
-import { getTemplatesInPlanMiddleware, getExercisesInPlanMiddleware, getUserExercisesMiddleware } from '../reducers/root'
-// import { calculateWeight, calculate1RM, calculateAverage1RM, setCompletion, totalExerciseWeight } from '../utils/calculators'
+import { getTemplatesInPlanMiddleware, getUserExercisesMiddleware } from '../reducers/root'
+import { formatVolumeDeloadExerciseObject, formatWeightDeloadExerciseObject } from './deload'
 import { calculateWeight } from '../utils/calculators'
+import { v4 } from 'uuid'
+import { 
+  CREATE_WEEKLY_PLAN, 
+  EDIT_WEEKLY_PLAN, 
+  USE_WEEKLY_PLAN, 
+  SAVE_WEEKLY_PLAN, 
+  ADD_TEMPLATE 
+} from '../constants/ActionTypes'
 
 export const createWeeklyPlan = (userID) => {
   return {
@@ -22,21 +28,18 @@ export const editWeeklyPlan = (userID, planID, planName, templates) => {
   }
 }
 
-export const useWeeklyPlan = (userID, planID, planName, templates) => {
+export const useWeeklyPlan = (userID, planID, planName, exportObject) => {
   return {
     type: USE_WEEKLY_PLAN,
     userID, 
     planID,
     planName,
-    templates, 
+    exportObject, 
   }
 }
 
 const formatExerciseObject = (exercise, userExercises) => {
-  // console.log(exercise); 
-  // console.log(userExercises); 
   const userExerciseObject = userExercises[`${exercise.id}`]; 
-  // console.log(userExerciseObject)
   const currentOneRepMax = parseInt(userExerciseObject.oneRepMax); 
 
   return {
@@ -55,31 +58,57 @@ const formatExerciseObject = (exercise, userExercises) => {
   }
 }
 
-export const createExportFromPlanMiddleware = (userID, planID, planName, templates) => {
+// export const createExportFromPlanMiddleware = (userID, planID, planName, templates, deload) => {
+//   return (dispatch, getState) => {
+//     console.log('firing middleware call')
+//     console.log('DELOAD: ', deload, '\n\n'); 
+
+//     const state = getState(); 
+//     let templateExercises = getTemplatesInPlanMiddleware(state, templates)
+//     console.log(templateExercises); 
+//     let userExercises = getUserExercisesMiddleware(state)
+//     console.log(userExercises); 
+//     // Object.keys(templateExercises).forEach((day) => {
+//     //   day.exercises.map((exercise) => {
+//     //     formatExerciseObject(exercise, userExercises)
+//     //   })
+//     // })
+//     Object.keys(templateExercises).forEach((day) => {
+//       console.log(day); 
+//       templateExercises[day].exercises = templateExercises[day].exercises.map((exercise) => {
+//         return formatExerciseObject(exercise, userExercises)
+//       })
+//     })
+//     console.log('FORMATTED\n\n')
+//     console.log(templateExercises)
+//     // let exercises = getExercisesInPlanMiddleware(state, templates)
+//     // const userExercisesPlan = getUserExercisesInPlanMiddleware(state, exercises); 
+//     // console.log(userExercisesWorkout);
+//     dispatch(useWeeklyPlan(userID, planID, planName, templateExercises)); 
+//   }
+// }
+
+export const createExportFromPlanMiddleware = (userID, planID, planName, templates, deload) => {
   return (dispatch, getState) => {
-    // console.log('firing middleware call')
     const state = getState(); 
     let templateExercises = getTemplatesInPlanMiddleware(state, templates)
-    console.log(templateExercises); 
     let userExercises = getUserExercisesMiddleware(state)
-    console.log(userExercises); 
-    // Object.keys(templateExercises).forEach((day) => {
-    //   day.exercises.map((exercise) => {
-    //     formatExerciseObject(exercise, userExercises)
-    //   })
-    // })
+
+    let format; 
+    if (deload === 'Volume') {
+      format = formatVolumeDeloadExerciseObject; 
+    } else if (deload === 'Weight') {
+      format = formatWeightDeloadExerciseObject
+    } else {
+      format = formatExerciseObject;
+    }
+
     Object.keys(templateExercises).forEach((day) => {
-      console.log(day); 
       templateExercises[day].exercises = templateExercises[day].exercises.map((exercise) => {
-        return formatExerciseObject(exercise, userExercises)
+        return format(exercise, userExercises)
       })
     })
-    console.log('FORMATTED\n\n')
-    console.log(templateExercises)
-    // let exercises = getExercisesInPlanMiddleware(state, templates)
-    // const userExercisesPlan = getUserExercisesInPlanMiddleware(state, exercises); 
-    // console.log(userExercisesWorkout);
-    // dispatch(useWeeklyPlan(userID, planID, planName, templates)); 
+    dispatch(useWeeklyPlan(userID, planID, planName, templateExercises)); 
   }
 }
 

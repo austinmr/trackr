@@ -5,6 +5,8 @@ import { browserHistory } from 'react-router';
 import { getWorkoutsObjectsArray, getTemplatesObjectsArray, getExercisesObjectsArray, getPlansObjectsArray } from '../reducers/root'
 import { createTemplate } from '../actions/templates'
 import { createWorkoutFromTemplateMiddleware } from '../actions/workouts'
+import { createWeightDeloadFromTemplateMiddleware, createVolumeDeloadFromTemplateMiddleware } from '../actions/deload'
+
 import { getAllUserWorkoutsConditional } from '../actions/userWorkouts'
 import { getAllUserTemplatesConditional } from '../actions/userTemplates'
 import { getAllUserExercisesConditional } from '../actions/userExercises2'
@@ -13,7 +15,7 @@ import { searchAllExercises } from '../actions/allExercises'
 import { createWeeklyPlan, editWeeklyPlan, useWeeklyPlan, createExportFromPlanMiddleware } from '../actions/weeklyPlan'
 
 // App Components 
-import TemplateEntry from '../components/TemplateEntry'
+import TemplateEntry from '../components/UserProfile/TemplateEntry'
 import WorkoutEntry from '../components/UserProfile/WorkoutEntry'
 import PlanEntry from '../components/UserProfile/PlanEntry'
 
@@ -70,6 +72,30 @@ export class UserProfile extends React.Component {
     }
   }
 
+  handleCreateVolumeDeload = (template) => {
+    const { userID, username, createVolumeDeload } = this.props; 
+    const exercises = template.exercises.map((exercise) => exercise.id);
+    console.log(exercises); 
+    createVolumeDeload(userID, username, template, exercises);
+
+    // Prevent 'SecurityError' message from Jest 
+    if (process.env.NODE_ENV !== 'test') {
+      browserHistory.push(`/Workout/${username}`);
+    }
+  }
+
+  handleCreateWeightDeload = (template) => {
+    const { userID, username, createWeightDeload } = this.props; 
+    const exercises = template.exercises.map((exercise) => exercise.id);
+    console.log(exercises); 
+    createWeightDeload(userID, username, template, exercises);
+
+    // Prevent 'SecurityError' message from Jest 
+    if (process.env.NODE_ENV !== 'test') {
+      browserHistory.push(`/Workout/${username}`);
+    }
+  }
+
   handleCreateWeeklyPlan = () => {
     const { userID, username, createWeeklyPlan } = this.props; 
     createWeeklyPlan(userID);
@@ -103,11 +129,11 @@ export class UserProfile extends React.Component {
     }
   }
 
-  handleGenerateWorkouts = (plan) => {
+  handleGenerateWorkouts = (plan, deload) => {
     console.log('Generating workouts')
     const { createExportFromPlanMiddleware } = this.props; 
     const { userID, weeklyPlanID, weeklyPlanName, planTemplates } = plan; 
-    createExportFromPlanMiddleware(userID, weeklyPlanID, weeklyPlanName, planTemplates);
+    createExportFromPlanMiddleware(userID, weeklyPlanID, weeklyPlanName, planTemplates, deload);
 
     if (process.env.NODE_ENV !== 'test') {
       browserHistory.push(`/Export/${weeklyPlanID}`);
@@ -142,7 +168,10 @@ export class UserProfile extends React.Component {
         templates.map((template, i) => (
           <TemplateEntry 
             key={template.templateID} 
-            onClick={()=>{this.handleCreateWorkout(template)}} 
+            buttonText={'Start Workout'}
+            createWorkout={()=>{this.handleCreateWorkout(template)}} 
+            createVolumeDeload={()=>this.handleCreateVolumeDeload(template)}
+            createWeightDeload={()=>this.handleCreateWeightDeload(template)}
             {...template}
           />
         ))
@@ -154,7 +183,9 @@ export class UserProfile extends React.Component {
           <PlanEntry 
             key={i} 
             onClick={()=>{this.handleEditWeeklyPlan(plan)}}
-            generateWorkouts={()=>{this.handleGenerateWorkouts(plan)}} 
+            genWorkouts={()=>{this.handleGenerateWorkouts(plan, 'None')}} 
+            genVolumeDeload={()=>{this.handleGenerateWorkouts(plan, 'Volume')}}
+            genWeightDeload={()=>{this.handleGenerateWorkouts(plan, 'Weight')}}
             {...plan}
           />
         ))
@@ -202,6 +233,12 @@ const mapDispatchToProps = (dispatch) => ({
   createWorkoutFromTemplate: (userID, username, template, userExercises) => {
     dispatch(createWorkoutFromTemplateMiddleware(userID, username, template, userExercises))
   },
+  createVolumeDeload: (userID, username, template, userExercises) => {
+    dispatch(createVolumeDeloadFromTemplateMiddleware(userID, username, template, userExercises))
+  },
+  createWeightDeload: (userID, username, template, userExercises) => {
+    dispatch(createWeightDeloadFromTemplateMiddleware(userID, username, template, userExercises))
+  },
   getAllUserWorkouts: (id) => {
     dispatch(getAllUserWorkoutsConditional(id))
   },
@@ -226,20 +263,10 @@ const mapDispatchToProps = (dispatch) => ({
   useWeeklyPlan: (userID, planID, planName, templates) => {
     dispatch(useWeeklyPlan(userID, planID, planName, templates))
   }, 
-  createExportFromPlanMiddleware: (userID, planID, planName, templates) => {
-    dispatch(createExportFromPlanMiddleware(userID, planID, planName, templates))
+  createExportFromPlanMiddleware: (userID, planID, planName, templates, deload) => {
+    dispatch(createExportFromPlanMiddleware(userID, planID, planName, templates, deload))
   }, 
 }) 
 
-const UserProfileContainer = connect(mapStateToProps, mapDispatchToProps)(UserProfile)
-
-export default UserProfileContainer 
-
-// <h1>WORKOUTS</h1>
-// <p>{JSON.stringify(workouts)}</p>
-// <h1>TEMPLATES</h1>
-// <p>{JSON.stringify(templates)}</p>
-// <h1>EXERCISES</h1>
-// <p>{JSON.stringify(exercises)}</p>
-// <Button className="workout-button" bsSize="large" onClick={(e)=>{this.handleCreateWorkout()}}> New Workout </Button> 
-
+export default connect(mapStateToProps, mapDispatchToProps)(UserProfile)
+ 

@@ -22,8 +22,11 @@ export class AddExercise extends React.Component {
   }
 
   handleChange = (e) => {
+    let exercise = e.target.value; 
+    exercise = exercise.toLowerCase(); 
+
     this.setState({
-      [`${e.target.id}`]: e.target.value,
+      exercise: exercise,
     }); 
   }
 
@@ -67,7 +70,6 @@ export class AddExercise extends React.Component {
           <FormControl type="text" id="exercise" placeholder='Exercise' onChange={e => this.handleChange(e)} value={this.state.exercise} style={{margin: '0 auto', width: '210px', textAlign: 'center', marginBottom: '5px'}}/>
         </Form>
         {this._renderExerciseSearchList()}
-        <p>{JSON.stringify(this.props.exerciseSearchResults)}</p>
       </Row> 
     )
   }

@@ -36,6 +36,11 @@ export function putNewUserWorkout(workout) {
   console.log(workout); 
   const { id, userID, username, templateID, exercises } = workout; 
   const date = JSON.stringify(workout.date); 
+  let deload = 'false'; 
+  if (workout.deload !== undefined) {
+    deload = workout.deload; 
+  }
+
   const params = {
     TableName: "Users_Workouts", 
     Item: {
@@ -44,7 +49,8 @@ export function putNewUserWorkout(workout) {
       "username": username,
       "templateID": templateID, 
       "workoutDate": date, 
-      "exercises": exercises
+      "exercises": exercises,
+      "deload": deload
     }
   }
   const putNewUserWorkoutPromise = docClient.put(params).promise(); 

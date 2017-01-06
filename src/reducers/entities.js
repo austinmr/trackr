@@ -11,6 +11,7 @@ import {
   PUT_NEW_EXERCISE_SUCCESS,
   GET_ALL_USER_PLANS_SUCCESS, 
   PUT_NEW_USER_PLAN_SUCCESS,
+  UPDATE_USER_PLAN_SUCCESS
 } from '../constants/ActionTypes'
 
 import _ from 'underscore'
@@ -107,6 +108,11 @@ const plans = (state, action) => {
       ...state, 
       ...action.response.entities.plans
     }
+  case UPDATE_USER_PLAN_SUCCESS: 
+    return {
+      ...state, 
+      ...action.response.entities.plans
+    }
     default: 
       return state; 
   }
@@ -162,6 +168,7 @@ const entities = (state = { users: {}, exercises: {}, workouts: {}, templates: {
       }
     case GET_ALL_USER_PLANS_SUCCESS: 
     case PUT_NEW_USER_PLAN_SUCCESS:
+    case UPDATE_USER_PLAN_SUCCESS:
       return {
         ...state, 
         plans: plans(state.plans, action)

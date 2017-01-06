@@ -31,20 +31,21 @@ export const getAllUserExercises = (id) => {
   return getAllUserExercisesPromise; 
 }
 
-export const putNewUserExercise = (userID, exerciseID, exerciseName, oneRepMax) => {
-  console.log(userID, exerciseID, exerciseName, oneRepMax); 
+export const putNewUserExercise = (userID, exerciseID, exerciseName, oneRepMax, targetOneRepMax) => {
+  console.log(userID, exerciseID, exerciseName, oneRepMax, targetOneRepMax); 
   const params = {
     TableName: "Users_Exercises", 
     Key: {
       "userID": userID,
       "exerciseID": exerciseID
     }, 
-    UpdateExpression: "set oneRepMax = :orm, MRW = :mrw, exerciseName = :exer",
+    UpdateExpression: "set oneRepMax = :orm, MRW = :mrw, exerciseName = :exer, targetOneRepMax = :tar",
     ConditionExpression: "attribute_not_exists(exerciseID)",
     ExpressionAttributeValues: {
       ":orm": oneRepMax, 
       ":mrw": {},
-      ":exer": exerciseName
+      ":exer": exerciseName, 
+      ":tar": targetOneRepMax
     },
     ReturnValues: "ALL_NEW"
   }
