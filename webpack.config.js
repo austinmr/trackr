@@ -14,7 +14,6 @@ var config = {
   require.resolve('react-dev-utils/webpackHotDevClient'),
   paths.appIndexJs
   ],
-
   output: {
     path: BUILD_DIR,
     pathinfo: true, 
@@ -37,7 +36,21 @@ var config = {
       {
         test: /\.json$/,
         loader: 'json'
-      }
+      },
+      {
+        test: /\.(jpg|png|ttf)$/,
+        loader: 'file-loader',
+        options: {
+          limit: 25000
+        }
+      },
+      {
+        test: /\.css$/,
+        loader: 'style!css?importLoaders=1!postcss'
+      },
+    ],
+    noParse: [
+      /aws\-sdk/
     ]
   },
 

@@ -1,0 +1,163 @@
+
+body {
+  font-family: 'Source Sans Pro';
+}
+
+.profileBackground {
+  padding: 0;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+}
+
+.profileGrid {
+  background: rgba(0, 0, 0, 0.7);
+  margin-top: 100px; 
+}
+
+.profileHeader {
+  border-bottom: 7px solid rgba(250, 250, 250, 0.9);
+}
+
+.profileHeader h1 {
+  margin-bottom: 0;
+  padding: 0;
+  font-weight: 600;
+  font-size: 60px;
+  color: rgba(250, 250, 250, 0.9);
+}
+
+.profileDetails {
+  color: rgba(250, 250, 250, 0.9);
+  margin-top: 15px;
+}
+
+.userImgContainer {
+  display:flex;
+  justify-content: center
+}
+
+.profileDetails h2 {
+  font-size: 34px;
+  font-weight: 200;
+  display: inline;
+}
+
+.profileDetails h3 {
+  font-size: 34px;
+  display: inline;
+  font-weight: 600;
+}
+
+.userData {
+  margin-top: 7px;
+}
+
+.profileNav {
+  font-size: 20px;
+  font-weight: 200;
+  margin-top: 15px;
+  color: #E1E1E1;
+}
+
+.profileNav a {
+  color: #E1E1E1;
+}
+
+.profileNav .active{
+  background-color: #E1E1E1;
+  fill: #00FF00;
+  border: none;
+}
+
+.profileNav .active a {
+  font-weight: 600;
+  font-size: 24px;
+  color: #191919;
+  background-color: #E1E1E1 !important;
+} 
+
+/*.profileActivePanel {
+  background: #575757;
+}*/
+
+.profileActivePanel {
+  background: black;
+  border-color: #E1;
+  border-width: 5px;
+  border-radius: 1;
+  color: rgba(250, 250, 250, 0.9);
+}
+
+.profileActivePanelHeader {
+  border-bottom: 7px solid rgba(250, 250, 250, 0.9);
+}
+
+.profileActivePanelHeader h1 {
+  padding: 0px;
+  margin-bottom: 2px;
+  font-weight: 600;
+  font-size: 40px;
+}
+
+.profileActivePanel p {
+  padding: 5px;
+  margin-top: 10px;
+  font-size: 18px;
+}
+
+.profileActiveWell {
+  margin: 20px;
+  background: -webkit-linear-gradient(top, #252525 0%, #191919 100%);
+  box-shadow: inset 0px 0px 5px 2px black;
+  border: none;
+}
+
+.profileActiveEntry {
+  background: rgba(250, 250, 250, 0.9);
+  color: rgba(0, 0, 0, 0.9);
+}
+
+.profileActiveEntry .underline {
+  border-bottom: 7px solid rgba(0, 0, 0, 0.9);
+}
+
+.profileActiveEntry h1 {
+  padding: 0px;
+  margin-bottom: 2px;
+  font-weight: 600;
+  font-size: 30px;
+  display: inline;
+}
+
+.profileActiveEntry h2 {
+  font-size: 30px;
+  font-weight: 600;
+  color: gray;
+  display: inline;
+}
+
+.squareButton {
+  padding: 5;
+  margin-top: 15;
+  border: 2px solid white;
+  border-radius: 0;
+  font-family: 'Source Sans Pro';
+  font-size: 26px;
+  font-weight: 300;
+  color: rgba(250, 250, 250, 0.9);
+  background: black;
+}
+
+.squareButtonWhite {
+  padding: 5;
+  border: 5px solid black;
+  border-radius: 0;
+  font-family: 'Source Sans Pro';
+  font-size: 20px;
+  font-weight: 600;
+  color: black;
+  background: transparent;
+  margin: 5px;
+  width: 100%;
+}

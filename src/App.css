@@ -1,0 +1,58 @@
+\
+.App-logo {
+  animation: App-logo-spin infinite 20s linear;
+  height: 80px;
+}
+
+.App-header {
+  background-color: #222;
+  height: 150px;
+  padding: 20px;
+  color: white;
+}
+
+.App-intro {
+  font-size: large;
+}
+
+.navHeader {
+  font-family: 'ModernSans';
+  font-size: 22px;
+}
+
+@font-face {
+   font-family: 'ModernSans'; 
+   src: url('../assets/ModernSans.ttf');
+} 
+
+.squareButton {
+  font-family: 'Source Sans Pro'; 
+  border-radius: 0;
+  border: 2px black solid;
+}
+
+body {
+  font-family: 'Source Sans Pro';
+}
+
+.progress-bar {
+  background: #04BE78;
+}
+
+.progress {
+  background: 'black';
+}
+
+.resultsBar {
+  background: #4adda5;
+  backgroundColor: #4adda5;
+}
+
+.resultsBar .progress-bar {
+  background: #4adda5;
+  backgroundColor: #4adda5;
+}
+
+h4 {
+  color: 'blue';
+}
