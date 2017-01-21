@@ -1,3 +1,4 @@
+// CONSTANTS 
 import { SEARCH_ALL_EXERCISES_REQUEST, SEARCH_ALL_EXERCISES_SUCCESS, CREATE_TEMPLATE } from '../constants/ActionTypes'
 
 function allExercises (state = {

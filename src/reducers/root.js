@@ -9,6 +9,7 @@ import workout from './workouts'
 import results from './results'
 import performance from './performance'
 import weeklyPlan from './weeklyPlan'
+import program from './programsgi'
 
 
 // Refactoring out 
@@ -25,7 +26,8 @@ const app = combineReducers({
   allExercises,
   results, 
   performance, 
-  weeklyPlan
+  weeklyPlan,
+  program
 })
 
 export default app
@@ -62,27 +64,22 @@ export const getWorkoutDataForExerciseMiddleware = (state, exerciseID, workoutsA
 
 export const getUserExercisesInWorkout = (state) => {
   const exercises = state.workout.exercises.map(exercise => exercise.id)
-  // console.log('EXERCISES IN ROOT REDUCER:', exercises); 
   return fromEntities.getUserExercisesInWorkout(state.entities, exercises)
 }
 
-export const getExercisesInPlanMiddleware = (state, templates) => {
+// Potential problem
+export const getExercisesInPlanMiddleware = (state, templates) => 
   fromEntities.getExercisesInPlanMiddleware(state.entities, templates)
-}
 
+
+// TODO: DELETE TEMPLATE IN "PLAN" 
 export const getTemplatesInPlanMiddleware = (state, templates) => {
   return fromEntities.getTemplatesInPlanMiddleware(state.entities, templates)
 }
 
+export const getTemplatesInProgramMiddleware = (state, templates) => {
+  return fromEntities.getTemplatesInProgramMiddleware(state.entities, templates)
+}
+
 export const getUserExercisesMiddleware = (state) => 
   fromEntities.getUserExercisesMiddleware(state.entities)
-// export const getUserExercise = (state, exerciseID) => 
-//   fromUserExercises.getUserExercise(state.user.exercises, exerciseID)
-
-
-// export const getUserExercisesInWorkoutMiddleware = (state, exercises) => 
-//   fromUserExercises.getUserExercisesInWorkout(state.userExercises, exercises)
-
-// export const getExerciseSearchList = (state) => 
-//   fromdbExercises.getExerciseSearchList(state.dbExercises)
-

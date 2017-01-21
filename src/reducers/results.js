@@ -1,3 +1,4 @@
+// CONSTANTS 
 import { SET_WORKOUT_RESULTS } from '../constants/ActionTypes'
 
 function results(state = {}, action) {

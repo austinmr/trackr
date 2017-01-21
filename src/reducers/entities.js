@@ -1,7 +1,7 @@
 import { 
   LOGIN_USER, 
-  SAVE_TEMPLATE, 
-  RECEIVE_ALL_USER_WORKOUTS, 
+  // SAVE_TEMPLATE, 
+  // RECEIVE_ALL_USER_WORKOUTS, 
   GET_ALL_USER_WORKOUTS_SUCCESS, 
   GET_ALL_USER_TEMPLATES_SUCCESS, 
   GET_ALL_USER_EXERCISES_SUCCESS, 
@@ -11,7 +11,10 @@ import {
   PUT_NEW_EXERCISE_SUCCESS,
   GET_ALL_USER_PLANS_SUCCESS, 
   PUT_NEW_USER_PLAN_SUCCESS,
-  UPDATE_USER_PLAN_SUCCESS
+  UPDATE_USER_PLAN_SUCCESS,
+  GET_ALL_USER_PROGRAMS_SUCCESS, 
+  PUT_NEW_USER_PROGRAM_SUCCESS,
+  UPDATE_USER_PROGRAM_SUCCESS
 } from '../constants/ActionTypes'
 
 import _ from 'underscore'
@@ -49,13 +52,6 @@ function workouts(state, action) {
 
 const templates = (state, action) => {
   switch (action.type) {
-    case SAVE_TEMPLATE:
-      return {
-        ...state,
-        [action.template.id]: {
-          ...action.template
-        }
-      }
     case PUT_NEW_USER_TEMPLATE_SUCCESS:
     case GET_ALL_USER_TEMPLATES_SUCCESS:
       if (!action.response.result.length) {
@@ -104,14 +100,32 @@ const plans = (state, action) => {
       }      
     }
   case PUT_NEW_USER_PLAN_SUCCESS: 
-    return {
-      ...state, 
-      ...action.response.entities.plans
-    }
   case UPDATE_USER_PLAN_SUCCESS: 
     return {
       ...state, 
       ...action.response.entities.plans
+    }
+    default: 
+      return state; 
+  }
+}
+
+const programs = (state, action) => {
+  switch (action.type) {
+  case GET_ALL_USER_PROGRAMS_SUCCESS:
+    if (!action.response.result.length) {
+      return state; 
+    } else {
+      return {
+        ...state,
+        ...action.response.entities.programs
+      }      
+    }
+  case PUT_NEW_USER_PROGRAM_SUCCESS: 
+  case UPDATE_USER_PROGRAM_SUCCESS: 
+    return {
+      ...state, 
+      ...action.response.entities.programs
     }
     default: 
       return state; 
@@ -136,7 +150,7 @@ const allExercises = (state, action) => {
   }
 }
 
-const entities = (state = { users: {}, exercises: {}, workouts: {}, templates: {}, allExercises: {} }, action) => {
+const entities = (state = { users: {}, exercises: {}, workouts: {}, templates: {}, allExercises: {}, plans: {}, programs: {} }, action) => {
   switch (action.type) {
     case LOGIN_USER:
       return {
@@ -180,13 +194,14 @@ const entities = (state = { users: {}, exercises: {}, workouts: {}, templates: {
 
 export default entities
 
+
+////////////////////////////////////////////////////////////////////////////////
+////////////// ENTITY SELECTORS 
+
+// USED BY -> 
 export const getExercisesFromTemplate = (state, template) => {
   return state.templates[template].exercises; 
 }
-
-// export const getTemplatesObjectArray = (state) => {
-//   return Object.keys(state.templates).map((key) => state.templates[key])
-// }
 
 export const getWorkoutsObjectsArray = (state, workouts) => {
   return workouts.map(workoutID => state.workouts[`${workoutID}`])
@@ -275,6 +290,30 @@ export const getWorkoutDataForExercise = (state, exerciseID, workoutsArray) => {
 // }
 
 export const getTemplatesInPlanMiddleware = (state, weekObject) => {
+  console.log(weekObject); 
+  let exercisesArray = []; 
+  let result = {}
+  Object.keys(weekObject).forEach((day) => {
+    // console.log(day)
+    let templateID = weekObject[day]
+    // console.log(templateID); 
+    if (templateID !== null) {
+      let exercises = state.templates[templateID].exercises
+      exercises.forEach((exercise) => {
+        exercisesArray.push(exercise.id)
+      })
+      result[day] = {
+        templateID: templateID,
+        exercises: exercises
+      }
+    }
+  })
+  // result.exercisesArray = exercisesArray; 
+  console.log('RESULT:', result); 
+  return result; 
+}
+
+export const getTemplatesInProgramMiddleware = (state, weekObject) => {
   console.log(weekObject); 
   let exercisesArray = []; 
   let result = {}

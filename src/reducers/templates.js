@@ -1,4 +1,5 @@
-import { CREATE_TEMPLATE, SAVE_TEMPLATE, ADD_EXERCISE, ADD_SET } from '../constants/ActionTypes'
+// CONSTANTS 
+import { CREATE_TEMPLATE, ADD_EXERCISE, ADD_SET } from '../constants/ActionTypes'
 
 const set = (state, action) => {
   switch (action.type) {

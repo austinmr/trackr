@@ -1,3 +1,4 @@
+// CONSTANTS 
 import { SET_PERFORMANCE_EXERCISE, RENDER_PERFORMANCE_EXERCISE } from '../constants/ActionTypes'
 
 function performance (state = {

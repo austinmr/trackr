@@ -1,5 +1,5 @@
-import { CREATE_WORKOUT_FROM_TEMPLATE, CREATE_DELOAD_FROM_TEMPLATE, ADD_SET_REPS, PUT_NEW_USER_WORKOUT_SUCCESS } from '../constants/ActionTypes'
-
+// CONSTANTS 
+import { CREATE_WORKOUT_FROM_TEMPLATE, CREATE_DELOAD_FROM_TEMPLATE, ADD_SET_REPS } from '../constants/ActionTypes'
 
 const set = (state, action) => {
   switch (action.type) {
@@ -68,8 +68,6 @@ const workouts = (state = {}, action ) => {
         ...state,
         exercises: exercises(state.exercises, action)
       }
-    case PUT_NEW_USER_WORKOUT_SUCCESS: 
-      return {}
     default: 
       return state
   }
