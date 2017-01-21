@@ -25,7 +25,6 @@ export const convertExercisesArrayToCSV = (exercises) => {
     })
     csvContent += weightCSV + lineDelimiter + repsCSV + lineDelimiter; 
   }); 
-  console.log(csvContent); 
   return csvContent; 
 }
 
@@ -42,7 +41,7 @@ export const exercisesArrayWeightCSV = (exercises) => {
     })
     csvContent += weightCSV + lineDelimiter; 
   }); 
-  console.log(csvContent); 
+  // console.log(csvContent); 
   return csvContent; 
 }
 

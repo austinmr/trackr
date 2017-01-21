@@ -62,7 +62,7 @@ export const getWorkoutDataForExerciseMiddleware = (state, exerciseID, workoutsA
 
 export const getUserExercisesInWorkout = (state) => {
   const exercises = state.workout.exercises.map(exercise => exercise.id)
-  console.log('EXERCISES IN ROOT REDUCER:', exercises); 
+  // console.log('EXERCISES IN ROOT REDUCER:', exercises); 
   return fromEntities.getUserExercisesInWorkout(state.entities, exercises)
 }
 

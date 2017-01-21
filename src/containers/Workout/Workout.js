@@ -26,7 +26,6 @@ export class Workout extends React.Component {
   handleSaveWorkout(e) {
     e.preventDefault();
     const { workout, userExercises, dispatchTrackWorkout } = this.props; 
-    console.log('USER EXERCISES FROM PROPS: ', userExercises); 
     dispatchTrackWorkout(workout, userExercises); 
     if (process.env.NODE_ENV !== 'test') {
       browserHistory.push(`/Results/${workout.id}`);
@@ -48,7 +47,6 @@ export class Workout extends React.Component {
         <Col xs={8} md={8}>
           <ExerciseList exercises={this.props.exercises}/>
         </Col>
-        <p>{JSON.stringify(this.props.userExercises)}</p>
         <a href={encodeURI(csvContent)} download> DOWNLOAD </a>
       </Grid>
     );

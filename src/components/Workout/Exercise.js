@@ -3,15 +3,11 @@ import AddSetReps from '../../containers/Workout/AddSetReps'
 import { Row, Col, Panel, Well } from 'react-bootstrap';
 
 const ExerciseRow = ({ exercise, id, currentOneRepMax, sets, onClick }) => (
-  <Panel> 
-    <Row style={{borderBottom: '1px solid black'}}> 
-      <Col xs={3} md={3}>
-      </Col>
-      <Col xs={6} md={6}>
-        <h4> {exercise} </h4> 
-      </Col>
-      <Col xs={3} md={3}>
-        <h4> {`Your 1RM: ${currentOneRepMax}`} </h4>
+  <Panel style={{borderRadius: 0}}> 
+    <Row style={{borderBottom: '1px solid black', background: 'black', color: 'white', fontFamily: 'Source Sans Pro'}}> 
+      <Col xs={12} md={12}>
+        <span> <h4 style={{display: 'inline'}}>EXERCISE</h4><h2 style={{display: 'inline'}}>{exercise} </h2> </span>
+        <h4> {`1RM: ${currentOneRepMax}`} </h4>
       </Col>
     </Row> 
     <Row style={{borderBottom: '1px solid black'}}> 

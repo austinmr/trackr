@@ -231,12 +231,12 @@ export const getUserExercisesMiddleware = (state) => {
 // }
 
 export const getUserExercisesInWorkout = (state, exercises) => {
-  console.log('EXERCISES:', exercises)
+  // console.log('EXERCISES:', exercises)
   const UserExercisesInWorkout = {}; 
   exercises.forEach((exerciseID) => {
     UserExercisesInWorkout[`${exerciseID}`] = state.exercises[`${exerciseID}`]; 
   }); 
-  console.log(UserExercisesInWorkout); 
+  // console.log(UserExercisesInWorkout); 
   return UserExercisesInWorkout; 
 }
 

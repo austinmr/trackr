@@ -60,18 +60,19 @@ export const updateUserExercisesFromWorkout = (userExercises) => {
     .filter(key => key !== 'newRecords')
     .forEach((key) => {
       const userExerciseObject = userExercises[key]; 
-      const { userID, exerciseID, oneRepMax, MRW } = userExerciseObject;    
+      const { userID, exerciseID, oneRepMax, MRW, workoutLog } = userExerciseObject;    
       const params = {
         TableName: "Users_Exercises", 
         Key: {
           "userID": userID,
           "exerciseID": exerciseID
         }, 
-        UpdateExpression: "set oneRepMax = :orm, MRW = :mrw",
+        UpdateExpression: "set oneRepMax = :orm, MRW = :mrw, workoutLog = :wl",
         ConditionExpression: "attribute_exists(exerciseID)",
         ExpressionAttributeValues: {
           ":orm": oneRepMax, 
-          ":mrw": MRW
+          ":mrw": MRW,
+          ":wl": workoutLog
         }
       }
       docClient.update(params, function(err, response) {

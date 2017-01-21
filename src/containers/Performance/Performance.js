@@ -50,8 +50,7 @@ export class Performance extends React.Component {
       return (
         <Well>
           {filteredUserExercisesArray.map((exercise) => {
-            const { exerciseID, exerciseName, MRW } = exercise; 
-            const { workoutLog } = MRW; 
+            const { exerciseID, exerciseName, MRW, workoutLog } = exercise; 
             return (
               <Panel key={exerciseID} onClick={() => {this.handleSelectExercise(exerciseID, workoutLog)}}> 
                 <p> {exerciseID} </p>
@@ -65,8 +64,7 @@ export class Performance extends React.Component {
       return (
         <Well>
           {userExercisesArray.map((exercise) => {
-            const { exerciseID, exerciseName, MRW } = exercise; 
-            const { workoutLog } = MRW; 
+            const { exerciseID, exerciseName, MRW, workoutLog } = exercise; 
             return (
               <Panel key={exerciseID} onClick={() => {this.handleSelectExercise(exerciseID, workoutLog)}}>  
                 <p> {exerciseID} </p>

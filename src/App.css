@@ -1,7 +1,4 @@
-.App {
-  text-align: center;
-}
-
+\
 .App-logo {
   animation: App-logo-spin infinite 20s linear;
   height: 80px;
@@ -25,7 +22,7 @@
 
 @font-face {
    font-family: 'ModernSans'; 
-   src: url('assets/ModernSans.ttf');
+   src: url('../assets/ModernSans.ttf');
 } 
 
 .squareButton {
@@ -39,11 +36,11 @@ body {
 }
 
 .progress-bar {
-  background: #4adda5;
+  background: #04BE78;
 }
 
 .progress {
-  background: 'white';
+  background: 'black';
 }
 
 .resultsBar {
@@ -59,6 +56,3 @@ body {
 h4 {
   color: 'blue';
 }
-
-/*font-family: 'Ubuntu', sans-serif;
-font-family: 'Source Sans Pro', sans-serif;*/

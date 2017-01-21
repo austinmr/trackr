@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
 import { loginUser } from '../actions/user' 
 
-import { Row, Col, Form, FormGroup, FormControl, ControlLabel, Button, Jumbotron} from 'react-bootstrap'
+import { Row, Col, Form, FormGroup, FormControl, ControlLabel, Button, Jumbotron, Panel } from 'react-bootstrap'
 
 export class LandingPage extends React.Component {
   static propTypes = {
@@ -37,12 +37,15 @@ export class LandingPage extends React.Component {
   render() {
     return (
       <Jumbotron style={{
-       'backgroundImage': 'url("https://cdn.muscleandstrength.com/sites/default/files/images/articles/barbell_2.jpg")',
+       'backgroundImage': 'url(https://s-media-cache-ak0.pinimg.com/originals/45/e9/18/45e918a4ac64084b5ea5a5e2d7b67471.jpg)',
        'backgroundSize': 'cover',
-       'height': 940
+       'height': 1000
       }}> 
         <Row>
-          <Col xs={4} xsOffset={8} md={4} mdOffset={8}> 
+          <h2> Peak Performance Through Metrics </h2>
+        </Row>
+        <Row>
+          <Col xs={4} md={4} xsOffset={8} mdOffset={8}> 
           <Form style={{height: '280px', width: '280px', borderRadius: '10px', backgroundColor: '#fff'}} onSubmit={e => this.loginUser(e)} >
             <FormGroup style={{padding: '10px', height: '280px', textAlign: 'center'}}>
               <ControlLabel style={{marginBottom: '10px', fontSize: '20px'}}>Log In To Trackr</ControlLabel>

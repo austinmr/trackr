@@ -63,9 +63,9 @@ export const setCompletion = sets => {
 export const calculatePerformancePercentage = (exercises) => {
   let percentage = exercises
     .map(exercise => exercise.percentageCompleted)
-    .reduce((a,b) => a.percentageCompleted + b.percentageCompleted)
-  console.log(percentage); 
-  percentage = Math.round(percentage/exercises.length) * 100; 
+    .reduce((a,b) => a + b)
+  // console.log(percentage); 
+  percentage = Math.round((percentage/exercises.length) * 100); 
   return percentage; 
 }
 
@@ -89,7 +89,7 @@ export const totalWorkoutWeight = (exercises) => {
 
 export const topExercise = (exercises) => {
   return exercises.reduce((a,b) => {
-    if (a.TotalWeight > b.totalWeight) {
+    if (a.totalWeight > b.totalWeight) {
       return a; 
     } else {
       return b; 
@@ -137,6 +137,27 @@ export const graphMaxValue = (currentOneRepMax) => {
   }
 }
 
+
+export const barGraphMaxValue = (currentOneRepMax) => {
+  if (currentOneRepMax > 400) {
+    return 500; 
+  } else if (currentOneRepMax > 300) {
+    return 400; 
+  } else if (currentOneRepMax > 250) {
+    return 300; 
+  } else if (currentOneRepMax > 200) {
+    return 250; 
+  } else if (currentOneRepMax > 150) {
+    return 200; 
+  } else if (currentOneRepMax > 100) {
+    return 150; 
+  } else if (currentOneRepMax > 50) {
+    return 100; 
+  } else {
+    return 50; 
+  }
+}
+
 export const formatDomain = (min, max) => {
   max = max - ( max % 5 ) + 5; 
   min = min - ( min % 5 ) - 5; 
@@ -149,7 +170,6 @@ export const formatDomain = (min, max) => {
     min = max - 25; 
     return [min, max]
   }
-  // return [min, max]
 } 
 
 export const formatDynamoDate = (date) => {

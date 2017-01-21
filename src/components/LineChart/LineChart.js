@@ -12,8 +12,8 @@ export default class LineGraph extends React.Component {
     const margin =  {top: 50, right: 50, bottom: 50, left: 50}; 
     const svgHeight = 700
     const svgWidth = 500
-    const height = 700 - margin.top - margin.bottom;
-    const width = 500 - margin.left - margin.right;
+    const height = svgHeight - margin.top - margin.bottom;
+    const width = svgWidth - margin.left - margin.right;
 
     let minY = d3.min(data, function(d) { return d.oneRepMax; })
     let maxY = d3.max(data, function(d) { return d.oneRepMax; })

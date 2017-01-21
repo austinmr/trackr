@@ -1,0 +1,211 @@
+body {
+  font-family: 'Source Sans Pro';
+}
+
+.resultsGrid {
+  padding: 0;
+  background: #191919;
+  height: 100%;
+}
+
+.resultsHeader {
+  border-bottom: 7px solid rgba(250, 250, 250, 0.9);
+}
+
+.resultsPanel {
+  background: rgba(0, 0, 0, 0.5);
+  color: rgba(250, 250, 250, 0.9);
+  border: none;
+}
+
+.resultsPanelRow {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.resultsPanel h1 {
+  margin-bottom: 0;
+  padding: 0;
+  font-weight: 600;
+  font-size: 60;
+}
+
+.resultsPanel h2 {
+  font-size: 40px;
+  font-weight: 200;
+  display: inline;
+}
+
+.resultsPanel h3 {
+  font-size: 40px;
+  display: inline;
+  font-weight: 600;
+}
+
+.resultsPanel p {
+  display: inline;
+}
+
+.resultsBar {
+  background: rgba(0, 0, 0, 0.6);
+  margin-top: 7px;
+  height: 30px;
+}
+
+.resultsBar .progress-bar {
+  background: #4adda5;
+  height: 30px;
+  font-family: 'Source Sans Pro';
+  font-size: 25px;
+  font-weight: 200;
+  display:flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.resultsGraph {
+  height: 1000px;
+}
+
+.resultsAccordion {
+  border: none;
+  padding: 0;
+  margin-left: 0;
+}
+
+.resultsAccordion > .panel-default {
+  background: transparent;
+  border: none;
+}
+
+.resultsAccordionPanel {
+  font-size: 40px;
+  display: inline;
+  font-weight: 600;
+}
+
+/*.resultsAccordionPanel .panel-heading {
+  background: transparent;
+  border-bottom: 3px ridge rgba(250, 250, 250, 0.9);
+  border-left: none;
+  border-radius: 0;
+}*/
+
+.resultsAccordionPanel .panel-heading {
+  background: transparent;
+  border-left: none;
+  border-radius: 0;
+  border-bottom: 1px solid transparent;
+  -webkit-border-image: -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 200, from(#fff), to(#000));
+  border-image-slice: 1;
+}
+
+.resultsAccordionPanel h4 {
+  font-size: 24px;
+  display: inline;
+  font-weight: 200;
+  color: rgba(250, 250, 250, 0.9);
+}
+
+.selectedPanel h4{
+  font-size: 30px;
+  display: inline;
+  font-weight: 600;
+  color: #4adda5;
+  text-align: right;
+}
+
+.resultsAccordionPanel > a:hover {
+  text-decoration: none;
+}
+
+.resultsAccordionPanel h5 {
+  font-size: 24px;
+  display: inline;
+  font-weight: 200;
+  color: rgba(250, 250, 250, 0.9);
+}
+
+.resultsGraph h1 {
+  font-weight: 600;
+  font-size: 60px;
+  color: rgba(250, 250, 250, 0.9);
+}
+
+.resultsGraphHeader {
+  border-bottom: 7px solid rgba(250, 250, 250, 0.9);
+  margin-bottom: 20px;
+}
+
+.resultsGraphContainer {
+  border: 7px solid rgba(250, 250, 250, 0.9);
+  background: #191919;
+  padding: 50;
+  border-radius: 0;
+}
+
+.resultsGraphPanel {
+  background: rgba(15, 15, 15, 0.6);
+  border: none;
+  height: 600px;
+  width: 750px;
+  text-align: center;
+}
+
+#resultBarGraph {
+  height: 625px;
+  width: 700px;
+  margin: 25;
+  padding: 10;
+}
+
+#resultBarGraph .axis text {
+  font-family: 'Source Sans Pro';
+  font-size: 22px;
+  font-weight: 200; 
+  color: white;
+  fill: white;
+}
+
+.gridlines line {
+  stroke: white;
+  stroke-width: 1;
+}
+
+.bar.unselected{
+  position: absolute;
+  fill: #191919;
+  stroke: rgba(250, 250, 250, 0.9);
+  stroke-width: 3;
+  stroke-radius: 0;
+  text-align: center;
+}
+
+.bar.selected{
+  position: absolute;
+  fill: #191919;
+  stroke: #4adda5;
+  stroke-width: 3;
+  stroke-radius: 0;
+  text-align: center;
+}
+
+.box {
+  width: 250px;
+  height: 250px;
+  background: #eee;
+  border: 20px solid transparent;
+  -moz-border-image: -moz-linear-gradient(top, #3acfd5 0%, #3a4ed5 100%);
+  -webkit-border-image: -webkit-linear-gradient(top, #3acfd5 0%, #3a4ed5 100%);
+  border-image: linear-gradient(to bottom, #3acfd5 0%, #3a4ed5 100%);
+  border-image-slice: 1;
+}
+
+/*.resultsPanel h3 {
+  font-size: 40px;
+  font-weight: 700;
+  color: #4adda5;
+  display: inline;
+}*/
+
+

@@ -19,10 +19,10 @@ export default ({weeklyPlanID, weeklyPlanName, complete, planTemplates, onClick,
   }
 
   return (
-      <Panel> 
+      <Panel className='profileActiveEntry'> 
         <Row height={50}> 
-          <Col xs={6} md={6}> 
-            <h3> {`Plan: ${weeklyPlanName}`} </h3> 
+          <Col xs={10} md={10} xsOffset={1} mdOffset={1} className='underline'> 
+            <h1> {`Plan: ${weeklyPlanName.toUpperCase()}`} </h1> 
           </Col> 
           <Col xs={6} md={6} style={{marginTop: 25}}> 
             <p>{JSON.stringify(planTemplates)}</p>

@@ -4,27 +4,36 @@ import { Popover, OverlayTrigger } from 'react-bootstrap';
 
 class Rect extends React.Component {
   state = {
-    labelHeight: 600,
-    fill: "gray"
+    labelHeight: 400,
+    fill: 'rgba(250, 250, 250, 0.9)',
+    stroke: 'rgba(250, 250, 250, 0.9)',
+    selected: 'unselected'
   }
 
   handleEntering = () => {
+    const { yValue } = this.props;
+    let labelHeight = yValue + 100; 
+
     this.setState({
-      labelHeight: 350,
-      fill: "aqua"
+      labelHeight: labelHeight,
+      fill: "#4adda5",
+      stroke: "#4adda5",
+      selected: 'selected'
     }); 
   }
 
   handleExiting = () => {
     this.setState({
-      labelHeight: 600,
-      fill: "gray"
+      labelHeight: 400,
+      fill: "rgba(250, 250, 250, 0.9)",
+      stroke: "rgba(250, 250, 250, 0.9)",
+      selected: 'unselected'
     }); 
   }
 
   render() {
-    const { height, width, x, y, xLabel, reps, weight, oneRepMax } = this.props; 
-    const { labelHeight, fill } = this.state; 
+    const { height, width, xValue, yValue, xLabel, reps, weight, oneRepMax } = this.props; 
+    const { labelHeight, fill, stroke, selected } = this.state; 
     const popoverHoverFocus = (
       <Popover id="popover-trigger-hover-focus" title={`${weight} lbs || ${reps} reps`}>
         <strong>One Rep Max:</strong> {`${oneRepMax}`}
@@ -40,13 +49,14 @@ class Rect extends React.Component {
         onExiting={this.handleExiting}>
       <g>
         <rect 
-          className="bar"
+          className={`bar ${selected}`}
           height={height} 
           width={width}
-          x={x}
-          y={y}
+          x={xValue}
+          y={yValue}
+          stroke={stroke}
           rx={4}
-          ry={4}> 
+          ry={4}>
         </rect>
         <Label
           x={xLabel}
