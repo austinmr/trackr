@@ -1,6 +1,4 @@
-import * as workoutsAPI from '../api/userWorkouts'
-import { normalize } from 'normalizr'
-
+// CONSTANTS 
 import { 
   GET_ALL_USER_WORKOUTS_REQUEST, 
   GET_ALL_USER_WORKOUTS_SUCCESS, 
@@ -10,6 +8,15 @@ import {
   PUT_NEW_USER_WORKOUT_FAILURE,
 } from '../constants/ActionTypes'
 
+// APIs + MIDDLEWARE
+import * as workoutsAPI from '../api/userWorkouts'
+
+// DEPENDENCIES
+import { normalize } from 'normalizr'
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////// GET ALL USER WORKOUTS
 export const getAllUserWorkoutsRequest = (id) => {
   return {
     type: GET_ALL_USER_WORKOUTS_REQUEST,
@@ -36,13 +43,10 @@ export const getAllUserWorkouts = (id) => (dispatch) => {
   dispatch(getAllUserWorkoutsRequest(id))
   return workoutsAPI.getAllUserWorkouts(id).then((response) => {
     const normalizedResponse = normalize(response.Items, workoutsAPI.arrayOfWorkouts)
-    console.log(response); 
-    console.log(response.Items); 
-    console.log(
-      'normalized response', 
-      normalizedResponse
-    ); 
-
+    // console.log(
+    //   'normalized response', 
+    //   normalizedResponse
+    // ); 
     dispatch(getAllUserWorkoutsSuccess(id, normalizedResponse))
     }).catch((err) => {
       console.log(err); 
@@ -66,6 +70,8 @@ export const getAllUserWorkoutsConditional = (id) => (dispatch, getState) => {
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+////////////// PUT NEW USER WORKOUT
 export const putNewUserWorkoutRequest = (userID, exerciseID, exerciseName, oneRepMax) => {
   return {
     type: PUT_NEW_USER_WORKOUT_REQUEST,

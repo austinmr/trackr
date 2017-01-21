@@ -1,6 +1,4 @@
-import * as templatesAPI from '../api/userTemplates'
-import { normalize } from 'normalizr'
-
+// CONSTANTS 
 import { 
   GET_ALL_USER_TEMPLATES_REQUEST, 
   GET_ALL_USER_TEMPLATES_SUCCESS, 
@@ -10,6 +8,15 @@ import {
   PUT_NEW_USER_TEMPLATE_FAILURE,
 } from '../constants/ActionTypes'
 
+// APIs + MIDDLEWARE
+import * as templatesAPI from '../api/userTemplates'
+
+// DEPENDENCIES
+import { normalize } from 'normalizr'
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////// GET ALL USER TEMPLATES  
 export const getAllUserTemplatesRequest = (id) => {
   return {
     type: GET_ALL_USER_TEMPLATES_REQUEST,
@@ -36,12 +43,10 @@ export const getAllUserTemplates = (id) => (dispatch) => {
   dispatch(getAllUserTemplatesRequest(id))
   return templatesAPI.getAllUserTemplates(id).then((response) => {
     const normalizedResponse = normalize(response.Items, templatesAPI.arrayOfTemplates)
-    console.log(response); 
-    console.log(response.Items); 
-    console.log(
-      'normalized response', 
-      normalizedResponse
-    ); 
+    // console.log(
+    //   'normalized response', 
+    //   normalizedResponse
+    // ); 
     dispatch(getAllUserTemplatesSuccess(id, normalizedResponse))
   }).catch((err) => {
     console.log(err); 
@@ -65,6 +70,8 @@ export const getAllUserTemplatesConditional = (id) => (dispatch, getState) => {
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+////////////// PUT NEW USER TEMPLATE
 export const putNewUserTemplateRequest = () => {
   return {
     type: PUT_NEW_USER_TEMPLATE_REQUEST,
@@ -87,15 +94,12 @@ export const putNewTemplateFailure = (error) => {
 
 export const putNewUserTemplate = (userID, templateID, templateName, template, templateType, templatePlanName, templatePlanID) => (dispatch) => {
   dispatch(putNewUserTemplateRequest())
-  console.log('templatePlanName in actions: ', templatePlanName); 
   return templatesAPI.putNewUserTemplate(userID, templateID, templateName, template, templateType, templatePlanName, templatePlanID).then((response) => {
     const normalizedResponse = normalize(response.Attributes, templatesAPI.template)
-    console.log('RESPONSE\n')
-    console.log(response); 
-    console.log(
-      'normalized response', 
-      normalizedResponse
-    ); 
+    // console.log(
+    //   'normalized response', 
+    //   normalizedResponse
+    // ); 
     dispatch(putNewUserTemplateSuccess(normalizedResponse))
   }).catch((err) => {
     console.log(err); 

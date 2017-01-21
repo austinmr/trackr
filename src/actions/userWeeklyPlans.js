@@ -1,7 +1,4 @@
-import * as plansAPI from '../api/userWeeklyPlans'
-import { normalize } from 'normalizr'
-import { v4 } from 'uuid'
-
+// CONSTANTS 
 import { 
   GET_ALL_USER_PLANS_REQUEST, 
   GET_ALL_USER_PLANS_SUCCESS, 
@@ -14,6 +11,16 @@ import {
   UPDATE_USER_PLAN_FAILURE
 } from '../constants/ActionTypes'
 
+// APIs + MIDDLEWARE
+import * as plansAPI from '../api/userWeeklyPlans'
+
+// DEPENDENCIES
+import { normalize } from 'normalizr'
+import { v4 } from 'uuid'
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////// GET ALL USER PROGRAMS
 export const getAllUserPlansRequest = (id) => {
   return {
     type: GET_ALL_USER_PLANS_REQUEST,

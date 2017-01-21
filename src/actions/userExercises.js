@@ -1,20 +1,22 @@
-import { REQUEST_USER_EXERCISES, RECEIVE_USER_EXERCISES, INVALIDATE_USER_EXERCISES, ADD_USER_EXERCISE } from '../constants/ActionTypes'
-import thunk from 'redux-thunk'
+// CONSTANTS 
+import { 
+  GET_ALL_USER_EXERCISES_REQUEST, 
+  GET_ALL_USER_EXERCISES_SUCCESS, 
+  GET_ALL_USER_EXERCISES_FAILURE,
+  PUT_NEW_USER_EXERCISE_REQUEST,
+  PUT_NEW_USER_EXERCISE_SUCCESS,
+  PUT_NEW_USER_EXERCISE_FAILURE,
+  INVALIDATE_USER_EXERCISES
+} from '../constants/ActionTypes'
 
-////////////////////////////////////////////////////////////////////////////////
-//////////////////////////////////////////////////////////////////////////////// 
-////////////// DYNAMO 
+// APIs + MIDDLEWARE
+import * as exercisesAPI from '../api/userExercises'
 
-import 'aws-sdk/dist/aws-sdk';
-import dynamoConfig from '../../dynamoConfig'
-const AWS = window.AWS;
-AWS.config.update(dynamoConfig);
-AWS.config.setPromisesDependency(require('bluebird'));
-const docClient = new AWS.DynamoDB.DocumentClient();
+// DEPENDENCIES
+import { normalize } from 'normalizr'
 
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
 
+// BASIC ACTION CREATORS
 export function invalidateUserExercises(id) {
   return {
     type: INVALIDATE_USER_EXERCISES,
@@ -22,135 +24,105 @@ export function invalidateUserExercises(id) {
   }
 }
 
-export function requestUserExercises(id) {
+////////////////////////////////////////////////////////////////////////////////
+////////////// GET ALL USER EXERCISES  
+export const getAllUserExercisesRequest = (id) => {
   return {
-    type: REQUEST_USER_EXERCISES,
-    id
-  }
-}
-
-export function receiveUserExercises(id, exercises) {
-  return {
-    type: RECEIVE_USER_EXERCISES,
+    type: GET_ALL_USER_EXERCISES_REQUEST,
     id,
-    exercises
   }
 }
 
-export function fetchUserExercises(id) {
-  return dispatch => {
-    dispatch(requestUserExercises(id))
-    const params = {
-      TableName: "Users_Exercises",
-      KeyConditionExpression: "UserID = :user",
-      ExpressionAttributeValues: {
-          ":user":id
-      }
-    }
-
-    const getObjectPromise = docClient.query(params).promise(); 
-    return getObjectPromise.then((data) => {
-      // console.log(data); 
-      const exercises = {}; 
-      data.Items.forEach((item) => {
-        exercises[`${item.ExerciseID}`] = item
-      }); 
-      dispatch(receiveUserExercises(id, exercises))
-    }).catch((err) => {
-      console.log(err); 
-    }); 
+export const getAllUserExercisesSuccess = (id, response) => {
+  return {
+    type: GET_ALL_USER_EXERCISES_SUCCESS,
+    id,
+    response,
   }
+}
+
+export const getAllUserExercisesFailure = (id) => {
+  return {
+    type: GET_ALL_USER_EXERCISES_FAILURE,
+    id,
+  }
+}
+
+export const getAllUserExercises = (id) => (dispatch) => {
+  dispatch(getAllUserExercisesRequest(id))
+  return exercisesAPI.getAllUserExercises(id).then((response) => {
+    const normalizedResponse = normalize(response.Items, exercisesAPI.arrayOfExercises)
+    // console.log(
+    //   'normalized response', 
+    //   normalizedResponse
+    // ); 
+    dispatch(getAllUserExercisesSuccess(id, normalizedResponse))
+  }).catch((err) => {
+    console.log(err); 
+  }); 
 }
 
 const isObjectEmpty = (object) => {
   return !Object.keys(object).length 
 }
 
-function shouldFetchUserExercises(state) {
-  const userExercises = state.userExercises
-  if (isObjectEmpty(userExercises.exercises)) {
+function shouldGetUserExercises(state) {
+  const userExercises = state.user.exercises
+  if (isObjectEmpty(userExercises.items)) {
     return true
   } else if (userExercises.isFetching) {
     return false
   } else {
-    return userExercises.didInvalidate
+    return !userExercises.isValid
   }
 }
 
-export function fetchUserExercisesIfNeeded(id) {
-  return (dispatch, getState) => {
-    if (shouldFetchUserExercises(getState(), id)) {
-      return dispatch(fetchUserExercises(id))
-    }
+export const getAllUserExercisesConditional = (id) => (dispatch, getState) => {
+  if (shouldGetUserExercises(getState(), id)) {
+    return dispatch(getAllUserExercises(id))
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+////////////// PUT NEW USER EXERCISE
+export const putNewUserExerciseRequest = (userID, exerciseID, exerciseName, oneRepMax) => {
+  return {
+    type: PUT_NEW_USER_EXERCISE_REQUEST,
+    userID, 
+    exerciseID,
+    exerciseName,
+    oneRepMax,
+  }
+}
 
-export function updateUserExercises(updatedUserExercisesObject) {
-  const userExerciseKeys = Object.keys(updatedUserExercisesObject); 
-  userExerciseKeys.forEach((key) => {
-    const table = "Users_Exercises";
-    const UserExerciseObject = updatedUserExercisesObject[key]; 
-    const params = {
-      TableName: table, 
-      Key: {
-        "UserID": UserExerciseObject.UserID,
-        "ExerciseID": UserExerciseObject.ExerciseID
-      }, 
-      UpdateExpression: "set OneRepMax = :orm, MRW = :mrw",
-      ExpressionAttributeValues: {
-        ":orm": UserExerciseObject.OneRepMax, 
-        ":mrw": UserExerciseObject.MRW
-      }
-    }
+export const putNewUserExerciseSuccess = (response) => {
+  return {
+    type: PUT_NEW_USER_EXERCISE_SUCCESS,
+    response
+  }
+}
 
-    docClient.update(params, function(err, data) {
-        if (err) {
-            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
-        } else {
-            console.log("UpdateItem succeeded:", JSON.stringify(data, null, 2));
-        }
-    });    
+export const putNewExerciseFailure = (userID, exerciseID, exerciseName, oneRepMax, targetOneRepMax) => {
+  return {
+    type: PUT_NEW_USER_EXERCISE_FAILURE,
+    userID, 
+    exerciseID,
+    exerciseName,
+    oneRepMax,
+    targetOneRepMax
+  }
+}
+
+export const putNewUserExercise = (userID, exerciseID, exerciseName, oneRepMax, targetOneRepMax) => (dispatch) => {
+  dispatch(putNewUserExerciseRequest(userID, exerciseID, exerciseName, oneRepMax))
+  return exercisesAPI.putNewUserExercise(userID, exerciseID, exerciseName, oneRepMax, targetOneRepMax).then((response) => {
+    const normalizedResponse = normalize(response.Attributes, exercisesAPI.exercise)
+    // console.log(
+    //   'normalized response', 
+    //   normalizedResponse
+    // ); 
+    dispatch(putNewUserExerciseSuccess(normalizedResponse))
+  }).catch((err) => {
+    console.log(err); 
   }); 
 }
-
-export function addUserExerciseToState(UserID, ExerciseID, ExerciseName, MRW, OneRepMax) {
-  return {
-    type: ADD_USER_EXERCISE,
-    UserID,
-    ExerciseID,
-    ExerciseName, 
-    MRW,
-    OneRepMax
-  }
-}
-
-export function addUserExerciseToDB(userID, exerciseID, exerciseName, oneRepMax) {
-  return dispatch => {
-    console.log(userID, exerciseID, exerciseName, oneRepMax); 
-    const params = {
-      TableName: "Users_Exercises", 
-      Key: {
-        "UserID": userID,
-        "ExerciseID": exerciseID
-      }, 
-      UpdateExpression: "set OneRepMax = :orm, MRW = :mrw, ExerciseName = :exer",
-      ConditionExpression: "attribute_not_exists(OneRepMax) OR attribute_not_exists(MRW) OR attribute_not_exists(ExerciseName)",
-      ExpressionAttributeValues: {
-        ":orm": oneRepMax, 
-        ":mrw": {},
-        ":exer": exerciseName
-      },
-      ReturnValues: "ALL_NEW"
-    }
-    const putPromiseObject = docClient.update(params).promise(); 
-    return putPromiseObject.then((data) => {
-        console.log("Added item:", JSON.stringify(data, null, 2));
-        const { UserID, ExerciseID, ExerciseName, MRW, OneRepMax } = data.Attributes; 
-        dispatch(addUserExerciseToState(UserID, ExerciseID, ExerciseName, MRW, OneRepMax))
-      }).catch((err) => {
-        console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
-      });
-    }
-  }
-

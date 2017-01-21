@@ -1,22 +1,20 @@
+// CONSTANTS 
 import { CREATE_DELOAD_FROM_TEMPLATE } from '../constants/ActionTypes'
-import { v4 } from 'uuid'
-import { calculateWeight, roundByFives } from '../utils/calculators'
+
+// APIs + MIDDLEWARE
 import { getUserExercisesInWorkoutMiddleware } from '../reducers/root'
-import { updateUserExercises, invalidateUserExercises } from './userExercises'
-import { updateUserExercisesFromWorkout } from '../api/userExercises'
-import { setWorkoutResults } from './results'
-import { putNewUserWorkout } from './userWorkouts'
+
+// DEPENDENCIES
+import { calculateWeight } from '../utils/calculators'
+import { v4 } from 'uuid'
 
 const createDate = () => {
   let now = new Date(); 
   return now; 
 }
 
-////////////////////////////////////////////////////////////////
-///// VOLUME DELOAD
-/////
-////////////////////////////////////////////////////////////////
-
+////////////////////////////////////////////////////////////////////////////////
+////////////// VOLUME DELOAD 
 export const formatVolumeDeloadExerciseObject = (exercise, userExercises) => {
   const userExerciseObject = userExercises[`${exercise.id}`]; 
   const currentOneRepMax = parseInt(userExerciseObject.oneRepMax); 
@@ -62,11 +60,8 @@ export const createVolumeDeloadFromTemplateMiddleware = (userID, username, templ
   }
 }
 
-////////////////////////////////////////////////////////////////
-///// WEIGHT DELOAD
-/////
-////////////////////////////////////////////////////////////////
-
+////////////////////////////////////////////////////////////////////////////////
+////////////// WEIGHT DELOAD 
 export const formatWeightDeloadExerciseObject = (exercise, userExercises) => {
   const userExerciseObject = userExercises[`${exercise.id}`]; 
   const currentOneRepMax = parseInt(userExerciseObject.oneRepMax); 

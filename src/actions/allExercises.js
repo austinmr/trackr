@@ -1,8 +1,4 @@
-import { v4 } from 'uuid'
-import { normalize } from 'normalizr'
-import * as allExercisesAPI from '../api/allExercises'
-import { addExercise } from './templates'
-
+// CONSTANTS 
 import { 
   SEARCH_ALL_EXERCISES_REQUEST, 
   SEARCH_ALL_EXERCISES_SUCCESS, 
@@ -12,7 +8,17 @@ import {
   PUT_NEW_EXERCISE_FAILURE,
 } from '../constants/ActionTypes'
 
+// APIs + MIDDLEWARE
+import * as allExercisesAPI from '../api/allExercises'
+import { addExercise } from './templates'
 
+// DEPENDENCIES
+import { normalize } from 'normalizr'
+import { v4 } from 'uuid'
+
+
+////////////////////////////////////////////////////////////////////////////////
+////////////// SEARCH ALL EXERCISES  
 export const searchAllExercisesRequest = (id) => {
   return {
     type: SEARCH_ALL_EXERCISES_REQUEST,
@@ -39,12 +45,10 @@ export const searchAllExercises = (id) => (dispatch) => {
   dispatch(searchAllExercisesRequest(id))
   return allExercisesAPI.searchAllExercises(id).then((response) => {
     const normalizedResponse = normalize(response.Items, allExercisesAPI.arrayOfExercises)
-    console.log(response); 
-    console.log(response.Items); 
-    console.log(
-      'normalized response', 
-      normalizedResponse
-    ); 
+    // console.log(
+    //   'normalized response', 
+    //   normalizedResponse
+    // ); 
     dispatch(searchAllExercisesSuccess(id, normalizedResponse))
   }).catch((err) => {
     console.log(err); 
@@ -66,6 +70,8 @@ export const searchAllExercisesConditional = (id) => (dispatch, getState) => {
   }
 }
 
+////////////////////////////////////////////////////////////////////////////////
+////////////// PUT NEW EXERCISE  
 export const putNewExerciseRequest = (id, exerciseName) => {
   return {
     type: PUT_NEW_EXERCISE_REQUEST,
@@ -92,15 +98,13 @@ export const putNewExercise = (exerciseName) => (dispatch) => {
   const id = v4(); 
   dispatch(putNewExerciseRequest(id, exerciseName))
   return allExercisesAPI.putNewExercise(id, exerciseName).then((response) => {
-    // console.log(response); 
-    // console.log(response.Attributes); 
     const exercise = response.Attributes; 
     const { exerciseID, exerciseName } = exercise; 
     const normalizedResponse = normalize(exercise, allExercisesAPI.exercise)
-    console.log(
-      'normalized response', 
-      normalizedResponse
-    ); 
+    // console.log(
+    //   'normalized response', 
+    //   normalizedResponse
+    // ); 
     dispatch(putNewExerciseSuccess(normalizedResponse))
     dispatch(addExercise(exerciseID, exerciseName)); 
   }).catch((err) => {
