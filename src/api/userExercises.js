@@ -11,6 +11,9 @@ const docClient = new AWS.DynamoDB.DocumentClient();
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+
+////////////////////////////////////////////////////////////////////////////////
+////////////// USER EXERCISES SCHEMA
 import { Schema, arrayOf } from 'normalizr'
 
 export const exercise = new Schema('exercises', {
@@ -19,6 +22,9 @@ export const exercise = new Schema('exercises', {
 
 export const arrayOfExercises = arrayOf(exercise); 
 
+
+////////////////////////////////////////////////////////////////////////////////
+////////////// GET ALL USER EXERCISES
 export const getAllUserExercises = (id) => {
   const params = {
     TableName: "Users_Exercises",
@@ -31,6 +37,8 @@ export const getAllUserExercises = (id) => {
   return getAllUserExercisesPromise; 
 }
 
+////////////////////////////////////////////////////////////////////////////////
+////////////// PUT NEW USER EXERCISE
 export const putNewUserExercise = (userID, exerciseID, exerciseName, oneRepMax, targetOneRepMax) => {
   console.log(userID, exerciseID, exerciseName, oneRepMax, targetOneRepMax); 
   const params = {
@@ -53,6 +61,8 @@ export const putNewUserExercise = (userID, exerciseID, exerciseName, oneRepMax, 
   return putNewUserExercisePromise; 
 }
 
+////////////////////////////////////////////////////////////////////////////////
+////////////// UPDATE USER EXERCISES IN WORKOUT
 export const updateUserExercisesFromWorkout = (userExercises) => {
   const userExerciseKeys = Object.keys(userExercises); 
 

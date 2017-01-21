@@ -11,6 +11,9 @@ const docClient = new AWS.DynamoDB.DocumentClient();
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+
+////////////////////////////////////////////////////////////////////////////////
+////////////// EXERCISES SCHEMA
 import { Schema, arrayOf } from 'normalizr'
 
 export const exercise = new Schema('exercises', {
@@ -19,6 +22,8 @@ export const exercise = new Schema('exercises', {
 
 export const arrayOfExercises = arrayOf(exercise); 
 
+////////////////////////////////////////////////////////////////////////////////
+////////////// SEARCH EXERCISES
 export const searchAllExercises = (exercise) => {
   const searchParams = {
     TableName: "Exercises",
@@ -31,6 +36,8 @@ export const searchAllExercises = (exercise) => {
   return searchAllExercisesPromise; 
 }
 
+////////////////////////////////////////////////////////////////////////////////
+////////////// PUT NEW EXERCISE
 export const putNewExercise = (id, exerciseName) => {
   const params = {
     TableName: "Exercises", 

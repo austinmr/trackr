@@ -16,16 +16,16 @@ const docClient = new AWS.DynamoDB.DocumentClient();
 ////////////// USER PROGRAMS SCHEMA
 import { Schema, arrayOf } from 'normalizr'
 
-export const plan = new Schema('plans', {
-  idAttribute: plan => plan.weeklyPlanID
+export const program = new Schema('programs', {
+  idAttribute: program => program.programID
 }); 
 
-export const arrayOfPlans = arrayOf(plan); 
+export const arrayOfPlans = arrayOf(program); 
 
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////// GET ALL USER PROGRAMS
-export const getAllUserPlans = (id) => {
+export const getAllUserPrograms = (id) => {
   const params = {
     TableName: "Users_WeeklyPlans",
     KeyConditionExpression: "userID = :user",
@@ -33,76 +33,76 @@ export const getAllUserPlans = (id) => {
         ":user": id
     }
   }
-  const getAllUserTemplatesPromise = docClient.query(params).promise(); 
-  return getAllUserTemplatesPromise; 
+  const getAllUserProgramsPromise = docClient.query(params).promise(); 
+  return getAllUserProgramsPromise; 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////// PUT NEW USER PROGRAM -> Two options 
-export const putNewUserPlan = (userID, weeklyPlanID, weeklyPlanName, planTemplates) => {
-  console.log('weeklyPlanAPI check: \n', userID, weeklyPlanID, weeklyPlanName, planTemplates); 
+export const putNewUserProgram = (userID, programID, programName, planTemplates) => {
+  console.log('weeklyPlanAPI check: \n', userID, programID, programName, planTemplates); 
   const params = {
     TableName: "Users_WeeklyPlans", 
     Key: {
       "userID": userID,
-      "weeklyPlanID": weeklyPlanID
+      "programID": programID
     }, 
-    ConditionExpression: "attribute_not_exists(weeklyPlanID)",
-    UpdateExpression: "set weeklyPlanName = :pname, planTemplates = :ptemps, complete = :cp",
+    ConditionExpression: "attribute_not_exists(programID)",
+    UpdateExpression: "set programName = :pname, planTemplates = :ptemps, complete = :cp",
     ExpressionAttributeValues: {
-      ":pname": weeklyPlanName, 
+      ":pname": programName, 
       ":ptemps": planTemplates, 
       ":cp": true
     },
     ReturnValues: "ALL_NEW"
   }
   console.log(params); 
-  const putNewUserWeeklyPlanPromise = docClient.update(params).promise(); 
-  return putNewUserWeeklyPlanPromise; 
+  const putNewUserProgramPromise = docClient.update(params).promise(); 
+  return putNewUserProgramPromise; 
 }
 
-export const putBlankUserPlan = (userID, weeklyPlanID, weeklyPlanName) => {
-  console.log('weeklyPlanAPI check: \n', userID, weeklyPlanID, weeklyPlanName); 
+export const putBlankUserProgram = (userID, programID, programName) => {
+  console.log('weeklyPlanAPI check: \n', userID, programID, programName); 
   const params = {
     TableName: "Users_WeeklyPlans", 
     Key: {
       "userID": userID,
-      "weeklyPlanID": weeklyPlanID
+      "programID": programID
     }, 
-    ConditionExpression: "attribute_not_exists(weeklyPlanID)",
-    UpdateExpression: "set weeklyPlanName = :pname, complete = :cp",
+    ConditionExpression: "attribute_not_exists(programID)",
+    UpdateExpression: "set programName = :pname, complete = :cp",
     ExpressionAttributeValues: {
-      ":pname": weeklyPlanName,
+      ":pname": programName,
       ":cp": false
     },
     ReturnValues: "ALL_NEW"
   }
   console.log(params); 
-  const putNewUserWeeklyPlanPromise = docClient.update(params).promise(); 
-  return putNewUserWeeklyPlanPromise; 
+  const putNewUserProgramPromise = docClient.update(params).promise(); 
+  return putNewUserProgramPromise; 
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////// UPDATE USER PROGRAM
-export const updateUserPlan = (userID, weeklyPlanID, weeklyPlanName, planTemplates) => {
-  console.log('weeklyPlanAPI check: \n', userID, weeklyPlanID, weeklyPlanName, planTemplates); 
+export const updateUserProgram = (userID, programID, programName, planTemplates) => {
+  console.log('weeklyPlanAPI check: \n', userID, programID, programName, planTemplates); 
   const params = {
     TableName: "Users_WeeklyPlans", 
     Key: {
       "userID": userID,
-      "weeklyPlanID": weeklyPlanID
+      "programID": programID
     }, 
-    ConditionExpression: "attribute_not_exists(planTemplates) and attribute_exists(weeklyPlanID)",
-    UpdateExpression: "set weeklyPlanName = :pname, planTemplates = :ptemps, complete = :cp",
+    ConditionExpression: "attribute_not_exists(planTemplates) and attribute_exists(programID)",
+    UpdateExpression: "set programName = :pname, planTemplates = :ptemps, complete = :cp",
     ExpressionAttributeValues: {
-      ":pname": weeklyPlanName, 
+      ":pname": programName, 
       ":ptemps": planTemplates, 
       ":cp": true
     },
     ReturnValues: "ALL_NEW"
   }
   console.log(params); 
-  const putNewUserWeeklyPlanPromise = docClient.update(params).promise(); 
-  return putNewUserWeeklyPlanPromise; 
+  const updateUserProgram = docClient.update(params).promise(); 
+  return updateUserProgram; 
 }
 

@@ -11,6 +11,9 @@ const docClient = new AWS.DynamoDB.DocumentClient();
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+
+////////////////////////////////////////////////////////////////////////////////
+////////////// USER TEMPLATES SCHEMA
 import { Schema, arrayOf } from 'normalizr'
 
 export const template = new Schema('templates', {
@@ -19,6 +22,9 @@ export const template = new Schema('templates', {
 
 export const arrayOfTemplates = arrayOf(template); 
 
+
+////////////////////////////////////////////////////////////////////////////////
+////////////// GET ALL USER TEMPLATES
 export const getAllUserTemplates = (id) => {
   const params = {
     TableName: "Users_Templates",
@@ -31,6 +37,8 @@ export const getAllUserTemplates = (id) => {
   return getAllUserTemplatesPromise; 
 }
 
+////////////////////////////////////////////////////////////////////////////////
+////////////// PUT NEW USER TEMPLATE
 export const putNewUserTemplate = (userID, templateID, templateName, template, templateType, templatePlanName, templatePlanID) => {
   console.log('templateAPI check: \n', userID, templateID, templateName, template); 
   let { date, username, exercises } = template; 

@@ -11,6 +11,9 @@ const docClient = new AWS.DynamoDB.DocumentClient();
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
+
+////////////////////////////////////////////////////////////////////////////////
+////////////// USER WORKOUTS SCHEMA
 import { Schema, arrayOf } from 'normalizr'
 
 export const workout = new Schema('workouts', {
@@ -19,6 +22,9 @@ export const workout = new Schema('workouts', {
 
 export const arrayOfWorkouts = arrayOf(workout); 
 
+
+////////////////////////////////////////////////////////////////////////////////
+////////////// GET ALL USER WORKOUTS
 export const getAllUserWorkouts = (id) => {
   const params = {
     TableName: "Users_Workouts",
@@ -31,7 +37,8 @@ export const getAllUserWorkouts = (id) => {
   return getAllUserWorkoutsPromise; 
 }
 
-
+////////////////////////////////////////////////////////////////////////////////
+////////////// PUT NEW USER WORKOUT
 export function putNewUserWorkout(workout) {
   console.log(workout); 
   const { id, userID, username, templateID, exercises } = workout; 
