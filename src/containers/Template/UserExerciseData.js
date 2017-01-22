@@ -1,6 +1,6 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { putNewUserExercise } from '../../actions/userExercises2' 
+import { putNewUserExercise } from '../../actions/userExercises' 
 import { getUserExercise } from '../../reducers/root'
 
 import OneRepMaxModal from '../../components/Template/OneRepMaxModal'

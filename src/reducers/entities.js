@@ -88,27 +88,27 @@ const exercises = (state, action) => {
   }
 }
 
-const plans = (state, action) => {
-  switch (action.type) {
-  case GET_ALL_USER_PLANS_SUCCESS:
-    if (!action.response.result.length) {
-      return state; 
-    } else {
-      return {
-        ...state,
-        ...action.response.entities.plans
-      }      
-    }
-  case PUT_NEW_USER_PLAN_SUCCESS: 
-  case UPDATE_USER_PLAN_SUCCESS: 
-    return {
-      ...state, 
-      ...action.response.entities.plans
-    }
-    default: 
-      return state; 
-  }
-}
+// const plans = (state, action) => {
+//   switch (action.type) {
+//   case GET_ALL_USER_PLANS_SUCCESS:
+//     if (!action.response.result.length) {
+//       return state; 
+//     } else {
+//       return {
+//         ...state,
+//         ...action.response.entities.plans
+//       }      
+//     }
+//   case PUT_NEW_USER_PLAN_SUCCESS: 
+//   case UPDATE_USER_PLAN_SUCCESS: 
+//     return {
+//       ...state, 
+//       ...action.response.entities.plans
+//     }
+//     default: 
+//       return state; 
+//   }
+// }
 
 const programs = (state, action) => {
   switch (action.type) {
@@ -180,12 +180,19 @@ const entities = (state = { users: {}, exercises: {}, workouts: {}, templates: {
         ...state, 
         allExercises: allExercises(state.allExercises, action)
       }
-    case GET_ALL_USER_PLANS_SUCCESS: 
-    case PUT_NEW_USER_PLAN_SUCCESS:
-    case UPDATE_USER_PLAN_SUCCESS:
+    // case GET_ALL_USER_PLANS_SUCCESS: 
+    // case PUT_NEW_USER_PLAN_SUCCESS:
+    // case UPDATE_USER_PLAN_SUCCESS:
+    //   return {
+    //     ...state, 
+    //     plans: plans(state.plans, action)
+    //   }
+    case GET_ALL_USER_PROGRAMS_SUCCESS: 
+    case PUT_NEW_USER_PROGRAM_SUCCESS:
+    case UPDATE_USER_PROGRAM_SUCCESS:
       return {
         ...state, 
-        plans: plans(state.plans, action)
+        programs: programs(state.programs, action)
       }
     default:
       return state
@@ -215,8 +222,13 @@ export const getExercisesObjectsArray = (state, exercises) => {
   return exercises.map(exerciseID => state.exercises[`${exerciseID}`])
 }
 
+//TODO:DELETE
 export const getPlansObjectsArray = (state, plans) => {
   return plans.map(weeklyPlanID => state.plans[`${weeklyPlanID}`])
+}
+
+export const getProgramsObjectsArray = (state, programs) => {
+  return programs.map(programID => state.programs[`${programID}`])
 }
 
 export const getExerciseSearchResults = (state, searchResults) => {

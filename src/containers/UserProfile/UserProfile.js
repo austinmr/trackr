@@ -1,4 +1,4 @@
-// React-Redux Requirements 
+// REACT-REDUX
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router';
@@ -8,7 +8,7 @@ import {
   getWorkoutsObjectsArray, 
   getTemplatesObjectsArray, 
   getExercisesObjectsArray, 
-  getPlansObjectsArray 
+  getProgramsObjectsArray 
 } from '../../reducers/root'
 
 // ACTION CREATORS
@@ -17,19 +17,16 @@ import { createWorkoutFromTemplateMiddleware } from '../../actions/workouts'
 import { createWeightDeloadFromTemplateMiddleware, createVolumeDeloadFromTemplateMiddleware } from '../../actions/deload'
 import { getAllUserWorkoutsConditional } from '../../actions/userWorkouts'
 import { getAllUserTemplatesConditional } from '../../actions/userTemplates'
-import { getAllUserExercisesConditional } from '../../actions/userExercises2'
-import { getAllUserPlansConditional } from '../../actions/userWeeklyPlans'
+import { getAllUserExercisesConditional } from '../../actions/userExercises'
+import { getAllUserProgramsConditional } from '../../actions/userPrograms'
 import { searchAllExercises } from '../../actions/allExercises'
-import { createWeeklyPlan, editWeeklyPlan, useWeeklyPlan, createExportFromPlanMiddleware } from '../../actions/weeklyPlan'
+import { createProgram, editProgram, useProgram, createExportFromProgramMiddleware } from '../../actions/program'
 
-// App Components 
+// APP COMPONENTS 
 import UserDetails from '../../components/UserProfile/UserDetails'
 import Templates from '../../components/UserProfile/Templates'
 import Workouts from '../../components/UserProfile/Workouts'
-import Plans from '../../components/UserProfile/Plans'
-
-import WorkoutEntry from '../../components/UserProfile/WorkoutEntry'
-import PlanEntry from '../../components/UserProfile/PlanEntry'
+import Programs from '../../components/UserProfile/Programs'
 
 // Bootstrap Imports 
 import { Grid, Row, Col, Button, Nav, NavItem, Badge, Tabs, Tab, Well, Panel, Jumbotron } from 'react-bootstrap';
@@ -47,7 +44,7 @@ export class UserProfile extends React.Component {
     getAllUserWorkouts: PropTypes.func.isRequired,
     getAllUserTemplates: PropTypes.func.isRequired,
     getAllUserExercises: PropTypes.func.isRequired,
-    getAllUserPlans: PropTypes.func.isRequired,
+    getAllUserPrograms: PropTypes.func.isRequired,
   }
 
   state = {
@@ -56,11 +53,11 @@ export class UserProfile extends React.Component {
 
   constructor(props) {
     super(props);
-    const { userID, getAllUserWorkouts, getAllUserTemplates, getAllUserExercises, getAllUserPlans } = this.props; 
+    const { userID, getAllUserWorkouts, getAllUserTemplates, getAllUserExercises, getAllUserPrograms } = this.props; 
     getAllUserWorkouts(userID); 
     getAllUserTemplates(userID);
     getAllUserExercises(userID);  
-    getAllUserPlans(userID); 
+    getAllUserPrograms(userID); 
   }
 
   // WORKOUTS
@@ -112,20 +109,20 @@ export class UserProfile extends React.Component {
   }
 
   // PROGRAMS
-  handleCreateWeeklyPlan = () => {
-    const { userID, username, createWeeklyPlan } = this.props; 
-    createWeeklyPlan(userID);
+  handleCreateProgram = () => {
+    const { userID, username, createProgram } = this.props; 
+    createProgram(userID);
 
     // Prevent 'SecurityError' message from Jest 
     if (process.env.NODE_ENV !== 'test') {
-      browserHistory.push(`/Planner`);
+      browserHistory.push(`/Program`);
     }
   }
 
-  handleEditWeeklyPlan = (plan) => {
-    const { userID, username, editWeeklyPlan } = this.props; 
-    const { weeklyPlanID, weeklyPlanName } = plan; 
-    let planTemplates = {
+  handleEditProgram = (program) => {
+    const { userID, username, editProgram } = this.props; 
+    const { programID, programName } = program; 
+    let programTemplates = {
       Day1: null,
       Day2: null,
       Day3: null,
@@ -134,25 +131,25 @@ export class UserProfile extends React.Component {
       Day6: null,
       Day7: null
     }
-    if (plan.planTemplates) {
-      planTemplates = plan.planTemplates
+    if (program.programTemplates) {
+      programTemplates = program.programTemplates
     } 
-    editWeeklyPlan(userID, weeklyPlanID, weeklyPlanName, planTemplates);
+    editProgram(userID, programID, programName, programTemplates);
 
     // Prevent 'SecurityError' message from Jest 
     if (process.env.NODE_ENV !== 'test') {
-      browserHistory.push(`/Planner/${weeklyPlanID}`);
+      browserHistory.push(`/Program/${programID}`);
     }
   }
 
-  handleGenerateWorkouts = (plan, deload) => {
+  handleGenerateWorkouts = (program, deload) => {
     console.log('Generating workouts')
-    const { createExportFromPlanMiddleware } = this.props; 
-    const { userID, weeklyPlanID, weeklyPlanName, planTemplates } = plan; 
-    createExportFromPlanMiddleware(userID, weeklyPlanID, weeklyPlanName, planTemplates, deload);
+    const { createExportFromProgramMiddleware } = this.props; 
+    const { userID, programID, programName, programTemplates } = program; 
+    createExportFromProgramMiddleware(userID, programID, programName, programTemplates, deload);
 
     if (process.env.NODE_ENV !== 'test') {
-      browserHistory.push(`/Export/${weeklyPlanID}`);
+      browserHistory.push(`/Export/${programID}`);
     }
   }
 
@@ -175,7 +172,7 @@ export class UserProfile extends React.Component {
   }
 
   _renderActiveComponent(){
-    const { templates, workouts, plans } = this.props; 
+    const { templates, workouts, programs } = this.props; 
     const { activeKey } = this.state; 
     if (activeKey === 1) {
       return (
@@ -195,9 +192,9 @@ export class UserProfile extends React.Component {
       )
     } else if (activeKey === 3) {
       return (
-        <Plans 
-          plans={plans}
-          editPlan={this.handleEditWeeklyPlan}
+        <Programs 
+          programs={programs}
+          editProgram={this.handleEditProgram}
           genWorkouts={this.handleGenerateWorkouts} 
         />
       )
@@ -205,7 +202,7 @@ export class UserProfile extends React.Component {
   }
 
   render() {
-    const { username, workouts, templates, plans } = this.props; 
+    const { username, workouts, templates, programs } = this.props; 
 
     return (
       <Grid fluid={true} style={{backgroundImage: 'url(' + ProfileImg + ')'}} className='profileBackground'> 
@@ -221,7 +218,7 @@ export class UserProfile extends React.Component {
             username={username}
             workouts={workouts.length}
             templates={templates.length}
-            plans={plans.length}
+            programs={programs.length}
           />
         </Col> 
           <Col xs={8} md={8}>
@@ -241,7 +238,7 @@ export class UserProfile extends React.Component {
     workouts: getWorkoutsObjectsArray(state),
     templates: getTemplatesObjectsArray(state),
     exercises: getExercisesObjectsArray(state),
-    plans: getPlansObjectsArray(state)
+    programs: getProgramsObjectsArray(state)
   })
 
   const mapDispatchToProps = (dispatch) => ({
@@ -266,23 +263,23 @@ export class UserProfile extends React.Component {
     getAllUserExercises: (id) => {
       dispatch(getAllUserExercisesConditional(id))
     },
-    getAllUserPlans: (id) => {
-      dispatch(getAllUserPlansConditional(id))
+    getAllUserPrograms: (id) => {
+      dispatch(getAllUserProgramsConditional(id))
     }, 
     searchAllExercises: (exerciseName) => {
       dispatch(searchAllExercises(exerciseName))
     }, 
-    createWeeklyPlan: (userID) => {
-      dispatch(createWeeklyPlan(userID))
+    createProgram: (userID) => {
+      dispatch(createProgram(userID))
     }, 
-    editWeeklyPlan: (userID, planID, planName, templates) => {
-      dispatch(editWeeklyPlan(userID, planID, planName, templates))
+    editProgram: (userID, programID, programName, templates) => {
+      dispatch(editProgram(userID, programID, programName, templates))
     }, 
-    useWeeklyPlan: (userID, planID, planName, templates) => {
-      dispatch(useWeeklyPlan(userID, planID, planName, templates))
+    useProgram: (userID, programID, programName, templates) => {
+      dispatch(useProgram(userID, programID, programName, templates))
     }, 
-    createExportFromPlanMiddleware: (userID, planID, planName, templates, deload) => {
-      dispatch(createExportFromPlanMiddleware(userID, planID, planName, templates, deload))
+    createExportFromProgramMiddleware: (userID, programID, programName, templates, deload) => {
+      dispatch(createExportFromProgramMiddleware(userID, programID, programName, templates, deload))
     }, 
   }) 
 

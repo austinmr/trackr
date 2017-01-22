@@ -1,9 +1,9 @@
 import React, { PropTypes } from 'react'
-import { calculateRounded1RM } from '../../utils/calculators'
 import _ from 'underscore'
-import presets from '../../constants/TemplateTypePresets'
+// import { calculateRounded1RM } from '../../utils/calculators'
+// import presets from '../../constants/TemplateTypePresets'
 
-import { Row, Col, Modal, Form, FormGroup, FormControl, ControlLabel, Button, DropdownButton, MenuItem } from 'react-bootstrap';
+import { Row, Col, Modal, Form, FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap';
 
 export default class TemplateNameModal extends React.Component {
   static propTypes = {
@@ -14,11 +14,12 @@ export default class TemplateNameModal extends React.Component {
   state = {
     templateName: '',
     templateType: 'none', 
-    templatePlanName: '',
-    templatePlanID: '',
-    templatePlanIndex: '', 
-    newTemplatePlan: '',
-    newPlan: false, 
+    templateProgram: '',
+    templateProgramID: '',
+    templateProgramName: '',
+    templateProgramIndex: '', 
+    newTemplateProgram: '',
+    newProgram: false, 
     disableSubmit: false
   }
 
@@ -37,79 +38,79 @@ export default class TemplateNameModal extends React.Component {
     }); 
   }
 
-  handleTemplatePlan = (e) => {
+  handleTemplateProgram = (e) => {
     e.preventDefault(); 
     console.log(e.target.value)
 
     this.setState({
-      templatePlan: e.target.value
+      templateProgram: e.target.value
     }); 
   }
 
-  handleSaveTemplateName = (e, newPlanObject) => {
+  handleSaveTemplateName = (e, newProgramObject) => {
     e.preventDefault(); 
     // console.log(newPlanObject); 
-    const { templateName, templatePlan, templateType } = this.state;
-    const { userPlans, dispatchSaveTemplate } = this.props; 
-    let templatePlanName = 'none';
-    let templatePlanID = 0; 
+    const { templateName, templateProgram, templateType } = this.state;
+    const { userPrograms, dispatchSaveTemplate } = this.props; 
+    let templateProgramName = 'none';
+    let templateProgramID = 0; 
 
     // Data validation 
     if (!templateName) {
       return; 
     }
 
-    if (newPlanObject) {
-      templatePlanName = newPlanObject.weeklyPlanName; 
-      templatePlanID = newPlanObject.weeklyPlanID;
-    } else if (templatePlan !== '') {
-      let userPlan = userPlans[templatePlan]; 
-      templatePlanName = userPlan.weeklyPlanName; 
-      templatePlanID = userPlan.weeklyPlanID; 
+    if (newProgramObject) {
+      templateProgramName = newProgramObject.programName; 
+      templateProgramID = newProgramObject.programID;
+    } else if (templateProgram !== '') {
+      let userProgram = userPrograms[templateProgram]; 
+      templateProgramName = userProgram.programName; 
+      templateProgramID = userProgram.programID; 
     }
     
     // console.log(templatePlanName, templatePlanID); 
-    dispatchSaveTemplate(templateName, templateType, templatePlanName, templatePlanID); 
+    dispatchSaveTemplate(templateName, templateType, templateProgramName, templateProgramID); 
   }
 
-  handleNewUserPlan = (e) => {
+  handleNewUserProgram = (e) => {
     e.preventDefault();  
-    const { newTemplatePlan } = this.state; 
-    const { dispatchBlankUserPlan } = this.props; 
-    console.log('CREATING NEW PLAN', newTemplatePlan); 
-    if (!newTemplatePlan) {
+    const { newTemplateProgram } = this.state; 
+    const { dispatchBlankUserProgram } = this.props; 
+    console.log('CREATING NEW PLAN', newTemplateProgram); 
+    if (!newTemplateProgram) {
       return; 
     }
-    dispatchBlankUserPlan(newTemplatePlan); 
+    dispatchBlankUserProgram(newTemplateProgram); 
     this.setState({
-      newPlan: true,
+      newProgram: true,
       disableSubmit: true
     })
   }
 
-  _renderCreatePlanButton = () => {
-    let { newPlan, newTemplatePlan } = this.state; 
-    if (newPlan) {
+  _renderCreateProgramButton = () => {
+    let { newProgram, newTemplateProgram } = this.state; 
+    if (newProgram) {
       return (
-        <h3> {newTemplatePlan} </h3>
+        <h3> {newTemplateProgram} </h3>
       )
     } else {
       return (
-        <Button onClick={e => this.handleNewUserPlan(e)}>Create Plan</Button>
+        <Button onClick={e => this.handleNewUserProgram(e)}>Create Program</Button>
       )
     }
   }
 
   _renderSubmitButton = () => {
-    let { newPlan, newTemplatePlan, templatePlanIndex } = this.state; 
-    const { userPlans } = this.props; 
+    let { newProgram, newTemplateProgram } = this.state; 
+    const { userPrograms } = this.props; 
 
-    let newPlanObject = _.findWhere(userPlans, {weeklyPlanName: newTemplatePlan}); 
-    if (newPlan && newPlanObject) {
+    let newProgramObject = _.findWhere(userPrograms, {programName: newTemplateProgram}); 
+    if (newProgram && newProgramObject) {
       return (
-        <Button onClick={e => this.handleSaveTemplateName(e, newPlanObject)} disabled={false}>Save Template</Button>
+        <Button onClick={e => this.handleSaveTemplateName(e, newProgramObject)} disabled={false}>Save Template</Button>
       )
-    } else if (newPlan && !newPlanObject) {
+    } else if (newProgram && !newProgramObject) {
       return (
         <Button disabled={true}>Save Template</Button>
       )
@@ -121,8 +122,8 @@ export default class TemplateNameModal extends React.Component {
   }
 
   render() {
-    const { exerciseName, showTemplateNameModal, userPlans } = this.props; 
-    const { templateName, templateType, templatePlanName, newTemplatePlan, disableSubmit } = this.state; 
+    const { showTemplateNameModal, userPrograms } = this.props; 
+    const { templateName, newTemplateProgram } = this.state; 
 
     return (
       <Modal show={showTemplateNameModal} animation={true}> 
@@ -150,23 +151,23 @@ export default class TemplateNameModal extends React.Component {
             </FormControl>
           </FormGroup>
           <FormGroup>
-            <ControlLabel style={{marginBottom: '10px', fontSize: '16px'}}>Template Plan</ControlLabel>
-            <FormControl componentClass="select" placeholder="select" id="templatePlan" onChange={(e) => this.handleTemplatePlan(e)}>
+            <ControlLabel style={{marginBottom: '10px', fontSize: '16px'}}>Template Program</ControlLabel>
+            <FormControl componentClass="select" placeholder="select" id="templateProgram" onChange={(e) => this.handleTemplateProgram(e)}>
               <option value="None">Select</option>
-              {userPlans.map((plan, i) => (
-                <option key={i} value={i}>{plan.weeklyPlanName}</option>
+              {userPrograms.map((program, i) => (
+                <option key={i} value={i}>{program.programName}</option>
               ))}
             </FormControl>
           </FormGroup>
           <Row>
             <Col xs={6} md={6}>
               <FormGroup>
-                <ControlLabel style={{marginBottom: '10px', fontSize: '16px'}}>New Custom Plan</ControlLabel>
-                <FormControl id="newTemplatePlan" type="text" onChange={(e) => {this.handleChange(e)}} value={newTemplatePlan}/>
+                <ControlLabel style={{marginBottom: '10px', fontSize: '16px'}}>New Custom Program</ControlLabel>
+                <FormControl id="newTemplateProgram" type="text" onChange={(e) => {this.handleChange(e)}} value={newTemplateProgram}/>
               </FormGroup>
             </Col>
             <Col xs={6} md={6}>
-              {this._renderCreatePlanButton()}
+              {this._renderCreateProgramButton()}
             </Col>
           </Row>
           </Form>
@@ -178,25 +179,3 @@ export default class TemplateNameModal extends React.Component {
     )
   }
 }
-
-          // <Row>
-          // <Col xs={6} md={6}>
-          // <DropdownButton id="templateType" title={'Template Type'} onSelect={this.handleTemplateType}>
-          //   <MenuItem eventKey="0">None</MenuItem>
-          //   <MenuItem eventKey="1">Chest</MenuItem>
-          //   <MenuItem eventKey="2" >Back</MenuItem>
-          //   <MenuItem eventKey="3">Legs</MenuItem>
-          //   <MenuItem eventKey="4">Shoulders</MenuItem>
-          //   <MenuItem eventKey="5">Arms</MenuItem>
-          // </DropdownButton>
-          // </Col>
-          // <Col xs={6} md={6}>
-          //   <h3> {`Template aType: ${templateType}`} </h3> 
-          // </Col>
-          // </Row> 
-          // <DropdownButton id="templatePlan" title={'Template Plan'} onSelect={this.handleTemplatePlan}>
-          //   <MenuItem eventKey="0" onClick={e => this.handleTemplatePlan(e)}>None</MenuItem>
-          //   {userPlans.map((plan, i) => (
-          //     <MenuItem key={i} eventKey={i+1} id="Chest" onClick={e => this.handleTemplatePlan(e)}>{plan.weeklyPlanName}</MenuItem>
-          //   ))}
-          // </DropdownButton>

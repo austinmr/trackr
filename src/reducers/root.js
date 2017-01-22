@@ -1,15 +1,13 @@
 import { combineReducers } from 'redux'
 import { routerReducer as routing } from 'react-router-redux'
 import user from './user'
-import * as fromUserExercises from './userExercises'
 import allExercises, * as fromAllExercises from './allExercises'
 import entities, * as fromEntities from './entities'
 import template from './templates'
 import workout from './workouts'
 import results from './results'
 import performance from './performance'
-import weeklyPlan from './weeklyPlan'
-import program from './programsgi'
+import program from './program'
 
 
 // Refactoring out 
@@ -19,15 +17,14 @@ import program from './programsgi'
 
 const app = combineReducers({
   routing,
+  entities,
   user,
+  allExercises,
   template,
   workout,
-  entities,
-  allExercises,
+  program,
   results, 
   performance, 
-  weeklyPlan,
-  program
 })
 
 export default app
@@ -44,8 +41,12 @@ export const getExercisesObjectsArray = (state) =>
 export const getTemplatesObjectsArray = (state) => 
   fromEntities.getTemplatesObjectsArray(state.entities, state.user.templates.items)
 
+//TODO:DELETE
 export const getPlansObjectsArray = (state) => 
   fromEntities.getPlansObjectsArray(state.entities, state.user.plans.items)
+
+export const getProgramsObjectsArray = (state) => 
+  fromEntities.getProgramsObjectsArray(state.entities, state.user.programs.items)
 
 export const getExerciseSearchResults = (state) => 
   fromEntities.getExerciseSearchResults(state.entities, state.allExercises.searchResults)

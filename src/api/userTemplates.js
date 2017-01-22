@@ -39,14 +39,10 @@ export const getAllUserTemplates = (id) => {
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////// PUT NEW USER TEMPLATE
-export const putNewUserTemplate = (userID, templateID, templateName, template, templateType, templatePlanName, templatePlanID) => {
+export const putNewUserTemplate = (userID, templateID, templateName, template, templateType, programName, programID) => {
   console.log('templateAPI check: \n', userID, templateID, templateName, template); 
   let { date, username, exercises } = template; 
   date = JSON.stringify(date); 
-  // console.log(date, username, exercises); 
-  // console.log(typeof date); 
-  // console.log('DATE:\n'); 
-  // console.log(date); 
   const params = {
     TableName: "Users_Templates", 
     Key: {
@@ -54,15 +50,15 @@ export const putNewUserTemplate = (userID, templateID, templateName, template, t
       "templateID": templateID
     }, 
     ConditionExpression: "attribute_not_exists(TemplateID)",
-    UpdateExpression: "set templateDate = :tdate, templateName = :tname, username = :uname, exercises = :exer, templateType = :tt, templatePlanName = :tpn, templatePlanID = :tpid",
+    UpdateExpression: "set templateDate = :tdate, templateName = :tname, username = :uname, exercises = :exer, templateType = :tt, programName = :tpn, programID = :tpid",
     ExpressionAttributeValues: {
       ":tname": templateName, 
       ":tdate": date, 
       ":uname": username,
       ":exer": exercises,
       ":tt": templateType, 
-      ":tpn": templatePlanName,
-      ":tpid": templatePlanID
+      ":tpn": programName,
+      ":tpid": programID
     },
     ReturnValues: "ALL_NEW"
   }

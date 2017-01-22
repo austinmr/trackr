@@ -20,14 +20,14 @@ export const program = new Schema('programs', {
   idAttribute: program => program.programID
 }); 
 
-export const arrayOfPlans = arrayOf(program); 
+export const arrayOfPrograms = arrayOf(program); 
 
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////// GET ALL USER PROGRAMS
 export const getAllUserPrograms = (id) => {
   const params = {
-    TableName: "Users_WeeklyPlans",
+    TableName: "Users_Programs",
     KeyConditionExpression: "userID = :user",
     ExpressionAttributeValues: {
         ":user": id
@@ -39,19 +39,19 @@ export const getAllUserPrograms = (id) => {
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////// PUT NEW USER PROGRAM -> Two options 
-export const putNewUserProgram = (userID, programID, programName, planTemplates) => {
-  console.log('weeklyPlanAPI check: \n', userID, programID, programName, planTemplates); 
+export const putNewUserProgram = (userID, programID, programName, programTemplates) => {
+  console.log('weeklyPlanAPI check: \n', userID, programID, programName, programTemplates); 
   const params = {
-    TableName: "Users_WeeklyPlans", 
+    TableName: "Users_Programs", 
     Key: {
       "userID": userID,
       "programID": programID
     }, 
     ConditionExpression: "attribute_not_exists(programID)",
-    UpdateExpression: "set programName = :pname, planTemplates = :ptemps, complete = :cp",
+    UpdateExpression: "set programName = :pname, programTemplates = :ptemps, complete = :cp",
     ExpressionAttributeValues: {
       ":pname": programName, 
-      ":ptemps": planTemplates, 
+      ":ptemps": programTemplates, 
       ":cp": true
     },
     ReturnValues: "ALL_NEW"
@@ -64,7 +64,7 @@ export const putNewUserProgram = (userID, programID, programName, planTemplates)
 export const putBlankUserProgram = (userID, programID, programName) => {
   console.log('weeklyPlanAPI check: \n', userID, programID, programName); 
   const params = {
-    TableName: "Users_WeeklyPlans", 
+    TableName: "Users_Programs", 
     Key: {
       "userID": userID,
       "programID": programID
@@ -84,19 +84,19 @@ export const putBlankUserProgram = (userID, programID, programName) => {
 
 ////////////////////////////////////////////////////////////////////////////////
 ////////////// UPDATE USER PROGRAM
-export const updateUserProgram = (userID, programID, programName, planTemplates) => {
-  console.log('weeklyPlanAPI check: \n', userID, programID, programName, planTemplates); 
+export const updateUserProgram = (userID, programID, programName, programTemplates) => {
+  console.log('weeklyPlanAPI check: \n', userID, programID, programName, programTemplates); 
   const params = {
-    TableName: "Users_WeeklyPlans", 
+    TableName: "Users_Programs", 
     Key: {
       "userID": userID,
       "programID": programID
     }, 
-    ConditionExpression: "attribute_not_exists(planTemplates) and attribute_exists(programID)",
-    UpdateExpression: "set programName = :pname, planTemplates = :ptemps, complete = :cp",
+    ConditionExpression: "attribute_not_exists(programTemplates) and attribute_exists(programID)",
+    UpdateExpression: "set programName = :pname, programTemplates = :ptemps, complete = :cp",
     ExpressionAttributeValues: {
       ":pname": programName, 
-      ":ptemps": planTemplates, 
+      ":ptemps": programTemplates, 
       ":cp": true
     },
     ReturnValues: "ALL_NEW"

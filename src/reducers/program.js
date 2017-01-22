@@ -12,7 +12,7 @@ const templates = (state = {}, action) => {
   }
 }
 
-const programs = (state = {}, action ) => {
+const program = (state = {}, action ) => {
   switch (action.type) {
     case CREATE_PROGRAM:
       return {
@@ -51,3 +51,5 @@ const programs = (state = {}, action ) => {
       return state
   }
 } 
+
+export default program

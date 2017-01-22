@@ -43,14 +43,6 @@ export const useProgram = (userID, programID, programName, exportObject) => {
   }
 }
 
-// export const saveWeeklyPlan = (weeklyPlanID, weeklyPlan) => {
-//   return {
-//     type: SAVE_WEEKLY_PLAN,
-//     weeklyPlanID,
-//     weeklyPlan,
-//   }
-// }
-
 export const addTemplateToProgram = (templateID, day) => {
   return {
     type: ADD_TEMPLATE,

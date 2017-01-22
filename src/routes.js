@@ -8,8 +8,8 @@ import Template from './containers/Template/Template'
 import Workout from './containers/Workout/Workout'
 import Results from './containers/Performance/Results'
 import Performance from './containers/Performance/Performance'
-import Planner from './containers/Planner/WeeklyPlanner'
-import Export from './containers/Planner/Export'
+import Program from './containers/Program/Program'
+import Export from './containers/Program/ExportProgram'
 
 export default <Route path="/" component={App}>
   <IndexRoute component={UserProfile}/>
@@ -23,8 +23,8 @@ export default <Route path="/" component={App}>
          component={Results} />
   <Route path="/Performance(/:userID)"
          component={Performance} />
-  <Route path="/Planner(/:planID)"
-         component={Planner} />
+  <Route path="/Program(/:programID)"
+         component={Program} />
   <Route path="/Export(/:planID)"
          component={Export} />
   <Route path="/Landing(/:planID)"

@@ -2,8 +2,15 @@ import React, { PropTypes } from 'react';
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router';
 import { putNewUserTemplate } from '../../actions/userTemplates' 
-import { putBlankUserPlan } from '../../actions/userWeeklyPlans' 
-import { getPlansObjectsArray } from '../../reducers/root'
+
+
+// PROGRAM REFACTOR
+// import { putBlankUserPlan } from '../../actions/userWeeklyPlans' 
+import { putBlankUserProgram } from '../../actions/userPrograms' 
+
+// import { getPlansObjectsArray } from '../../reducers/root'
+import { getProgramsObjectsArray } from '../../reducers/root'
+
 
 import AddExercise from './AddExercise'
 import ExerciseList from '../../components/Template/ExerciseList'
@@ -53,12 +60,12 @@ export class Template extends React.Component {
     }
   }
 
-  dispatchBlankUserPlan = (weeklyPlanName) => {
-    const { userID, putBlankUserPlan } = this.props; 
-    if (!userID || !weeklyPlanName) {
+  dispatchBlankUserProgram = (programName) => {
+    const { userID, putBlankUserProgram } = this.props; 
+    if (!userID || !programName) {
       return; 
     } 
-    putBlankUserPlan(userID, weeklyPlanName); 
+    putBlankUserProgram(userID, programName); 
   }
 
   _renderTemplateNameModal() {
@@ -66,10 +73,10 @@ export class Template extends React.Component {
     if (showTemplateNameModal) {
       return (
           <TemplateNameModal 
-            dispatchSaveTemplate={this.dispatchSaveTemplate}
-            dispatchBlankUserPlan={this.dispatchBlankUserPlan}
             showTemplateNameModal={showTemplateNameModal}
-            userPlans={this.props.userPlans}
+            userPrograms={this.props.userPrograms}
+            dispatchSaveTemplate={this.dispatchSaveTemplate}
+            dispatchBlankUserProgram={this.dispatchBlankUserProgram}
           />
         )
     }
@@ -102,15 +109,15 @@ const mapStateToProps = (state, ownProps) => ({
   template: state.template,
   templateID: state.template.id, 
   exercises: state.template.exercises,
-  userPlans: getPlansObjectsArray(state)
+  userPrograms: getProgramsObjectsArray(state)
 })
 
 const mapDispatchToProps = (dispatch) => ({
   putNewUserTemplate: (userID, templateID, templateName, template, templateType, templatePlanName, templatePlanID) => {
     dispatch(putNewUserTemplate(userID, templateID, templateName, template, templateType, templatePlanName, templatePlanID))
   },
-  putBlankUserPlan: (userID, weeklyPlanName) => {
-    dispatch(putBlankUserPlan(userID, weeklyPlanName))
+  putBlankUserProgram: (userID, programName) => {
+    dispatch(putBlankUserProgram(userID, programName))
   }
 })
 
