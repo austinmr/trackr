@@ -1,6 +1,6 @@
-import React from 'react';
+import React from 'react'
 import { shallow } from 'enzyme'
-import ExerciseList from '../../components/ExerciseList';
+import ExerciseList from '../../components/Workout/ExerciseList'
 
 const enzymeWrapper = shallow(<ExerciseList exercises={[{id: 1}]}/>); 
 

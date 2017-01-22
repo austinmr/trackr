@@ -1,8 +1,8 @@
 // Basic example of smoke test using enzyme shallow render to avoid 'document undefined' error from ReactDOM.render() test
 
-import React from 'react';
+import React from 'react'
 import { shallow } from 'enzyme'
-import App from '../../components/App';
+import App from '../../components/App'
 
 const enzymeWrapper = shallow(<App/>); 
 

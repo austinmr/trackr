@@ -1,8 +1,8 @@
 import React from 'react'
 import { mount } from 'enzyme'
-import { Provider } from 'react-redux';
+import { Provider } from 'react-redux'
 
-import { Template } from '../../containers/Template'
+import { Template } from '../../containers/Template/Template'
 import configureStore from '../../store/configureStoreTest'
 
 function setup() {

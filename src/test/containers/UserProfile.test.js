@@ -2,7 +2,7 @@ import React from 'react'
 import { mount } from 'enzyme'
 
 // Component for testing 
-import { UserProfile } from '../../containers/UserProfile'
+import { UserProfile } from '../../containers/UserProfile/UserProfile'
 
 // Testing unconnected COMPONENT 
 function setupComponent() {
