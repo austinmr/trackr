@@ -1,6 +1,6 @@
 import React from 'react'
-import { Grid, Row, Col, Panel, Well, Button } from 'react-bootstrap';
 import TemplateEntry from './TemplateEntry'
+import { Row, Col, Panel, Well, Button } from 'react-bootstrap'
 
 export default ({ templates, onClick, createWorkout, createVolumeDeload, createWeightDeload  }) => {
 

@@ -25,10 +25,7 @@ export class Performance extends React.Component {
     }); 
   }
 
-  handleSelectExercise = (exerciseID, workoutLog) => { 
-    console.log("SELECTING EXERCISE!"); 
-    console.log('EXERCISEID:', exerciseID); 
-    console.log("WORKOUTLOG: ", workoutLog); 
+  handleSelectExercise = (exerciseID, workoutLog) => {  
     if (!workoutLog) {
       return; 
     }

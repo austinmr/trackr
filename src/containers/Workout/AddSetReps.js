@@ -1,7 +1,7 @@
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { addSetReps } from '../../actions/workouts' 
-import { Form, FormControl } from 'react-bootstrap';
+import { Form, FormControl } from 'react-bootstrap'
 
 export class AddSet extends React.Component {
   static propTypes = {
@@ -19,9 +19,8 @@ export class AddSet extends React.Component {
     let { reps } = this.state; 
 
     if (!reps) {
-      return
+      return;
     }
-    console.log('reps: ', reps)
     dispatchAddSetReps(exerciseID, setID, reps);
   }
 

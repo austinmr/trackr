@@ -1,7 +1,6 @@
-import React, { Component } from 'react';
-import { browserHistory } from 'react-router';
-import { Nav, NavItem, Navbar } from 'react-bootstrap';
-import { navItem } from '../style/style'
+import React from 'react';
+import { browserHistory } from 'react-router'
+import { Nav, NavItem, Navbar } from 'react-bootstrap'
 
 class NavigationBar extends React.Component {
   handleNavigation(event) {
@@ -25,10 +24,10 @@ class NavigationBar extends React.Component {
             <Navbar.Toggle />
           </Navbar.Header>
             <Nav>
-              <NavItem style={navItem} onClick={(e) => {this.handleNavigation(e)}} title={'/Nav1'} > PROFILE </NavItem>
-              <NavItem style={navItem} onClick={(e) => {this.handleNavigation(e)}} title={'/Nav2'}> TRAIN </NavItem>
-              <NavItem style={navItem} onClick={(e) => {this.handleNavigation(e)}} title={'/PROGRAM'}> PROGRAM </NavItem>
-              <NavItem style={navItem} onClick={(e) => {this.handleNavigation(e)}} title={'/Performance'}> PERFORMANCE </NavItem>
+              <NavItem onClick={(e) => {this.handleNavigation(e)}} title={'/Nav1'} > PROFILE </NavItem>
+              <NavItem onClick={(e) => {this.handleNavigation(e)}} title={'/Nav2'}> TRAIN </NavItem>
+              <NavItem onClick={(e) => {this.handleNavigation(e)}} title={'/PROGRAM'}> PROGRAM </NavItem>
+              <NavItem onClick={(e) => {this.handleNavigation(e)}} title={'/Performance'}> PERFORMANCE </NavItem>
             </Nav>
         </Navbar>
     ); 

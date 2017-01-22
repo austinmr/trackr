@@ -1,8 +1,6 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
 import Exercise from './Exercise'
-
-//Bootstrap 
-import { Well } from 'react-bootstrap';
+import { Well } from 'react-bootstrap'
 
 const ExerciseList = ({ exercises }) => (
   <Well>

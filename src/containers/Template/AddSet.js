@@ -1,9 +1,15 @@
+// REACT-REDUX
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
+
+// ACTION CREATORS 
 import { addSet } from '../../actions/templates' 
+
+// CONSTANTS
 import presets from '../../constants/RepPresets'
 
-import { Row, Col, Form, FormGroup, FormControl, ControlLabel, Button, DropdownButton, MenuItem } from 'react-bootstrap';
+// BOOTSTRAP
+import { Row, Col, Form, FormGroup, FormControl, ControlLabel, Button } from 'react-bootstrap'
 
 export class AddSet extends React.Component {
   static propTypes = {

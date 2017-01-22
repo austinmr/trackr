@@ -1,12 +1,19 @@
+// REACT-REDUX
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { addExercise } from '../../actions/templates'
-import { searchAllExercisesConditional } from '../../actions/allExercises'
+
+// SELECTORS 
 import { getExerciseSearchResults } from '../../reducers/root'
 
+// ACTION CREATORS 
+import { addExercise } from '../../actions/templates'
+import { searchAllExercisesConditional } from '../../actions/allExercises'
+
+// APP COMPONENTS 
 import ExerciseSearchResults from '../../components/Template/ExerciseSearchList'
 import AddExerciseToDB from './AddExerciseToDB'
 
+// BOOTSTRAP
 import { Row, Form, FormControl, ControlLabel } from 'react-bootstrap'
 
 export class AddExercise extends React.Component {
@@ -42,7 +49,7 @@ export class AddExercise extends React.Component {
     if (!exercise) {
       return; 
     }
-    console.log(`id: ${id}, exercise: ${exercise}`); 
+    
     addExerciseToTemplate(id, exercise);
     this.setState({exercise: ''}); 
   }

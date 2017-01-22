@@ -1,9 +1,16 @@
+// REACT-REDUX
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
 import { browserHistory } from 'react-router'
-import { loginUser } from '../actions/user' 
 
-import { Row, Col, Form, FormGroup, FormControl, ControlLabel, Button, Jumbotron, Panel } from 'react-bootstrap'
+// ACTION CREATORS 
+import { loginUser } from '../actions/user'
+
+// BOOTSTRAP
+import { Form, FormGroup, FormControl, Button, Jumbotron, Image, Modal } from 'react-bootstrap'
+
+// ASSETS
+import Landing from '../../assets/LP.png' 
 
 export class LandingPage extends React.Component {
   static propTypes = {
@@ -36,25 +43,22 @@ export class LandingPage extends React.Component {
 
   render() {
     return (
-      <Jumbotron style={{
-       'backgroundImage': 'url(https://s-media-cache-ak0.pinimg.com/originals/45/e9/18/45e918a4ac64084b5ea5a5e2d7b67471.jpg)',
-       'backgroundSize': 'cover',
-       'height': 1000
-      }}> 
-        <Row>
-          <h2> Peak Performance Through Metrics </h2>
-        </Row>
-        <Row>
-          <Col xs={4} md={4} xsOffset={8} mdOffset={8}> 
-          <Form style={{height: '280px', width: '280px', borderRadius: '10px', backgroundColor: '#fff'}} onSubmit={e => this.loginUser(e)} >
-            <FormGroup style={{padding: '10px', height: '280px', textAlign: 'center'}}>
-              <ControlLabel style={{marginBottom: '10px', fontSize: '20px'}}>Log In To Trackr</ControlLabel>
-              <FormControl type="text" id="username" placeholder='Username' onChange={e => this.handleChange(e)} value={this.state.username} style={{margin: '0 auto', width: '210px', textAlign: 'center', marginBottom: '5px'}}/>
-              <Button type="submit" style={{width: '210px', margin: '0 auto', marginTop: '10px'}} bsSize="large" block onClick={e => this.loginUser(e)} >Log In</Button>  
-            </FormGroup>
-          </Form>
-          </Col>
-        </Row>
+      <Jumbotron className="modal-container" style={{background: 'black', padding: 0, position: 'relative'}} > 
+        <Modal show={true} backdrop={false} style={{position: 'absolute', left: 700, top: 100}}>
+
+          <Modal.Body style={{background: 'black', color: 'white'}}>
+            <h3 style={{width: 400, margin: '0 auto'}}> Achieve peak condition by tracking performance metrics and utilizing customized workout programs </h3>
+            <Form onSubmit={e => this.loginUser(e)} style={{marginTop: 20}}>
+              <FormGroup style={{textAlign: 'center'}}>
+                <FormControl type="text" id="username" placeholder='Username' onChange={e => this.handleChange(e)} value={this.state.username} style={{margin: '0 auto', width: 400, textAlign: 'center', marginBottom: 15}}/>
+                <FormControl type="text" id="password" placeholder='Password' onChange={e => this.handleChange(e)} value={this.state.username} style={{margin: '0 auto', width: 400, textAlign: 'center', marginBottom: 15}}/>
+                <Button type="submit" style={{width: 400, margin: '0 auto', marginTop: '10px'}} bsSize="large" block onClick={e => this.loginUser(e)} >Log In</Button>  
+              </FormGroup>
+            </Form>
+          </Modal.Body>
+
+        </Modal> 
+        <Image width="100%" src={Landing}/> 
       </Jumbotron>
     );
   }

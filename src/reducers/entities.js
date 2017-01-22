@@ -1,7 +1,5 @@
 import { 
   LOGIN_USER, 
-  // SAVE_TEMPLATE, 
-  // RECEIVE_ALL_USER_WORKOUTS, 
   GET_ALL_USER_WORKOUTS_SUCCESS, 
   GET_ALL_USER_TEMPLATES_SUCCESS, 
   GET_ALL_USER_EXERCISES_SUCCESS, 
@@ -9,9 +7,6 @@ import {
   PUT_NEW_USER_EXERCISE_SUCCESS, 
   PUT_NEW_USER_TEMPLATE_SUCCESS,
   PUT_NEW_EXERCISE_SUCCESS,
-  GET_ALL_USER_PLANS_SUCCESS, 
-  PUT_NEW_USER_PLAN_SUCCESS,
-  UPDATE_USER_PLAN_SUCCESS,
   GET_ALL_USER_PROGRAMS_SUCCESS, 
   PUT_NEW_USER_PROGRAM_SUCCESS,
   UPDATE_USER_PROGRAM_SUCCESS
@@ -88,28 +83,6 @@ const exercises = (state, action) => {
   }
 }
 
-// const plans = (state, action) => {
-//   switch (action.type) {
-//   case GET_ALL_USER_PLANS_SUCCESS:
-//     if (!action.response.result.length) {
-//       return state; 
-//     } else {
-//       return {
-//         ...state,
-//         ...action.response.entities.plans
-//       }      
-//     }
-//   case PUT_NEW_USER_PLAN_SUCCESS: 
-//   case UPDATE_USER_PLAN_SUCCESS: 
-//     return {
-//       ...state, 
-//       ...action.response.entities.plans
-//     }
-//     default: 
-//       return state; 
-//   }
-// }
-
 const programs = (state, action) => {
   switch (action.type) {
   case GET_ALL_USER_PROGRAMS_SUCCESS:
@@ -150,7 +123,7 @@ const allExercises = (state, action) => {
   }
 }
 
-const entities = (state = { users: {}, exercises: {}, workouts: {}, templates: {}, allExercises: {}, plans: {}, programs: {} }, action) => {
+const entities = (state = { users: {}, exercises: {}, workouts: {}, templates: {}, allExercises: {}, programs: {} }, action) => {
   switch (action.type) {
     case LOGIN_USER:
       return {
@@ -180,13 +153,6 @@ const entities = (state = { users: {}, exercises: {}, workouts: {}, templates: {
         ...state, 
         allExercises: allExercises(state.allExercises, action)
       }
-    // case GET_ALL_USER_PLANS_SUCCESS: 
-    // case PUT_NEW_USER_PLAN_SUCCESS:
-    // case UPDATE_USER_PLAN_SUCCESS:
-    //   return {
-    //     ...state, 
-    //     plans: plans(state.plans, action)
-    //   }
     case GET_ALL_USER_PROGRAMS_SUCCESS: 
     case PUT_NEW_USER_PROGRAM_SUCCESS:
     case UPDATE_USER_PROGRAM_SUCCESS:
@@ -203,11 +169,11 @@ export default entities
 
 
 ////////////////////////////////////////////////////////////////////////////////
-////////////// ENTITY SELECTORS 
+////////////// SELECTORS 
 
-// USED BY -> 
-export const getExercisesFromTemplate = (state, template) => {
-  return state.templates[template].exercises; 
+// USER PROFILE
+export const getExercisesObjectsArray = (state, exercises) => {
+  return exercises.map(exerciseID => state.exercises[`${exerciseID}`])
 }
 
 export const getWorkoutsObjectsArray = (state, workouts) => {
@@ -218,17 +184,13 @@ export const getTemplatesObjectsArray = (state, templates) => {
   return templates.map(templateID => state.templates[`${templateID}`])
 }
 
-export const getExercisesObjectsArray = (state, exercises) => {
-  return exercises.map(exerciseID => state.exercises[`${exerciseID}`])
-}
-
-//TODO:DELETE
-export const getPlansObjectsArray = (state, plans) => {
-  return plans.map(weeklyPlanID => state.plans[`${weeklyPlanID}`])
-}
-
 export const getProgramsObjectsArray = (state, programs) => {
   return programs.map(programID => state.programs[`${programID}`])
+}
+
+// TEMPLATE 
+export const getExercisesFromTemplate = (state, template) => {
+  return state.templates[template].exercises; 
 }
 
 export const getExerciseSearchResults = (state, searchResults) => {
@@ -247,23 +209,13 @@ export const getUserExercise = (state, exerciseID) => {
 export const getUserExercisesMiddleware = (state) => {
   return state.exercises
 }
-// export const getUserExercisesInWorkout = (state, exercises) => {
-//   console.log('EXERCISES:', exercises)
-//   const UserExercisesInWorkout = {}; 
-//   exercises.forEach((exerciseID) => {
-//     UserExercisesInWorkout[`${exerciseID}`] = state.exercises[`${exerciseID}`]; 
-//   }); 
-//   console.log(UserExercisesInWorkout); 
-//   return UserExercisesInWorkout; 
-// }
 
+// WORKOUT
 export const getUserExercisesInWorkout = (state, exercises) => {
-  // console.log('EXERCISES:', exercises)
   const UserExercisesInWorkout = {}; 
   exercises.forEach((exerciseID) => {
     UserExercisesInWorkout[`${exerciseID}`] = state.exercises[`${exerciseID}`]; 
   }); 
-  // console.log(UserExercisesInWorkout); 
   return UserExercisesInWorkout; 
 }
 
@@ -284,55 +236,12 @@ export const getWorkoutDataForExercise = (state, exerciseID, workoutsArray) => {
   return workoutData; 
 }
 
-// export const getTemplatesInPlanMiddleware = (state, weekObject) => {
-//   console.log(weekObject); 
-//   Object.keys(weekObject).forEach((day) => {
-//     // console.log(day)
-//     let templateID = weekObject[day]
-//     // console.log(templateID); 
-//     if (templateID !== null) {
-//       weekObject[day] = {
-//         templateID: templateID,
-//         exercises: state.templates[templateID].exercises
-//       }
-//     }
-//   })
-//   console.log(weekObject)
-//   return weekObject; 
-// }
-
-export const getTemplatesInPlanMiddleware = (state, weekObject) => {
-  console.log(weekObject); 
-  let exercisesArray = []; 
-  let result = {}
-  Object.keys(weekObject).forEach((day) => {
-    // console.log(day)
-    let templateID = weekObject[day]
-    // console.log(templateID); 
-    if (templateID !== null) {
-      let exercises = state.templates[templateID].exercises
-      exercises.forEach((exercise) => {
-        exercisesArray.push(exercise.id)
-      })
-      result[day] = {
-        templateID: templateID,
-        exercises: exercises
-      }
-    }
-  })
-  // result.exercisesArray = exercisesArray; 
-  console.log('RESULT:', result); 
-  return result; 
-}
-
+// PROGRAM
 export const getTemplatesInProgramMiddleware = (state, weekObject) => {
-  console.log(weekObject); 
   let exercisesArray = []; 
   let result = {}
   Object.keys(weekObject).forEach((day) => {
-    // console.log(day)
     let templateID = weekObject[day]
-    // console.log(templateID); 
     if (templateID !== null) {
       let exercises = state.templates[templateID].exercises
       exercises.forEach((exercise) => {
@@ -344,7 +253,5 @@ export const getTemplatesInProgramMiddleware = (state, weekObject) => {
       }
     }
   })
-  // result.exercisesArray = exercisesArray; 
-  console.log('RESULT:', result); 
   return result; 
 }

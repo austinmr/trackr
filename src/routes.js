@@ -2,7 +2,6 @@ import React from 'react'
 import { Route, IndexRoute } from 'react-router'
 import App from './components/App'
 import LandingPage from './containers/LandingPage'
-import LandingPage2 from './containers/LandingPage2'
 import UserProfile from './containers/UserProfile/UserProfile'
 import Template from './containers/Template/Template'
 import Workout from './containers/Workout/Workout'
@@ -27,6 +26,6 @@ export default <Route path="/" component={App}>
          component={Program} />
   <Route path="/Export(/:planID)"
          component={Export} />
-  <Route path="/Landing(/:planID)"
-         component={LandingPage2} />
+  <Route path="/Landing"
+         component={LandingPage} />
 </Route>

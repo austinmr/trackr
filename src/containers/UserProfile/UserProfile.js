@@ -11,15 +11,15 @@ import {
   getProgramsObjectsArray 
 } from '../../reducers/root'
 
-// ACTION CREATORS
+// ACTION CREATORS 
+import { getAllUserExercisesConditional } from '../../actions/userExercises'
+import { getAllUserWorkoutsConditional } from '../../actions/userWorkouts'
+import { getAllUserTemplatesConditional } from '../../actions/userTemplates'
+import { getAllUserProgramsConditional } from '../../actions/userPrograms'
+
 import { createTemplate } from '../../actions/templates'
 import { createWorkoutFromTemplateMiddleware } from '../../actions/workouts'
 import { createWeightDeloadFromTemplateMiddleware, createVolumeDeloadFromTemplateMiddleware } from '../../actions/deload'
-import { getAllUserWorkoutsConditional } from '../../actions/userWorkouts'
-import { getAllUserTemplatesConditional } from '../../actions/userTemplates'
-import { getAllUserExercisesConditional } from '../../actions/userExercises'
-import { getAllUserProgramsConditional } from '../../actions/userPrograms'
-import { searchAllExercises } from '../../actions/allExercises'
 import { createProgram, editProgram, useProgram, createExportFromProgramMiddleware } from '../../actions/program'
 
 // APP COMPONENTS 
@@ -28,23 +28,35 @@ import Templates from '../../components/UserProfile/Templates'
 import Workouts from '../../components/UserProfile/Workouts'
 import Programs from '../../components/UserProfile/Programs'
 
-// Bootstrap Imports 
-import { Grid, Row, Col, Button, Nav, NavItem, Badge, Tabs, Tab, Well, Panel, Jumbotron } from 'react-bootstrap';
+// BOOTSTRAP
+import { Grid, Row, Col, Nav, NavItem, Badge } from 'react-bootstrap';
+
+// ASSETS
 import ProfileImg from '../../../assets/ProfileImg4.jpg' 
+
+// CONSTANTS
+import PROGRAM from '../../../constants/ProgramTemplates'
 
 export class UserProfile extends React.Component {
   static propTypes = {
     userID: PropTypes.string.isRequired, 
     username: PropTypes.string.isRequired, 
+    exercises: PropTypes.array.isRequired,
     workouts: PropTypes.array.isRequired,
     templates: PropTypes.array.isRequired,
-    exercises: PropTypes.array.isRequired,
-    createTemplate: PropTypes.func.isRequired, 
-    createWorkoutFromTemplate: PropTypes.func.isRequired, 
+    programs: PropTypes.array.isRequired,
+    getAllUserExercises: PropTypes.func.isRequired,
     getAllUserWorkouts: PropTypes.func.isRequired,
     getAllUserTemplates: PropTypes.func.isRequired,
-    getAllUserExercises: PropTypes.func.isRequired,
     getAllUserPrograms: PropTypes.func.isRequired,
+    createTemplate: PropTypes.func.isRequired, 
+    createWorkoutFromTemplate: PropTypes.func.isRequired,
+    createVolumeDeload: PropTypes.func.isRequired, 
+    createWeightDeload: PropTypes.func.isRequired, 
+    createProgram: PropTypes.func.isRequired,
+    editProgram: PropTypes.func.isRequired,
+    useProgram: PropTypes.func.isRequired,
+    createExportFromProgramMiddleware: PropTypes.func.isRequired,
   }
 
   state = {
@@ -53,10 +65,10 @@ export class UserProfile extends React.Component {
 
   constructor(props) {
     super(props);
-    const { userID, getAllUserWorkouts, getAllUserTemplates, getAllUserExercises, getAllUserPrograms } = this.props; 
+    const { userID, getAllUserExercises, getAllUserWorkouts, getAllUserTemplates, getAllUserPrograms } = this.props; 
+    getAllUserExercises(userID);  
     getAllUserWorkouts(userID); 
     getAllUserTemplates(userID);
-    getAllUserExercises(userID);  
     getAllUserPrograms(userID); 
   }
 
@@ -120,17 +132,9 @@ export class UserProfile extends React.Component {
   }
 
   handleEditProgram = (program) => {
-    const { userID, username, editProgram } = this.props; 
+    const { userID, editProgram } = this.props; 
     const { programID, programName } = program; 
-    let programTemplates = {
-      Day1: null,
-      Day2: null,
-      Day3: null,
-      Day4: null,
-      Day5: null,
-      Day6: null,
-      Day7: null
-    }
+    let programTemplates = PROGRAM; 
     if (program.programTemplates) {
       programTemplates = program.programTemplates
     } 
@@ -162,10 +166,10 @@ export class UserProfile extends React.Component {
   _renderNavigationBar = () => {
     const { activeKey } = this.state; 
     return (
-      <Nav activeKey={this.state.activeKey} justified onSelect={this.handleTabSelect} className='profileNav'>
+      <Nav activeKey={activeKey} justified onSelect={this.handleTabSelect} className='profileNav'>
         <NavItem eventKey={1} title="Workouts">WORKOUTS</NavItem>
         <NavItem eventKey={2} title="Templates">TEMPLATES</NavItem>
-        <NavItem eventKey={3} title="Plans">PROGRAMS</NavItem>
+        <NavItem eventKey={3} title="Programs">PROGRAMS</NavItem>
         <NavItem eventKey={4} title="Achievements" disabled>ACHIEVEMENTS <Badge>{Math.floor(Math.random() * 100)}</Badge></NavItem>
       </Nav>
     )
@@ -232,55 +236,52 @@ export class UserProfile extends React.Component {
   }
 }
 
-  const mapStateToProps = (state, { params }) => ({
-    userID: state.user.id, 
-    username: state.user.username,
-    workouts: getWorkoutsObjectsArray(state),
-    templates: getTemplatesObjectsArray(state),
-    exercises: getExercisesObjectsArray(state),
-    programs: getProgramsObjectsArray(state)
-  })
+const mapStateToProps = (state, { params }) => ({
+  userID: state.user.id, 
+  username: state.user.username,
+  workouts: getWorkoutsObjectsArray(state),
+  templates: getTemplatesObjectsArray(state),
+  exercises: getExercisesObjectsArray(state),
+  programs: getProgramsObjectsArray(state)
+})
 
-  const mapDispatchToProps = (dispatch) => ({
-    createTemplate: (userID, username) => {
-      dispatch(createTemplate(userID, username))
-    },
-    createWorkoutFromTemplate: (userID, username, template, userExercises) => {
-      dispatch(createWorkoutFromTemplateMiddleware(userID, username, template, userExercises))
-    },
-    createVolumeDeload: (userID, username, template, userExercises) => {
-      dispatch(createVolumeDeloadFromTemplateMiddleware(userID, username, template, userExercises))
-    },
-    createWeightDeload: (userID, username, template, userExercises) => {
-      dispatch(createWeightDeloadFromTemplateMiddleware(userID, username, template, userExercises))
-    },
-    getAllUserWorkouts: (id) => {
-      dispatch(getAllUserWorkoutsConditional(id))
-    },
-    getAllUserTemplates: (id) => {
-      dispatch(getAllUserTemplatesConditional(id))
-    },
-    getAllUserExercises: (id) => {
-      dispatch(getAllUserExercisesConditional(id))
-    },
-    getAllUserPrograms: (id) => {
-      dispatch(getAllUserProgramsConditional(id))
-    }, 
-    searchAllExercises: (exerciseName) => {
-      dispatch(searchAllExercises(exerciseName))
-    }, 
-    createProgram: (userID) => {
-      dispatch(createProgram(userID))
-    }, 
-    editProgram: (userID, programID, programName, templates) => {
-      dispatch(editProgram(userID, programID, programName, templates))
-    }, 
-    useProgram: (userID, programID, programName, templates) => {
-      dispatch(useProgram(userID, programID, programName, templates))
-    }, 
-    createExportFromProgramMiddleware: (userID, programID, programName, templates, deload) => {
-      dispatch(createExportFromProgramMiddleware(userID, programID, programName, templates, deload))
-    }, 
-  }) 
+const mapDispatchToProps = (dispatch) => ({
+  getAllUserExercises: (id) => {
+    dispatch(getAllUserExercisesConditional(id))
+  },
+  getAllUserWorkouts: (id) => {
+    dispatch(getAllUserWorkoutsConditional(id))
+  },
+  getAllUserTemplates: (id) => {
+    dispatch(getAllUserTemplatesConditional(id))
+  },
+  getAllUserPrograms: (id) => {
+    dispatch(getAllUserProgramsConditional(id))
+  }, 
+  createTemplate: (userID, username) => {
+    dispatch(createTemplate(userID, username))
+  },
+  createWorkoutFromTemplate: (userID, username, template, userExercises) => {
+    dispatch(createWorkoutFromTemplateMiddleware(userID, username, template, userExercises))
+  },
+  createVolumeDeload: (userID, username, template, userExercises) => {
+    dispatch(createVolumeDeloadFromTemplateMiddleware(userID, username, template, userExercises))
+  },
+  createWeightDeload: (userID, username, template, userExercises) => {
+    dispatch(createWeightDeloadFromTemplateMiddleware(userID, username, template, userExercises))
+  },
+  createProgram: (userID) => {
+    dispatch(createProgram(userID))
+  }, 
+  editProgram: (userID, programID, programName, templates) => {
+    dispatch(editProgram(userID, programID, programName, templates))
+  }, 
+  useProgram: (userID, programID, programName, templates) => {
+    dispatch(useProgram(userID, programID, programName, templates))
+  }, 
+  createExportFromProgramMiddleware: (userID, programID, programName, templates, deload) => {
+    dispatch(createExportFromProgramMiddleware(userID, programID, programName, templates, deload))
+  }, 
+}) 
 
-  export default connect(mapStateToProps, mapDispatchToProps)(UserProfile)
+export default connect(mapStateToProps, mapDispatchToProps)(UserProfile)

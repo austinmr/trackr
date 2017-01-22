@@ -1,7 +1,11 @@
+// REACT-REDUX
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
+
+// ACTION CREATORS 
 import { putNewExercise } from '../../actions/allExercises'
 
+// BOOTSTRAP
 import { Row, Panel, Button, Form, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 
 export class AddExerciseToDB extends React.Component {

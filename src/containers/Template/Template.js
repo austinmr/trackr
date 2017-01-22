@@ -1,21 +1,21 @@
-import React, { PropTypes } from 'react';
+// REACT-REDUX
+import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { browserHistory } from 'react-router';
-import { putNewUserTemplate } from '../../actions/userTemplates' 
+import { browserHistory } from 'react-router'
 
-
-// PROGRAM REFACTOR
-// import { putBlankUserPlan } from '../../actions/userWeeklyPlans' 
-import { putBlankUserProgram } from '../../actions/userPrograms' 
-
-// import { getPlansObjectsArray } from '../../reducers/root'
+// SELECTORS 
 import { getProgramsObjectsArray } from '../../reducers/root'
 
+// ACTION CREATORS 
+import { putNewUserTemplate } from '../../actions/userTemplates' 
+import { putBlankUserProgram } from '../../actions/userPrograms' 
 
+// APP COMPONENTS 
 import AddExercise from './AddExercise'
 import ExerciseList from '../../components/Template/ExerciseList'
 import TemplateNameModal from '../../components/Template/TemplateNameModal'
 
+// BOOTSTRAP
 import { Grid, Row, Col, Button } from 'react-bootstrap';
 
 export class Template extends React.Component {
@@ -25,7 +25,9 @@ export class Template extends React.Component {
     template: PropTypes.object.isRequired,
     templateID: PropTypes.string.isRequired, 
     exercises: PropTypes.array.isRequired, 
+    userPrograms: PropTypes.array.isRequired, 
     putNewUserTemplate: PropTypes.func.isRequired,
+    putBlankUserProgram: PropTypes.func.isRequired,
   }
 
   state = {
@@ -33,7 +35,6 @@ export class Template extends React.Component {
   }
 
   handleSaveTemplate = () => {
-    console.log('Saving template!'); 
     this.setState({showTemplateNameModal: true}); 
   }
 
@@ -52,7 +53,6 @@ export class Template extends React.Component {
       return; 
     }
 
-    
     putNewUserTemplate(userID, templateID, templateName, template, templateType, templatePlanName, templatePlanID)
     this.setState({showTemplateNameModal: false}); 
     if (process.env.NODE_ENV !== 'test') {
@@ -72,13 +72,13 @@ export class Template extends React.Component {
     const { showTemplateNameModal } = this.state; 
     if (showTemplateNameModal) {
       return (
-          <TemplateNameModal 
-            showTemplateNameModal={showTemplateNameModal}
-            userPrograms={this.props.userPrograms}
-            dispatchSaveTemplate={this.dispatchSaveTemplate}
-            dispatchBlankUserProgram={this.dispatchBlankUserProgram}
-          />
-        )
+        <TemplateNameModal 
+          showTemplateNameModal={showTemplateNameModal}
+          userPrograms={this.props.userPrograms}
+          dispatchSaveTemplate={this.dispatchSaveTemplate}
+          dispatchBlankUserProgram={this.dispatchBlankUserProgram}
+        />
+      )
     }
   }
 

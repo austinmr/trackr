@@ -1,17 +1,20 @@
-// React-Redux Requirements 
+// REACT-REDUX
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { browserHistory } from 'react-router';
-import { calculatePerformancePercentage, totalWorkoutSets, totalWorkoutWeight, topExercise } from '../../utils/calculators'
 
+// APP COMPONENTS 
 import ExerciseListExpand from './ExerciseListExpand'
 import BarGraph from '../../components/BarGraph/BarGraph'
-// import SingleExerciseGraph from '../components/Graph/LineChart'
 
+// UTILITIES
+import { calculatePerformancePercentage, totalWorkoutSets, totalWorkoutWeight, topExercise } from '../../utils/calculators'
+
+// BOOTSTRAP
+import { Grid, Row, Col, ProgressBar, Jumbotron, Panel } from 'react-bootstrap'
+
+// ASSETS
 import ResultsImg from '../../../assets/ResultsCropped.png' 
 
-// Bootstrap Imports 
-import { Grid, Row, Col, Well, Button, Nav, NavItem, Badge, ProgressBar, Image, Jumbotron, Panel } from 'react-bootstrap';
 
 export class Results extends React.Component {
   static propTypes = {
@@ -37,8 +40,7 @@ export class Results extends React.Component {
   }
 
   render() {
-    const { workout, userExercises } = this.props; 
-    const { selectedExercise } = this.state; 
+    const { workout } = this.props; 
     let totalWeight = totalWorkoutWeight(workout.exercises); 
     let exerciseCount = workout.exercises.length; 
     let setCount = totalWorkoutSets(workout.exercises);
@@ -89,25 +91,25 @@ export class Results extends React.Component {
           </Row>
         </Jumbotron>
         <Row className='resultsGraph'>
-        <Col xs={10} md={10} xsOffset={1} mdOffset={1}>
-        <Row>
-        <Panel className='resultsGraphContainer'>
-        <Row>
-          <Col className='resultsGraphHeader' xs={10} md={10} xsOffset={1} mdOffset={1}>
-          <h1> METRICS </h1>
+          <Col xs={10} md={10} xsOffset={1} mdOffset={1}>
+            <Row>
+              <Panel className='resultsGraphContainer'>
+                <Row>
+                  <Col className='resultsGraphHeader' xs={10} md={10} xsOffset={1} mdOffset={1}>
+                    <h1> METRICS </h1>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col xs={4} md={4}>
+                    <ExerciseListExpand exercises={workout.exercises} selectExercise={this.handleSelectExercise}/>
+                  </Col>
+                  <Col xs={8} md={8}>
+                    {this._renderSingleExerciseGraph()}
+                  </Col> 
+                </Row>
+              </Panel>
+            </Row>
           </Col>
-        </Row>
-        <Row>
-        <Col xs={4} md={4}>
-          <ExerciseListExpand exercises={workout.exercises} selectExercise={this.handleSelectExercise}/>
-        </Col>
-        <Col xs={8} md={8}>
-          {this._renderSingleExerciseGraph()}
-        </Col> 
-        </Row>
-        </Panel>
-        </Row>
-        </Col>
         </Row>
       </Grid> 
     )
@@ -118,6 +120,5 @@ const mapStateToProps = (state, { params }) => ({
   workout: state.results.workout,
   userExercises: state.results.userExercises
 })
-
 
 export default connect(mapStateToProps, null)(Results)

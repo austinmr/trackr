@@ -1,19 +1,13 @@
-import { LOGIN_USER, 
-  // SAVE_TEMPLATE, 
-  // SAVE_WORKOUT, 
-  // REQUEST_USER_EXERCISES, 
-  // RECEIVE_USER_EXERCISES, 
+import { 
+  LOGIN_USER, 
   GET_ALL_USER_WORKOUTS_SUCCESS, 
   GET_ALL_USER_TEMPLATES_SUCCESS, 
   GET_ALL_USER_EXERCISES_SUCCESS, 
   PUT_NEW_USER_EXERCISE_SUCCESS,
   PUT_NEW_USER_WORKOUT_SUCCESS,
   PUT_NEW_USER_TEMPLATE_SUCCESS, 
-  GET_ALL_USER_PLANS_SUCCESS,
-  PUT_NEW_USER_PLAN_SUCCESS, 
   GET_ALL_USER_PROGRAMS_SUCCESS,
   PUT_NEW_USER_PROGRAM_SUCCESS, 
-  // UPDATE_USER_PLAN_SUCCESS
 } from '../constants/ActionTypes'
 
 const emptyStateObject = {
@@ -123,34 +117,6 @@ function exercises (state = {
   }
 }
 
-// TODO: DELETE PROGRAMS!!
-// function plans (state = {
-//   isFetching: false,
-//   isValid: false,
-//   items: []
-// }, action) {
-//   switch (action.type) {
-//     case GET_ALL_USER_PLANS_SUCCESS: 
-//       return {
-//         ...state,
-//         isFetching: false,
-//         isValid: true,
-//         items: [
-//           ...action.response.result
-//         ]
-//       }
-//     case PUT_NEW_USER_PLAN_SUCCESS: 
-//       return {
-//         items: [
-//           ...state.items, 
-//           action.response.result
-//         ]
-//       }
-//     default:
-//       return state
-//   }
-// }
-
 function programs (state = {
   isFetching: false,
   isValid: false,
@@ -209,12 +175,6 @@ const user = (state = profile, action) => {
         ...state,
         exercises: exercises(state.exercises, action)
       }
-    // case GET_ALL_USER_PLANS_SUCCESS:
-    // case PUT_NEW_USER_PLAN_SUCCESS:
-    //   return {
-    //     ...state,
-    //     plans: plans(state.plans, action)
-    //   }
     case GET_ALL_USER_PROGRAMS_SUCCESS:
     case PUT_NEW_USER_PROGRAM_SUCCESS:
       return {

@@ -8,21 +8,25 @@ import { getTemplatesObjectsArray, getProgramsObjectsArray } from '../../reducer
 
 // ACTION CREATORS
 import { addTemplateToProgram } from '../../actions/program'
-// import { putNewUserPlan, updateUserPlan } from '../../actions/userWeeklyPlans'
 import { putNewUserProgram, updateUserProgram } from '../../actions/userPrograms'
 
 // APP COMPONENTS 
 import TemplateEntry from '../../components/UserProfile/TemplateEntry'
-// import WorkoutEntry from '../components/UserProfile/WorkoutEntry'
 
-// Bootstrap Imports 
-import { Grid, Row, Col, Button, Panel, Well, Form, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
+// BOOTSTRAP
+import { Grid, Row, Col, Button, Well, FormGroup, FormControl, ControlLabel } from 'react-bootstrap';
 
 export class Program extends React.Component {
   static propTypes = {
     userID: PropTypes.string.isRequired, 
     username: PropTypes.string.isRequired, 
     templates: PropTypes.array.isRequired,
+    userPrograms: PropTypes.array.isRequired,
+    program: PropTypes.object.isRequired,
+    update: PropTypes.bool.isRequired,
+    addTemplateToProgram: PropTypes.func.isRequired,
+    putNewUserProgram: PropTypes.func.isRequired,
+    updateUserProgram: PropTypes.func.isRequired
   }
 
   state = {
@@ -44,7 +48,6 @@ export class Program extends React.Component {
 
   handleActiveDaySelection = (e) => {
     e.preventDefault(); 
-    console.log(e.target.id)
     this.setState({activeDay: e.target.id})
   }
 
@@ -56,12 +59,10 @@ export class Program extends React.Component {
 
     if (update) {
       const { userID, programID, programName, templates } = program; 
-      console.log('Updating a plan!')
       updateUserProgram(userID, programID, programName, templates)
     } else {
       const { userID, programID, templates } = program; 
       const { programName } = this.state;
-      console.log('Saving a new plan!')
       putNewUserProgram(userID, programID, programName, templates)
     }
 
@@ -87,7 +88,6 @@ export class Program extends React.Component {
   _renderFilteredTemplates = () => {
     let { filterType, filterPlan } = this.state; 
     const { templates } = this.props; 
-    console.log(filterPlan); 
     if (!filterType && !filterPlan) {
       return (
         <div>
@@ -143,7 +143,6 @@ export class Program extends React.Component {
   render() {
     const { username, templates, userPrograms, program } = this.props; 
     let planArray = Object.keys(program.templates)
-    console.log(planArray); 
     planArray = planArray.map((key) => { 
       return {
         [`${key}`]: program.templates[`${key}`]
@@ -195,13 +194,13 @@ export class Program extends React.Component {
                 </Col>
                 <Col xs={6} md={6}>
                   <FormGroup>
-                  <ControlLabel style={{marginBottom: '10px', fontSize: '16px'}}>Template Plan</ControlLabel>
-                  <FormControl componentClass="select" placeholder="select" id="filterPlan" onChange={(e) => this.handleFilterPlan(e)}>
-                    <option value="">Select</option>
-                    {userPrograms.map((program, i) => (
-                      <option key={i} value={program.programID}>{program.programName}</option>
-                    ))}
-                  </FormControl>
+                    <ControlLabel style={{marginBottom: '10px', fontSize: '16px'}}>Template Plan</ControlLabel>
+                    <FormControl componentClass="select" placeholder="select" id="filterPlan" onChange={(e) => this.handleFilterPlan(e)}>
+                      <option value="">Select</option>
+                      {userPrograms.map((program, i) => (
+                        <option key={i} value={program.programID}>{program.programName}</option>
+                      ))}
+                    </FormControl>
                   </FormGroup>
                 </Col>
               </Row>

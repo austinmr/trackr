@@ -1,6 +1,6 @@
 import React from 'react'
-import { Row, Col, ProgressBar, Panel } from 'react-bootstrap';
 import dateFormat from 'dateformat'
+import { Row, Col, Panel } from 'react-bootstrap'
 
 export default ({workoutDate, exercises }) => {
   return (

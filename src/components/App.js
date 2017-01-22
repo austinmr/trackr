@@ -4,7 +4,6 @@ import '../App.css'
 import '../css/Results.css'
 import '../css/Profile.css'
 
-
 const App = ({ children }) => (
     <div className="App">
       <Navigation />

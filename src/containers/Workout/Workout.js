@@ -1,32 +1,39 @@
-import React, { PropTypes } from 'react';
-import { browserHistory } from 'react-router';
+// REACT-REDUX
+import React, { PropTypes } from 'react'
+import { browserHistory } from 'react-router'
 import { connect } from 'react-redux'
+
+// SELECTORS 
+import { getUserExercisesInWorkout } from '../../reducers/root'
+
+// ACTION CREATORS 
 import { saveTemplate } from '../../actions/templates' 
 import { trackWorkout } from '../../actions/workouts'
-import { getUserExercisesInWorkout } from '../../reducers/root'
-import { convertExercisesArrayToCSV } from '../../utils/export'
 
+// APP COMPONENTS 
 import ExerciseList from '../../components/Workout/ExerciseList'
 
-import { Grid, Row, Col, Button } from 'react-bootstrap';
+// BOOTSTRAP
+import { Grid, Row, Col, Button } from 'react-bootstrap'
+
+// UTILITIES
+import { convertExercisesArrayToCSV } from '../../utils/export'
 
 export class Workout extends React.Component {
   static propTypes = {
     username: PropTypes.string.isRequired, 
     exercises: PropTypes.array.isRequired, 
+    userExercises: PropTypes.array.isRequired, 
+    workout: PropTypes.object.isRequired, 
     dispatchSaveTemplate: PropTypes.func.isRequired,
+    dispatchTrackWorkout: PropTypes.func.isRequired
   }
 
-  constructor(props) {
-    super(props);
-    const val = "Hello, world!"; 
-
-  }
-
-  handleSaveWorkout(e) {
+  handleSaveWorkout = (e) => {
     e.preventDefault();
     const { workout, userExercises, dispatchTrackWorkout } = this.props; 
     dispatchTrackWorkout(workout, userExercises); 
+
     if (process.env.NODE_ENV !== 'test') {
       browserHistory.push(`/Results/${workout.id}`);
     }
@@ -70,5 +77,3 @@ const mapDispatchToProps = (dispatch) => ({
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Workout)
-
-

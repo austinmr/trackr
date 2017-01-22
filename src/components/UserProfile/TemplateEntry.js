@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, Col, Panel, Button, ProgressBar } from 'react-bootstrap';
+import { Row, Col, Panel, Button } from 'react-bootstrap'
 
 export class TemplateEntry extends React.Component {
   state = {
@@ -52,7 +52,7 @@ export class TemplateEntry extends React.Component {
   } 
 
   render() {
-    const { templateName, exercises, templateType, templatePlanName } = this.props; 
+    const { templateName, exercises, templateType } = this.props; 
     return (
       <Panel className='profileActiveEntry'> 
         <Row> 
@@ -76,7 +76,5 @@ export class TemplateEntry extends React.Component {
     )
   }
 }
-
-
 
 export default TemplateEntry

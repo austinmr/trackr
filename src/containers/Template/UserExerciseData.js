@@ -1,18 +1,26 @@
+// REACT-REDUX
 import React, { PropTypes } from 'react'
 import { connect } from 'react-redux'
-import { putNewUserExercise } from '../../actions/userExercises' 
+
+// SELECTORS 
 import { getUserExercise } from '../../reducers/root'
 
+// ACTION CREATORS
+import { putNewUserExercise } from '../../actions/userExercises' 
+
+// APP COMPONENTS 
 import OneRepMaxModal from '../../components/Template/OneRepMaxModal'
 
-import { Row, Col } from 'react-bootstrap';
+// BOOTSTRAP
+import { Row, Col } from 'react-bootstrap'
 
 export class UserExerciseData extends React.Component {
   static propTypes = {
     userID: PropTypes.string.isRequired,
     exerciseID: PropTypes.string.isRequired,
     exerciseName: PropTypes.string.isRequired,
-    putNewUserExercise: PropTypes.func.isRequired,
+    userExercise: PropTypes.object.isRequired,
+    putNewUserExercise: PropTypes.func.isRequired
   }
 
   state = {

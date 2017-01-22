@@ -1,6 +1,6 @@
 import React from 'react'
 import * as d3 from 'd3'
-import { formatDomain, formatDynamoDate, graphMaxValue } from '../../utils/calculators'
+import { formatDomain } from '../../utils/calculators'
 import Axes from './Axes'
 import Gridlines from './Gridlines'
 
@@ -8,6 +8,7 @@ export default class LineGraph extends React.Component {
 
   render() {
     let { data } = this.props; 
+
     // Set dimensions and margins for the graph 
     const margin =  {top: 50, right: 50, bottom: 50, left: 50}; 
     const svgHeight = 700
@@ -18,7 +19,6 @@ export default class LineGraph extends React.Component {
     let minY = d3.min(data, function(d) { return d.oneRepMax; })
     let maxY = d3.max(data, function(d) { return d.oneRepMax; })
     let formattedDomain = formatDomain(minY, maxY)
-    console.log(`FORMATTED DOMAIN: ${formattedDomain}`); 
 
     // set the ranges
     let y = d3.scaleLinear()
@@ -35,7 +35,6 @@ export default class LineGraph extends React.Component {
       .y((d) => { return y(d.oneRepMax); });
 
     let dates = data.map(d => d.date)
-    console.log(dates)
 
     let d3Props = {
       width, 

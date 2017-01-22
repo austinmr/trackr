@@ -1,6 +1,6 @@
-import React, { PropTypes } from 'react'
+import React from 'react'
 import AddSetReps from '../../containers/Workout/AddSetReps'
-import { Row, Col, Panel, Well } from 'react-bootstrap';
+import { Row, Col, Panel, Well } from 'react-bootstrap'
 
 const ExerciseRow = ({ exercise, id, currentOneRepMax, sets, onClick }) => (
   <Panel style={{borderRadius: 0}}> 

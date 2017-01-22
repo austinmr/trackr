@@ -1,5 +1,5 @@
 import React from 'react'
-import { Row, Col, Panel, Button } from 'react-bootstrap';
+import { Row, Col, Panel, Button } from 'react-bootstrap'
 
 export default ({programID, programName, complete, programTemplates, onClick, genWorkouts, genVolumeDeload, genWeightDeload }) => {
   const _renderButton = (programTemplates, onClick) => {

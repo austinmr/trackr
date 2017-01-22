@@ -1,6 +1,6 @@
 import React from 'react'
-import { Row, Col, Panel, Well } from 'react-bootstrap';
 import ProgramEntry from './ProgramEntry'
+import { Row, Col, Panel, Well } from 'react-bootstrap'
 
 export default ({ programs, editProgram, genWorkouts }) => {
 
